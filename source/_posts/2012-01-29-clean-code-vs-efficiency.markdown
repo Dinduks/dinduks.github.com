@@ -14,23 +14,18 @@ tags:
 - symfony2
 ---
 
-I have recently submitted [my first pull request](https://github.com/symfony/symfony/pull/3209) ever, to the Symfony2 project. 
+I have recently submitted [my first pull request](https://github.com/symfony/symfony/pull/3209) ever, to the Symfony2 project.
 
-[The code I contributed with](https://github.com/Dinduks/symfony/commit/5306457f4b1073c6544dd4235a74c4d5f612ed9d) is a 3 lines long method that simply checks whether a form field is hidden or not. 
-I have no doubt about the usefulness of this method, especially after seeing few people using a similar one (it seems that it was removed). 
+[The code I contributed with](https://github.com/Dinduks/symfony/commit/5306457f4b1073c6544dd4235a74c4d5f612ed9d) is a 3 lines long method that simply checks whether a form field is hidden or not.
+I have no doubt about the usefulness of this method, especially after seeing few people using a similar one (it seems that it was removed).
 
-The pull request was [refused](https://github.com/symfony/symfony/pull/3209#issuecomment-3707718) because the class in question isn't supposed to be _aware of information we need_. 
-I agree with this and approve the good practices and clean code, but in this case we penalize the end user for the sake of doing things the _right_ way. 
+The pull request was [refused](https://github.com/symfony/symfony/pull/3209#issuecomment-3707718) because the class in question isn't supposed to be *aware of information we need*.
+I agree with this and approve the good practices and clean code, but in this case we penalize the end user for the sake of doing things the *right* way.
 
-The purpose of my post is to answer the following question: should efficiency and simplicity be sacrificed for the sake of good practices and clean code? 
+The purpose of my post is to answer the following question: should efficiency and simplicity be sacrificed for the sake of good practices and clean code?
 
-In my opinion, the answer is no. Especially when we're dealing with a big project that thousands of people use, and that claims easiness and simplicity. 
+In my opinion, the answer is no. Especially when we're dealing with a big project that thousands of people use, and that claims easiness and simplicity.
 
-I'm looking forward to know your opinion about the subject. Feel free to leave a comment. 
+I'm looking forward to know your opinion about the subject. Feel free to leave a comment.
 
-
-
-
-[![Programming Motherfucker](/wp-content/uploads/2012/01/programming-motherfucker.jpg)](http://programming-motherfucker.com/)
-I now understand what you mean, [@zedshaw](https://twitter.com/zedshaw)
-
+{% img center /wp-content/uploads/2012/01/programming-motherfucker.jpg '' 'Programming Motherfucker' %}
