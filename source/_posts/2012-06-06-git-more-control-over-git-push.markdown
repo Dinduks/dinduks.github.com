@@ -4,7 +4,6 @@ date: 2012-06-06 16:35:29
 layout: post
 slug: git-more-control-over-git-push
 title: 'Git: More control over git push'
-wordpress_id: 2032
 categories:
 - Development
 tags:

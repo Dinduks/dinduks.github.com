@@ -4,7 +4,6 @@ date: 2012-01-29 15:42:22
 layout: post
 slug: clean-code-vs-efficiency
 title: Clean code vs Efficiency
-wordpress_id: 1894
 categories:
 - Development
 tags:
@@ -28,4 +27,4 @@ In my opinion, the answer is no. Especially when we're dealing with a big projec
 
 I'm looking forward to know your opinion about the subject. Feel free to leave a comment.
 
-{% img center /wp-content/uploads/2012/01/programming-motherfucker.jpg '' 'Programming Motherfucker' %}
+{% img center /uploads/2012/01/programming-motherfucker.jpg '' 'Programming Motherfucker' %}

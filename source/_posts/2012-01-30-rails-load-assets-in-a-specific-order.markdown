@@ -4,7 +4,6 @@ date: 2012-01-30 23:57:22
 layout: post
 slug: rails-load-assets-in-a-specific-order
 title: 'Rails: Load assets in a specific order'
-wordpress_id: 1929
 categories:
 - Development
 - Pieces of code

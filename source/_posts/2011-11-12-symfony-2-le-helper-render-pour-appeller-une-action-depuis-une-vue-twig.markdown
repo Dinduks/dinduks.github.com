@@ -4,7 +4,6 @@ date: 2011-11-12 23:40:19
 layout: post
 slug: symfony-2-le-helper-render-pour-appeller-une-action-depuis-une-vue-twig
 title: 'Symfony2: Le helper render pour appeller une action depuis une vue Twig'
-wordpress_id: 1325
 categories:
 - Development
 - Pieces of code

@@ -4,7 +4,6 @@ date: 2012-04-30 16:30:49
 layout: post
 slug: sinatra-rspec-and-datamapper-configuring-and-using-a-database-for-tests
 title: 'Sinatra, RSpec and DataMapper: Configuring and using a database for tests'
-wordpress_id: 1968
 categories:
 - Ruby
 tags:

@@ -4,7 +4,6 @@ date: 2012-01-16 20:57:48
 layout: post
 slug: vmware-workstation-enable-folder-sharing
 title: 'VMware Workstation: Enable folder sharing'
-wordpress_id: 1799
 tags:
 - open-vm-tools
 - vmware
