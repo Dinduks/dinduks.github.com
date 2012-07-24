@@ -46,10 +46,6 @@ You can pass arguments to the action this way:
 
     helloAction($arg1, $arg2)
 
-Or
-
-    helloAction($arg2, $arg1)
-
 The arguments' order doesn't matter.
 
 Enjoy. ;)

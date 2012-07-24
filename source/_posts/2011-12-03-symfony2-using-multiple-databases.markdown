@@ -54,7 +54,7 @@ To begin with, disable *auto-mapping*, so you will be able to choose which EM is
       orm:
         auto_mapping: false
 
-**Note**: If there’s an error bounded with this line, just delete it.
+*Note: If there’s an error bounded with this line, just delete it.*
 
 Then, right below, set up EM while specifying *mappings* to each bundle.
 
@@ -66,7 +66,7 @@ Then, right below, set up EM while specifying *mappings* to each bundle.
         entity_managers:
           web:
             connection: web
-            mappings: 
+            mappings:
               DinduksFooBundle : ~
               DinduksBarBundle : ~
               FOSUserBundle: ~

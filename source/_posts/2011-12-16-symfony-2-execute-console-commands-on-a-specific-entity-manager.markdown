@@ -15,7 +15,7 @@ tags:
 - symfony2
 ---
 
-The following isn’t an exact science, however, if you didn't `--help`, it will spare you a 10min research.
+The following isn’t an exact science, however, if you didn't `--help`, it will spare you a 10min research.  
 This is your lifesaver: `--em`.
 
 ### Example
