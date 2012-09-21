@@ -37,4 +37,4 @@ If that doesn't work, just log out and on your session.
 
 I hope this tutorial has been helpful.
 
-*Note*: The last post of this thread http://communities.vmware.com/thread/332887 was useful to me.
+*Note*: The last post of this thread [http://communities.vmware.com/thread/332887](http://communities.vmware.com/thread/332887) was useful to me.
