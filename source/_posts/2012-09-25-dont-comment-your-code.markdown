@@ -6,11 +6,13 @@ comments: true
 categories: 
 ---
 
+*Dislaimer: I'm not a pro and I'm open to your feedback and critics.*
+
 Whether you've learned programming alone or had classes about the subject, you've
 probably been taught to *use comments*.  
-The more I write code and read about good practices, the more I realize this
+The more I write code and read about good practices, the more I realize that
 *advice* is exactly the one you shouldn't give. It only encourages laziness,
-writing dirty code, and filling the holes by commenting every piece of code.
+writing dirty code, and filling the cracks in by commenting every piece of code.
 
 I believe that, unless exception, you should not use comments, but instead think
 every time before you write one: why are you doing this? Is your method or function
@@ -20,8 +22,8 @@ to new methods or functions. Is it non-understandable? You're writing bad code.
 When I say *exception*, I mean specific cases where you really need to explain
 what you are doing: you're hacking to get the shit done, writing some complex
 algorithm, etc.  
-Also, if one needs to specify where he did copy some code from, comments might be a
-good place.
+Also, if one needs to specify where you did copy some code from, comments might be a
+good place for this purpose.
 
     /**
     * Source: http://stackoverflow.com/a/9261887/604041
@@ -29,22 +31,21 @@ good place.
     function getPopoverPlacement(popover, element) {
     }
 
-The reason why I'm writing this post (rant?) is that I've seen this piece of code
+The reason why I'm writing this post is that I've seen this piece of code
 
     // The logo's copyright checksum
     const CHECKSUM = "herpderp";
 
 used to justify the use of comments.
 
-Wrong. I haven't had to think twice before recommending to name that constant
-`LOGO_COPYRIGHT_CHECKSUM`.
+Wrong. I didn't need to think twice before recommending to name that constant
+`LOGO_COPYRIGHT_CHECKSUM`.  
+That's quite an easy example to counter, but one could improve almost any code out
+there as effortlessly as shown above.
 
-That's quite an easy example to wreck, but one could improve almost any code outta
-here the same way.
+Let's see some examples of how we can avoid comments:
 
-Let's see some examples of what how we can avoid comments:
-
-#### From Jeff Atwood's [Coding without comments](http://www.codinghorror.com/blog/2008/07/coding-without-comments.html) blog post
+### From Jeff Atwood's [Coding without comments](http://www.codinghorror.com/blog/2008/07/coding-without-comments.html) blog post
 A simple but efficient example:
 
     // square root of n with Newton-Raphson approximation
@@ -69,9 +70,9 @@ Could be refactored to:
     System.out.println( "r = " + SquareRootApproximation(r) );
 
 I recommend reading his article where he too, calls to avoid comments.  
-After all, Jeff Atwood word' more valuable than mine, right? ;)
+After all, Jeff Atwood's word's more valuable than mine, right? ;)
 
-#### Another example from the awesome [Objects Calisthenics]() manifesto
+### From the awesome [Objects Calisthenics](http://www.bennadel.com/resources/uploads/2012/ObjectCalisthenics.pdf) manifesto
 Here, it isn't about comments, but a complex code that a lazy-ass would have used
 comments to explain:
 
@@ -105,9 +106,60 @@ Well written, it looks like:
         buf.append(“\n”);
     }
 
-Is that a lot of code? Oh, sorry. :( I didn't know you pay a fee for each LoC you write.
+Is that a lot of code? Oh, sorry. :( I didn't know you pay a fee for each single LoC
+you write.
 
-Objects Calisthenics is a wonderful manifesto to follow to improve the quality of
-object oriented thinking and coding. If you can't follow all the rules, start with
-some and improve.
+Objects Calisthenics is a wonderful book about improving the object oriented
+thinking and coding. **Read it**, and if you can't follow all the rules, start with
+some and improve accordingly.
+
+### A code of mine
+Take a look at this code:
+
+    def find_user_repos(username)
+      resp = @http_client.call("/users/#{username}/repos")
+      raise UserNotFound.new(username) if resp['message'].to_s == 'Not Found' if resp.is_a? Hash
+
+      repositories_array = Array.new
+      resp.each do |repository_hash|
+        repo = RepositoryConverter.fill_object_from_hash repository_hash
+        repositories_array.push(repo)
+      end
+      repositories_array
+    end
+
+Starting from line 5, you have to carefully read the code to understand it. One
+might think *let's just add a comment!*. No.  
+Let's clean that mess.
+
+    def find_user_repos(username)
+      resp = @http_client.call("/users/#{username}/repos")
+      raise UserNotFound.new(username) if resp['message'].to_s == 'Not Found' if resp.is_a? Hash
+
+      create_repos_array(resp) do |hash|
+        RepositoryConverter.fill_object_from_hash hash
+      end
+    end
+
+    private
+    def create_repos_array(repositories)
+      repositories_array = Array.new
+      repositories.each do |repository_hash|
+        repo = yield repository_hash
+        repositories_array.push(repo)
+      end
+      repositories_array
+    end
+
+Here, I simply moved the code that creates a repositories array in another method,
+this has many advantages:
+
+* One can read the code and understand what's happening, without caring about the
+implementation.
+* This method can be used elsewhere.
+* It can be tested... If it wasn't private.
+
+### Where to explain how my app works?
+Probably not in the code itself.  
+I'd suggest doing this in a separate or in the *README* file.
 
