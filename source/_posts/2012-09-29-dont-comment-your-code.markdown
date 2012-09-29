@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Don't comment your code, write good one"
-date: 2012-09-25 22:33
+date: 2012-09-29 17:42
 comments: true
 categories: 
 ---
