@@ -14,10 +14,10 @@ The more I write code and read about good practices, the more I realize that
 *advice* is exactly the one you shouldn't give. It only encourages laziness,
 writing dirty code, and filling the cracks in by commenting every piece of code.
 
-I believe that, unless exception, you should not use comments, but instead think
+I believe that most of the time you should not use comments, but instead think
 every time before you write one: why are you doing this? Is your method or function
 name not explicit enough? Fix it. Is it complex? Refactor it and move its main parts
-to new methods or functions. Is it non-understandable? You're writing bad code.
+to new methods or functions. Is it hard to understand? You're writing bad code.
 
 When I say *exception*, I mean specific cases where you really need to explain
 what you are doing: you're hacking to get the shit done, writing some complex
@@ -43,7 +43,13 @@ Wrong. I didn't need to think twice before recommending to name that constant
 That's quite an easy example to counter, but one could improve almost any code out
 there as effortlessly as shown above.
 
-Let's see some examples of how we can avoid comments:
+Another downside of using comments, as mentionned by my friend
+[Nicolas](http://www.badmood.eu/), is that comments need to be maintained, just like
+the code.  
+Not only this means more things to take care of and more work to do, but in real
+life the code gets updated while comments don't.
+
+Let's see some examples of how we can avoid comments by writing better code:
 
 ### From Jeff Atwood's [Coding without comments](http://www.codinghorror.com/blog/2008/07/coding-without-comments.html) blog post
 A simple but efficient example:
@@ -113,7 +119,7 @@ Objects Calisthenics is a wonderful book about improving the object oriented
 thinking and coding. **Read it**, and if you can't follow all the rules, start with
 some and improve accordingly.
 
-### A code of mine
+### Some code of mine
 Take a look at this code:
 
     def find_user_repos(username)
@@ -159,7 +165,7 @@ implementation.
 * This method can be used elsewhere.
 * It can be tested... If it wasn't private.
 
-### Where to explain how my app works?
+### Where to explain how the big parts of my app fit together?
 Probably not in the code itself.  
 I'd suggest doing this in a separate or in the *README* file.
 
