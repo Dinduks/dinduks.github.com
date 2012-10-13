@@ -27,4 +27,4 @@ In my opinion, the answer is no. Especially when we're dealing with a big projec
 
 I'm looking forward to know your opinion about the subject. Feel free to leave a comment.
 
-{% img center /uploads/2012/01/programming-motherfucker.jpg '' 'Programming Motherfucker' %}
+{% img center /images/uploads/2012/01/programming-motherfucker.jpg '' 'Programming Motherfucker' %}

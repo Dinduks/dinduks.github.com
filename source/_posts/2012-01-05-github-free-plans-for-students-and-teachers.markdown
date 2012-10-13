@@ -19,11 +19,11 @@ Although I knew about Bitbucket's free private repos, the ideas of leaving GitHu
 Luckily, I stumbled upon [GitHub's Educational offers](https://github.com/edu), that are available to both teachers and students.  
 The teachers' offer concerns organization accounts. And the students' one on the other hand is simply a micro plan, and lasts 2 years, enough to get your ass a job and pay a subscription.
 
-{% img center /uploads/2012/01/github-edu-micro-plan.png '' 'GitHub's education plan' %}
+{% img center /images/uploads/2012/01/github-edu-micro-plan.png '' 'GitHub's education plan' %}
 
 To benefit from this offer, just contact GitHub from the [Request an educational account](https://github.com/edu) page.  
 Make sure you are logged in with the account you want the plan for, and tell them why you need it.
 
 Thank you GitHub!
 
-{% img center /uploads/2012/01/sucks-to-be-a-student.jpg '' 'Programming Motherfucker' %}
+{% img center /images/uploads/2012/01/sucks-to-be-a-student.jpg '' 'Programming Motherfucker' %}
