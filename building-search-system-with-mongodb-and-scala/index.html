@@ -20,7 +20,7 @@ I&# &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/">
+  <link rel="canonical" href="http://www.dinduks.com/building-search-system-with-mongodb-and-scala/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -107,13 +107,15 @@ or use a system that does it for you, such as <em>elasticsearch</em>.<br/>
 I&#8217;ve recently had to choose, and the latter option was an overkill since I was
 looking for something simple.</p>
 
-<p>The aim was to allow searching for many entities: <em>users</em>, <em>songs</em> and few others.<br/>
-For simplicty&#8217;s sake, I&#8217;ll stick to two: <code>User</code> and <code>Song</code>.</p>
+<p>The main idea here is to use an index collection, let&#8217;s call it <em>searchresults</em>,
+that will be updated each time the <em>real</em> entities change, thanks to hooks
+implemented on the default create/update/delete tasks.<br/>
+<em>searchresults</em> will be the only collection to get queried, thus making requests
+simple and search results&#8217; retrieval fast.</p>
 
-<p>The main idea here is to use an index collection, <em>searchresults</em>, that will be
-updated each time <em>users</em> and <em>songs</em> change.<br/>
-<em>searchresults</em> will be the only collection to get queried, making requests simple,
-and search results&#8217; retrieval fast.</p>
+<h3>More in details</h3>
+
+<p>I&#8217;ll use two entities in my example: <code>User</code> and <code>Song</code>.</p>
 
 <p>The <code>SearchResult</code> model has 3 fields:</p>
 
@@ -121,38 +123,35 @@ and search results&#8217; retrieval fast.</p>
 <li><code>entityType</code>: a discriminator field that contains the indexed entity type, <em>user</em>
 or <em>song</em> in this case.</li>
 <li><code>entityId</code>: You think my name is Captain Obvious, don&#8217;t you?</li>
-<li><code>keywords</code>: An array of keywords related to that search.
- 
-  case class SearchResult(
-
-<pre><code>id:         ObjectID,
-entityType: String,
-entityId:   ObjectID,
-keywords:   List[String]
-</code></pre>
-
-<p>  )</p></li>
+<li><code>keywords</code>: An array of keywords related to that search.</li>
 </ul>
 
 
-<p><code>ObjectID</code> is a <a href="http://api.mongodb.org/scala/casbah/current/"><em>Casbah</em></a> type. Feel free to change it with your driver&#8217;s identifier
-type.</p>
+<p>That class&#8217; signature should look like this:</p>
+
+<pre><code>case class SearchResult(
+  id:         ObjectID,
+  entityType: String,
+  entityId:   ObjectID,
+  keywords:   List[String]
+)
+</code></pre>
 
 <p>Paired with the class described above, a <code>Searchable</code> trait will help forcing the
 implementation of some methods and properties, and more importantly be used as a
 type in methods signatures.</p>
 
 <pre><code>trait Searchable {
-  def entityType:     String,
+  def entityType:    String = this.getClass.getSimpleName,
   getSearchKeywords: List[String],
-  entityId:           ObjectID
+  entityId:          ObjectID
 }
 </code></pre>
 
 <p>Now, each of your entities class, <code>User</code> and <code>Song</code>, will implement the <code>Searchable</code>
 trait, define the <code>entityType</code> property and implement the <code>getSearchKeywords()</code>
-method. The <code>entityId</code> or something similar property should already be implemented
-by your MongoDB driver.</p>
+method. The <code>entityId</code> property, or some entity with the same name, should already
+be implemented by your MongoDB driver.</p>
 
 <p><em>Example of a <code>getSearchKeywords()</code> method:</em></p>
 
@@ -163,9 +162,8 @@ by your MongoDB driver.</p>
 <p>The next step is to implement the hooks that update the index collection each time
 <em>users</em> and <em>songs</em> are updated too.</p>
 
-<p>In <em>Casbah</em> for instance, the entities are created and updated when calling the
-<code>save()</code> method, and deleted when <code>remove()</code> is called. Both these methods are
-inherited from <code>SalatDAO</code>.<br/>
+<p>If you use <em>Casbah</em> and <em>Salat</em> for instance, the entities are created and updated when calling the
+<code>save()</code> method, and deleted when <code>remove()</code> is called.<br/>
 These methods should be overriden, the hooks behaviors added to them —creating or
 updating the concerned <code>SearchResult</code> entry, in case of <code>save()</code> for example—, yet
 without altering their initial role.</p>
@@ -225,7 +223,7 @@ This can be done in one single command:</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/" data-via="Dinduks" data-counturl="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/building-search-system-with-mongodb-and-scala/" data-via="Dinduks" data-counturl="http://www.dinduks.com/building-search-system-with-mongodb-and-scala/" >Tweet</a>
   
   
   
@@ -256,7 +254,7 @@ This can be done in one single command:</p>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
+        <a href="/building-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
@@ -339,8 +337,8 @@ This can be done in one single command:</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/';
-        var disqus_url = 'http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/';
+        var disqus_identifier = 'http://www.dinduks.com/building-search-system-with-mongodb-and-scala/';
+        var disqus_url = 'http://www.dinduks.com/building-search-system-with-mongodb-and-scala/';
         var disqus_script = 'embed.js';
       
     (function () {

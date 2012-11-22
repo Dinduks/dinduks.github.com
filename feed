@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2012-11-22T01:07:40+01:00</updated>
+  <updated>2012-11-22T23:19:30+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -15,21 +15,23 @@
   
   <entry>
     <title type="html"><![CDATA[Building a search system with MongoDB (and Scala)]]></title>
-    <link href="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/"/>
+    <link href="http://www.dinduks.com/building-search-system-with-mongodb-and-scala/"/>
     <updated>2012-11-21T22:47:00+01:00</updated>
-    <id>http://www.dinduks.com/simple-search-system-with-mongodb-and-scala</id>
+    <id>http://www.dinduks.com/building-search-system-with-mongodb-and-scala</id>
     <content type="html"><![CDATA[<p>If you need a search system for your web application, you can either roll your own,
 or use a system that does it for you, such as <em>elasticsearch</em>.<br/>
 I&#8217;ve recently had to choose, and the latter option was an overkill since I was
 looking for something simple.</p>
 
-<p>The aim was to allow searching for many entities: <em>users</em>, <em>songs</em> and few others.<br/>
-For simplicty&#8217;s sake, I&#8217;ll stick to two: <code>User</code> and <code>Song</code>.</p>
+<p>The main idea here is to use an index collection, let&#8217;s call it <em>searchresults</em>,
+that will be updated each time the <em>real</em> entities change, thanks to hooks
+implemented on the default create/update/delete tasks.<br/>
+<em>searchresults</em> will be the only collection to get queried, thus making requests
+simple and search results&#8217; retrieval fast.</p>
 
-<p>The main idea here is to use an index collection, <em>searchresults</em>, that will be
-updated each time <em>users</em> and <em>songs</em> change.<br/>
-<em>searchresults</em> will be the only collection to get queried, making requests simple,
-and search results&#8217; retrieval fast.</p>
+<h3>More in details</h3>
+
+<p>I&#8217;ll use two entities in my example: <code>User</code> and <code>Song</code>.</p>
 
 <p>The <code>SearchResult</code> model has 3 fields:</p>
 
@@ -37,38 +39,35 @@ and search results&#8217; retrieval fast.</p>
 <li><code>entityType</code>: a discriminator field that contains the indexed entity type, <em>user</em>
 or <em>song</em> in this case.</li>
 <li><code>entityId</code>: You think my name is Captain Obvious, don&#8217;t you?</li>
-<li><code>keywords</code>: An array of keywords related to that search.
- 
-  case class SearchResult(
-
-<pre><code>id:         ObjectID,
-entityType: String,
-entityId:   ObjectID,
-keywords:   List[String]
-</code></pre>
-
-<p>  )</p></li>
+<li><code>keywords</code>: An array of keywords related to that search.</li>
 </ul>
 
 
-<p><code>ObjectID</code> is a <a href="http://api.mongodb.org/scala/casbah/current/"><em>Casbah</em></a> type. Feel free to change it with your driver&#8217;s identifier
-type.</p>
+<p>That class&#8217; signature should look like this:</p>
+
+<pre><code>case class SearchResult(
+  id:         ObjectID,
+  entityType: String,
+  entityId:   ObjectID,
+  keywords:   List[String]
+)
+</code></pre>
 
 <p>Paired with the class described above, a <code>Searchable</code> trait will help forcing the
 implementation of some methods and properties, and more importantly be used as a
 type in methods signatures.</p>
 
 <pre><code>trait Searchable {
-  def entityType:     String,
+  def entityType:    String = this.getClass.getSimpleName,
   getSearchKeywords: List[String],
-  entityId:           ObjectID
+  entityId:          ObjectID
 }
 </code></pre>
 
 <p>Now, each of your entities class, <code>User</code> and <code>Song</code>, will implement the <code>Searchable</code>
 trait, define the <code>entityType</code> property and implement the <code>getSearchKeywords()</code>
-method. The <code>entityId</code> or something similar property should already be implemented
-by your MongoDB driver.</p>
+method. The <code>entityId</code> property, or some entity with the same name, should already
+be implemented by your MongoDB driver.</p>
 
 <p><em>Example of a <code>getSearchKeywords()</code> method:</em></p>
 
@@ -79,9 +78,8 @@ by your MongoDB driver.</p>
 <p>The next step is to implement the hooks that update the index collection each time
 <em>users</em> and <em>songs</em> are updated too.</p>
 
-<p>In <em>Casbah</em> for instance, the entities are created and updated when calling the
-<code>save()</code> method, and deleted when <code>remove()</code> is called. Both these methods are
-inherited from <code>SalatDAO</code>.<br/>
+<p>If you use <em>Casbah</em> and <em>Salat</em> for instance, the entities are created and updated when calling the
+<code>save()</code> method, and deleted when <code>remove()</code> is called.<br/>
 These methods should be overriden, the hooks behaviors added to them —creating or
 updating the concerned <code>SearchResult</code> entry, in case of <code>save()</code> for example—, yet
 without altering their initial role.</p>
