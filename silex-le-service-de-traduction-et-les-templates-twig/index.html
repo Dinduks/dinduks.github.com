@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Silex: Le service de traduction et les templates Twig - Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Silex est un micro-framework basé sur les composants de Symfony 2 grâce auquel je suis entrain de développer une sorte de vCard ou page d&#8217; &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Silex: Le Service De Traduction Et Les Templates Twig</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-19T00:12:43+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://silex.sensiolabs.org/"><em>Silex</em></a> est un micro-framework basé sur les composants de Symfony 2 grâce auquel je suis entrain de développer une sorte de <a href="https://github.com/Dinduks/ChaoticCard">vCard ou page d&#8217;accueil</a> (faute de meilleur terme).</p>
+
+<p>Parmi ses nombreuses fonctionnalités: La traduction. Bien qu&#8217;elle soit très facile à implémenter, la méthode n&#8217;est décrite nulle part sur la doc.<br/>
+Heureusement, sinon je n&#8217;aurais rien à poster sur ce blog.</p>
+
+<p>Trêve de plaisanteries, voici sans attendre comment implémenter la traduction avec Silex.</p>
+
+<h3>Déclarer les traductions</h3>
+
+<p>Dans un répertoire <em>src/locales/</em> créez autant de fichiers <em>yml</em> que de langues désirées.</p>
+
+<h4>Exemple de fichiers:</h4>
+
+<p><em>en.yml</em>:</p>
+
+<pre><code>  hello:      Hello
+  about_me:   About me
+  contact_me: Contact me
+</code></pre>
+
+<p><em>fr.yml</em>:</p>
+
+<pre><code>hello:      Bonjour
+about_me:   A propos de moi
+contact_me: Contactez-moi
+</code></pre>
+
+<h3>Déclarer le service <em>TranslationServiceProvider</em> dans votre <em>app.php</em></h3>
+
+<pre><code>$app-&gt;register(new Silex\Provider\TranslationServiceProvider(), array(
+    'locale'                    =&gt; LiveGeekUtil::getClientLanguage(),
+    'locale_fallback'           =&gt; 'en',
+    'translation.class_path'    =&gt; __DIR__.'/vendor/Symfony/Component',
+));
+</code></pre>
+
+<p><code>locale</code> indique la langue utilisée.<br/>
+<code>locale_fallback</code> indique la langue utilisée si notre application ne supporte pas la langue donnée dans locale.</p>
+
+<p>Notez que j&#8217;ai utilisé une méthode statique pour récupérer la langue du navigateur du visiteur. La voici:</p>
+
+<pre><code>public static function getClientLanguage() {
+    $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    return substr($langs[0], 0, 2);
+}
+</code></pre>
+
+<h3>Indiquer à l&#8217;application où se trouvent vos fichiers de langue:</h3>
+
+<pre><code>$app['translator.messages'] = array(
+    'fr' =&gt; __DIR__.'/../src/locales/fr.yml',
+    'en' =&gt; __DIR__.'/../src/locales/en.yml'
+);
+</code></pre>
+
+<h3>Charger le composant qui lit les fichiers <em>yml</em></h3>
+
+<p>PHP ne comprennant pas les fichiers <em>YAML</em>, on utilise le composant <em>YAML</em> de Symfony;</p>
+
+<pre><code>$app['autoloader']-&gt;registerNamespace('Symfony', __DIR__.'/../vendor/Symfony/src');
+$app['translator.loader'] = new Symfony\Component\Translation\Loader\YamlFileLoader();
+</code></pre>
+
+<h3>Déclarer <code>SymfonyBridgesServiceProvider</code></h3>
+
+<p>Ce service fait la liaison entre la traduction et les templates <em>Twig</em>.</p>
+
+<pre><code>$app-&gt;register(new Silex\Provider\SymfonyBridgesServiceProvider(), array(
+    'symfony_bridges.class_path' =&gt; __DIR__.'/vendor/Symfony/Component',
+));
+</code></pre>
+
+<p>Et voilà.</p>
+
+<p>A partir de maintenant, affichez le texte dans vos templates grâce aux balises <em>Twig</em> <code>{% trans %}</code>, ceux-ci seront automatiquement traduits dans la langue du navigateur de votre utilisateur, du moment qu&#8217;elle soit supportée.</p>
+
+<pre><code>{% trans %}contact_me{% endtrans %}
+</code></pre>
+
+<h3>Liens utiles:</h3>
+
+<ul>
+<li>La documentation de Silex: <a href="http://silex.sensiolabs.org/documentation">http://silex.sensiolabs.org/documentation</a>.</li>
+</ul>
+
+
+<p>Bon courage et amusez-vous bien avec Silex! :)</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Samy Dindane</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-19T00:12:43+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/category/development/'>Development</a>, <a class='category' href='/category/symfony-2/'>Symfony 2</a>, <a class='category' href='/category/tutorials/'>Tutorials</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/" data-via="Dinduks" data-counturl="http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/utiliser-le-format-exfat-sous-linux/" title="Previous Post: Utiliser le format exFat sous Linux">&laquo; Utiliser le format exFat sous Linux</a>
+      
+      
+        <a class="basic-alignment right" href="/twig-traduction-dans-du-javascript/" title="Next Post: Twig: Traduction dans du JavaScript">Twig: Traduction dans du JavaScript &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/';
+        var disqus_url = 'http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

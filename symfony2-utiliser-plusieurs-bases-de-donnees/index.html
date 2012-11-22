@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Symfony2: Utiliser plusieurs bases de données - Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Dans le cas où votre site développé avec Symfony2 utiliserait plusieurs bases de données, il faudra déclarer autant de connexions et d&#8217;Entity &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/symfony2-utiliser-plusieurs-bases-de-donnees/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Symfony2: Utiliser Plusieurs Bases De Données</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-24T18:26:15+02:00" pubdate data-updated="true">Aug 24<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Dans le cas où votre site développé avec <em>Symfony2</em> utiliserait plusieurs bases de données, il faudra <em>déclarer</em> autant de connexions et d&#8217;<em>Entity Managers</em> que de bases de données.</p>
+
+<p><em>Un Entity Manager est tout simplement une interface qui inter-réagi avec une base de donnée</em>.</p>
+
+<p>Pour illustrer mon exemple, je vais utiliser une bdd <em>site</em> et une autre <em>forum</em>.</p>
+
+<h4>Déclarer les connexions dans <em>config.yml</em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # précise la connexion utilisée par défaut
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Déclarer les EM, dans le même fichier</h4>
+
+<p>Tout d&#8217;abord désactivez l&#8217;<em>auto-mapping</em>, comme ça vous pourrez choisir quel EM va gérer les entités de quel <em>bundle</em>.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: Si vous avez une erreur relative à cette ligne, supprimez-la carrément.</em></p>
+
+<p>Ensuite, juste en bas, déclarez les EM en précisant les <em>mappings</em> avec chaque bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # précise l'em utilisé par défaut (lors de l'utilisation de la ligne de commande par exemple)
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksMachinBundle : ~
+          DinduksTrucBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Pour faire simple, les mappings font le lien entre un EM et les entités d&#8217;un bundle spéficique. C&#8217;est eux qui appellent, si j&#8217;ose dire, l&#8217;EM X quand on veut manipuler l&#8217;entité Y.</p>
+
+<p>Attention: N&#8217;oubliez pas de toujours mapper vos bundles fraîchement créés avec un EM, sinon vous aurez un erreur de bundle inexistant lors de l&#8217;utilisation de la commande <code>doctrine:generate:entities</code>.</p>
+
+<h4>Utilisation</h4>
+
+<p>De la même manière que vous appelez votre EM par défaut, appelez l&#8217;EM dont vous avez besoin en prenant soin de passer son nom en paramètres à la fonction <code>getEntityManager()</code>.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>J&#8217;espère que ce tutoriel vous sera utile. A bientôt. :)</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Samy Dindane</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-24T18:26:15+02:00" pubdate data-updated="true">Aug 24<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/category/development/'>Development</a>, <a class='category' href='/category/symfony-2/'>Symfony 2</a>, <a class='category' href='/category/tutorials/'>Tutorials</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/symfony2-utiliser-plusieurs-bases-de-donnees/" data-via="Dinduks" data-counturl="http://www.dinduks.com/symfony2-utiliser-plusieurs-bases-de-donnees/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/symfony-2-utiliser-des-types-de-donnees-non-supportes-par-doctrine/" title="Previous Post: Symfony2: Utiliser des types de données non supportés par Doctrine">&laquo; Symfony2: Utiliser des types de données non supportés par Doctrine</a>
+      
+      
+        <a class="basic-alignment right" href="/symfony2-utiliser-des-variables-globales/" title="Next Post: Symfony2: Utiliser des variables globales">Symfony2: Utiliser des variables globales &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.dinduks.com/symfony2-utiliser-plusieurs-bases-de-donnees/';
+        var disqus_url = 'http://www.dinduks.com/symfony2-utiliser-plusieurs-bases-de-donnees/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

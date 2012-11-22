@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>PHP: Pagination avec Symfony - Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Bienvenue, Dans ce tutoriel je vais vous expliquer comment réaliser une pagination, avec Symfony 1.4 et Doctrine. Tout d’abord, supposons qu’on a un &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/php-tutoriel-pagination-avec-symfony/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">PHP: Pagination Avec Symfony</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-19T23:35:27+02:00" pubdate data-updated="true">Apr 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Bienvenue,</p>
+
+<p>Dans ce tutoriel je vais vous expliquer comment réaliser une pagination, avec <em>Symfony</em> 1.4 et <em>Doctrine</em>.</p>
+
+<p>Tout d’abord, supposons qu’on a un module <em>user</em> dans l&#8217;application <em>admin</em>.</p>
+
+<h3>Avant la pagination, côté <em>action.class.php</em></h3>
+
+<p>Pour récupérer la liste des utilisateur, il faut exécuter une requête <code>$qUsers</code> dans <em>action.class.php</em>:</p>
+
+<pre><code>$qUsers = Doctrine_Query::create()-&gt;from("User u");
+$this-&gt;aUsers = $qUsers-&gt;fetchArray();
+</code></pre>
+
+<p>Du côté du <em>template</em> ça sera ça:</p>
+
+<pre><code>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;?= __("Nom") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("Prénom") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("Pseudo") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("E-mail") ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+&lt;?
+foreach($aUsers as $user) {
+?&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;?= $user["last_name"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["first_name"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["pseudo"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["email"] ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;?
+}
+?&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+
+<h3>Mise en place de la pagination</h3>
+
+<p>Dans <em>actions.class.php</em>, juste après notre requête, on doit:</p>
+
+<h4>Instancier un objet <em>sfDoctrinePager</em></h4>
+
+<pre><code>$this-&gt;pager = new sfDoctrinePager('user', 3);
+</code></pre>
+
+<p>Et lui donner deux paramètres: un nom, et le nombre de résultats à afficher par page.</p>
+
+<h4>Lui préciser la requête pour récupérer les résultats</h4>
+
+<p>Oui, l&#8217;objet sfDoctrinePager ne devinera pas ce dont on a besoin, on va donc lui donner notre requête, $qUsers dans notre cas:</p>
+
+<pre><code>$this-&gt;pager-&gt;setQuery($qUsers);
+</code></pre>
+
+<h4>Lui demander d&#8217;afficher la première page par défaut:</h4>
+
+<pre><code>$this-&gt;pager-&gt;setPage($this-&gt;getRequestParameter('page', 1));
+</code></pre>
+
+<h4>Initialiser!</h4>
+
+<pre><code>$this-&gt;pager-&gt;init();
+</code></pre>
+
+<h4>Du côté du template</h4>
+
+<p>On commence par vérifier si on a besoin de la mise en page, au cas où le nombre des résultats est inférieur au nombre maximum d&#8217;éléments par page, 3 dans notre exemple.</p>
+
+<pre><code>if( $pager-&gt;haveToPaginate() ){
+}
+</code></pre>
+
+<p>Ensuite, on crée un conteneur pour les numéros de pages, et on fait un lien pour aller à la première page, et un autre à la dernière.</p>
+
+<pre><code>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      &lt;a href="&lt;? url_for('user/index?page='.$pager-&gt;getFirstPage()) ?&gt;"&gt;&lt;/a&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+      &lt;a href="&lt;? url_for('user/index?page='.$pager-&gt;getLastPage()) ?&gt;"&gt;&lt;/a&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</code></pre>
+
+<p>Ouais, les <code>&lt;table&gt;</code> c&#8217;est le mal, mais ce n&#8217;est qu&#8217;un exemple, et ça m&#8217;évite de faire du <em>CSS</em>. #jailaflemme</p>
+
+<p>Maintenant, entre les deux liens, on fait un <code>foreach</code> pour parser les liens vers les autres pages.</p>
+
+<p>Vous pouvez aussi mettre des liens pour la page précédente, et la page suivante, en utilisant respectivement les méthodes <code>getPreviousPage()</code> et <code>getNextPage()</code>. ;)</p>
+
+<pre><code>&lt;? foreach ($pager-&gt;getLinks as $page) : ?&gt;
+&lt;td&gt;
+  &lt;?php echo ($page == $pager-&gt;getPage()) ? $page : "&lt;a href='" . url_for('user/index?page='.$page); "'&gt;". $page ."&lt;/a&gt;" ?&gt;
+&lt;/td&gt;
+&lt;? endforeach; ?&gt;
+</code></pre>
+
+<p>Explications:</p>
+
+<ul>
+<li>On récupére la liste des liens avec le <code>foreach</code></li>
+<li>Ensuite on commence à parser les liens</li>
+<li>A quoi sert la vérification? Tout simplement à ne pas donner de lien au numéro de page sur laquelle on est!</li>
+</ul>
+
+
+<p>Et voilà, c&#8217;est fini.</p>
+
+<p>J&#8217;espère que cet article vous a été utile, n&#8217;hésitez pas à laisser des commentaire au cas où vous avez des remarques, suggestions, ou corrections. :)</p>
+
+<p>Vous pouvez me suivre sur <a href="www.dinduks.com/twitter"><strong>Twitter</strong></a>, des tutoriels comme celui ci y en aura encore tant que j&#8217;utilise <em>Symfony</em>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Samy Dindane</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-19T23:35:27+02:00" pubdate data-updated="true">Apr 19<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/category/development/'>Development</a>, <a class='category' href='/category/tutorials/'>Tutorials</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/php-tutoriel-pagination-avec-symfony/" data-via="Dinduks" data-counturl="http://www.dinduks.com/php-tutoriel-pagination-avec-symfony/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/les-images-hebergees-sur-imageshack-ne-saffichent-plus/" title="Previous Post: Les images hébergées sur Imageshack ne s'affichent plus">&laquo; Les images hébergées sur Imageshack ne s'affichent plus</a>
+      
+      
+        <a class="basic-alignment right" href="/jquery-faire-reapparaitre-un-element-avec-un-nouveau-contenu/" title="Next Post: jQuery: Faire réapparaître un élément avec un nouveau contenu">jQuery: Faire réapparaître un élément avec un nouveau contenu &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.dinduks.com/php-tutoriel-pagination-avec-symfony/';
+        var disqus_url = 'http://www.dinduks.com/php-tutoriel-pagination-avec-symfony/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

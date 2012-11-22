@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Rails | Live geek or die tryin']]></title>
+  <link href="http://www.dinduks.com/category/rails/atom.xml" rel="self"/>
+  <link href="http://www.dinduks.com/"/>
+  <updated>2012-11-22T01:01:21+01:00</updated>
+  <id>http://www.dinduks.com/</id>
+  <author>
+    <name><![CDATA[Samy Dindane]]></name>
+    <email><![CDATA[samy@dindane.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails: Load assets in a specific order]]></title>
+    <link href="http://www.dinduks.com/rails-load-assets-in-a-specific-order/"/>
+    <updated>2012-01-31T00:57:22+01:00</updated>
+    <id>http://www.dinduks.com/rails-load-assets-in-a-specific-order</id>
+    <content type="html"><![CDATA[<p>Let's pretend you have many CSS/SASS stylesheets and JS/Coffee scripts in your project, and you want to load some before the rest.
+This can be done in <code>stylesheets/application.css</code> and <code>javascripts/application.js</code> by using the keyword <code>require</code>.</p>
+
+<h2>Examples:</h2>
+
+<h3>Stylesheets:</h3>
+
+<p>If you want to load Bootstrap's stylesheet first:</p>
+
+<p><div><script src='https://gist.github.com/1707651.js?file='></script>
+<noscript><pre><code>/*
+ *= require bootstrap.min.css
+ *= require_self
+ *= require_tree .
+ */</code></pre></noscript></div>
+</p>
+
+<h3>Javascripts:</h3>
+
+<p>This is how to load jQuery and Boostrap's scripts before the others:
+<div><script src='https://gist.github.com/1707655.js?file='></script>
+<noscript><pre><code>//= require jquery-1.7.1.min.js
+//= require bootstrap-alerts.js
+//= require bootstrap-modal.js
+//= require_tree .</code></pre></noscript></div>
+</p>
+
+<p>You can omit the files extensions.</p>
+
+<p>I believe they call this the awesomeness of Rails.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails: cannot load such file -- openssl]]></title>
+    <link href="http://www.dinduks.com/rails-cannot-load-such-file-openssl/"/>
+    <updated>2012-01-05T18:57:21+01:00</updated>
+    <id>http://www.dinduks.com/rails-cannot-load-such-file-openssl</id>
+    <content type="html"><![CDATA[<p>While setting up my <em>Rails</em> development environment on my fresh Kubuntu VM, I've encountered many errors.
+This one was occurring when trying to launch a WEBrick server:</p>
+
+<blockquote><p>/home/dinduks/.rvm/gems/ruby-1.9.3-p0/gems/activesupport-3.1.3/lib/active_support/dependencies.rb:240:in `require': cannot load such file -- openssl (LoadError)</p></blockquote>
+
+<p>This error means that your Ruby isn't compiled with <em>openssl</em>.</p>
+
+<p>Assuming that you use RVM, these are the steps to follow to fix this issue.</p>
+
+<p>Install the <em>openssl</em> package</p>
+
+<pre><code>rvm pkg install openssl
+</code></pre>
+
+<p>Remove the Ruby installation you're using</p>
+
+<pre><code>rvm remove 1.9.3
+</code></pre>
+
+<p>And finally recompile Ruby with <em>openssl</em></p>
+
+<pre><code>rvm install 1.9.3 --with-openssl-dir=$HOME/.rvm/usr
+</code></pre>
+
+<p>Everything should be working now. Don't forget to:</p>
+
+<pre><code>rvm use 1.9.3 --default
+</code></pre>
+
+<p>I hope my first Rails related tutorial was helpful, happy coding! :)</p>
+]]></content>
+  </entry>
+  
+</feed>

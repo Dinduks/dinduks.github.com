@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Development | Live geek or die tryin']]></title>
+  <link href="http://www.dinduks.com/category/development/atom.xml" rel="self"/>
+  <link href="http://www.dinduks.com/"/>
+  <updated>2012-11-22T01:01:21+01:00</updated>
+  <id>http://www.dinduks.com/</id>
+  <author>
+    <name><![CDATA[Samy Dindane]]></name>
+    <email><![CDATA[samy@dindane.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Git: More control over git push]]></title>
+    <link href="http://www.dinduks.com/git-more-control-over-git-push/"/>
+    <updated>2012-06-06T18:35:29+02:00</updated>
+    <id>http://www.dinduks.com/git-more-control-over-git-push</id>
+    <content type="html"><![CDATA[<p>I've recently had to do a <code>git push -f</code> which not only pushed the branch I'm on, but also all my other local branches, overriding the remote ones.
+Fortunately for my teammates and I, the other branches were not crucial.</p>
+
+<p>This behavior is due to Git's <em><a href="http://www.kernel.org/pub/software/scm/git/docs/v1.7.2.5/git-config.html">push.default</a></em> option set to <em>matching</em>, which means <em>Push all matching branches</em>. That's nonsense to me considering the problems it may cause.</p>
+
+<p>This can be changed of course, by setting the <em>push.default</em> to another value:</p>
+
+<ul>
+<li><em>nothing</em>: do not push anything.</li>
+<li><em>matching</em>: push all matching branches. All branches having the same name in both ends are considered to be matching. This is the default.</li>
+<li><em>tracking</em>: push the current branch to its upstream branch.</li>
+<li><em>current</em>: push the current branch to a branch of the same name.</li>
+</ul>
+
+
+<p>The most suitable option in most of situations, in my opinion, is the <em>tracking</em> option.</p>
+
+<p>Happy versionning and be careful!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails: Load assets in a specific order]]></title>
+    <link href="http://www.dinduks.com/rails-load-assets-in-a-specific-order/"/>
+    <updated>2012-01-31T00:57:22+01:00</updated>
+    <id>http://www.dinduks.com/rails-load-assets-in-a-specific-order</id>
+    <content type="html"><![CDATA[<p>Let's pretend you have many CSS/SASS stylesheets and JS/Coffee scripts in your project, and you want to load some before the rest.
+This can be done in <code>stylesheets/application.css</code> and <code>javascripts/application.js</code> by using the keyword <code>require</code>.</p>
+
+<h2>Examples:</h2>
+
+<h3>Stylesheets:</h3>
+
+<p>If you want to load Bootstrap's stylesheet first:</p>
+
+<p><div><script src='https://gist.github.com/1707651.js?file='></script>
+<noscript><pre><code>/*
+ *= require bootstrap.min.css
+ *= require_self
+ *= require_tree .
+ */</code></pre></noscript></div>
+</p>
+
+<h3>Javascripts:</h3>
+
+<p>This is how to load jQuery and Boostrap's scripts before the others:
+<div><script src='https://gist.github.com/1707655.js?file='></script>
+<noscript><pre><code>//= require jquery-1.7.1.min.js
+//= require bootstrap-alerts.js
+//= require bootstrap-modal.js
+//= require_tree .</code></pre></noscript></div>
+</p>
+
+<p>You can omit the files extensions.</p>
+
+<p>I believe they call this the awesomeness of Rails.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Clean code vs Efficiency]]></title>
+    <link href="http://www.dinduks.com/clean-code-vs-efficiency/"/>
+    <updated>2012-01-29T16:42:22+01:00</updated>
+    <id>http://www.dinduks.com/clean-code-vs-efficiency</id>
+    <content type="html"><![CDATA[<p>I have recently submitted <a href="https://github.com/symfony/symfony/pull/3209">my first pull request</a> ever, to the Symfony2 project.</p>
+
+<p><a href="https://github.com/Dinduks/symfony/commit/5306457f4b1073c6544dd4235a74c4d5f612ed9d">The code I contributed with</a> is a 3 lines long method that simply checks whether a form field is hidden or not.
+I have no doubt about the usefulness of this method, especially after seeing few people using a similar one (it seems that it was removed).</p>
+
+<p>The pull request was <a href="https://github.com/symfony/symfony/pull/3209#issuecomment-3707718">refused</a> because the class in question isn't supposed to be <em>aware of information we need</em>.
+I agree with this and approve the good practices and clean code, but in this case we penalize the end user for the sake of doing things the <em>right</em> way.</p>
+
+<p>The purpose of my post is to answer the following question: should efficiency and simplicity be sacrificed for the sake of good practices and clean code?</p>
+
+<p>In my opinion, the answer is no. Especially when we're dealing with a big project that thousands of people use, and that claims easiness and simplicity.</p>
+
+<p>I'm looking forward to know your opinion about the subject. Feel free to leave a comment.</p>
+
+<p><img class="center" src="/images/uploads/2012/01/programming-motherfucker.jpg"  alt="Programming Motherfucker"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A question about applications' design]]></title>
+    <link href="http://www.dinduks.com/a-question-about-applications-design/"/>
+    <updated>2012-01-07T00:22:23+01:00</updated>
+    <id>http://www.dinduks.com/a-question-about-applications-design</id>
+    <content type="html"><![CDATA[<p>The idea of creating a blog post to gather people's opinions is pretty weird, but <em>nothing ventured, nothing gained</em>.</p>
+
+<p>Hello,</p>
+
+<p>I'm building an application that will have many types of multilingual dynamic content: news, about, announces, meta tags, meta description, and maybe more.
+The app is a <strong>Rails</strong> one, so I'll be talking about tables and not entities.</p>
+
+<p>I've been creating a database table for each of the content types above, and I noticed halfway that they have (almost) the same columns: <em>title</em>, <em>body</em>, <em>lang_id</em>.
+I decided then to use one single table, called <em>text</em>, which will have a <em>text_type_id</em> column, additionally to all the previous columns. <em>type_text</em> will only contain the type of the content (news, about, announce, etc...).</p>
+
+<p>The thing is that I'm not very convinced about what I've done, I find it a bit dirty because many kind of data will be stored in the same place. On the other hand, if I create a table for each type, it seems to me that there will be some kind of redundancy, which is also messy in my eyes.</p>
+
+<p>What do you think about this? Please leave a comment explaining what you would have done if you were in my shoes, and why.</p>
+
+<p>Thanks!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails: cannot load such file -- openssl]]></title>
+    <link href="http://www.dinduks.com/rails-cannot-load-such-file-openssl/"/>
+    <updated>2012-01-05T18:57:21+01:00</updated>
+    <id>http://www.dinduks.com/rails-cannot-load-such-file-openssl</id>
+    <content type="html"><![CDATA[<p>While setting up my <em>Rails</em> development environment on my fresh Kubuntu VM, I've encountered many errors.
+This one was occurring when trying to launch a WEBrick server:</p>
+
+<blockquote><p>/home/dinduks/.rvm/gems/ruby-1.9.3-p0/gems/activesupport-3.1.3/lib/active_support/dependencies.rb:240:in `require': cannot load such file -- openssl (LoadError)</p></blockquote>
+
+<p>This error means that your Ruby isn't compiled with <em>openssl</em>.</p>
+
+<p>Assuming that you use RVM, these are the steps to follow to fix this issue.</p>
+
+<p>Install the <em>openssl</em> package</p>
+
+<pre><code>rvm pkg install openssl
+</code></pre>
+
+<p>Remove the Ruby installation you're using</p>
+
+<pre><code>rvm remove 1.9.3
+</code></pre>
+
+<p>And finally recompile Ruby with <em>openssl</em></p>
+
+<pre><code>rvm install 1.9.3 --with-openssl-dir=$HOME/.rvm/usr
+</code></pre>
+
+<p>Everything should be working now. Don't forget to:</p>
+
+<pre><code>rvm use 1.9.3 --default
+</code></pre>
+
+<p>I hope my first Rails related tutorial was helpful, happy coding! :)</p>
+]]></content>
+  </entry>
+  
+</feed>

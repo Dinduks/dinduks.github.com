@@ -1,0 +1,591 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Pour utiliser des variables dans un contrôleur Symfony2, il faut les déclarer dans parameters.ini, ou dans tout autre fichier ini à condition que &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/page/7/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony2-utiliser-des-variables-globales/">Symfony2: Utiliser Des Variables Globales</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-09-07T05:43:46+02:00" pubdate data-updated="true">Sep 7<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Pour utiliser des variables dans un contrôleur <em>Symfony2</em>, il faut les déclarer dans <em>parameters.ini</em>, ou dans tout autre fichier <em>ini</em> à condition que vous l&#8217;importiez dans <em>config.yml</em>.
+Au cas où vous voudrez les utiliser dans un template Twig, il faut les déclarer dans <em>config.yml</em>. (<a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales#comment-577">Merci à Chris pour l&#8217;astuce</a>)</p>
+
+<p>Vous pourrez alors les appeler avec <code>getParameter()</code> depuis un contrôleur ou avec la syntaxe &#8220; depuis un template <em>Twig</em>.</p>
+
+<h3>Déclarer votre variable</h3>
+
+<p>Dans un fichier ini:</p>
+
+<pre><code>[parameters]
+    maVariable = 2
+</code></pre>
+
+<p>Ou dans <em>config.yml</em>:</p>
+
+<pre><code>twig:
+  globals:
+    maVariableTwig: %maVariable%
+</code></pre>
+
+<h3>Importer votre fichier ini dans <em>config.yml</em></h3>
+
+<p>Vous pouvez sauter cette étape si vous aviez déclaré la variable dans <em>parameters.ini</em>.</p>
+
+<pre><code>imports:
+    - { resource: monFichier.ini }
+</code></pre>
+
+<h3>Utiliser la variable globale</h3>
+
+<h4>Dans un contrôleur:</h4>
+
+<pre><code>$maVariable = $this-&gt;container-&gt;getParameter('maVariable');
+</code></pre>
+
+<h4>Dans un template Twig:</h4>
+
+<pre><code>&lt;p&gt;
+    Ma variable: 
+&lt;/p&gt;
+</code></pre>
+
+<p>Enjoy. ;)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony2-utiliser-plusieurs-bases-de-donnees/">Symfony2: Utiliser Plusieurs Bases De Données</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-24T18:26:15+02:00" pubdate data-updated="true">Aug 24<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Dans le cas où votre site développé avec <em>Symfony2</em> utiliserait plusieurs bases de données, il faudra <em>déclarer</em> autant de connexions et d&#8217;<em>Entity Managers</em> que de bases de données.</p>
+
+<p><em>Un Entity Manager est tout simplement une interface qui inter-réagi avec une base de donnée</em>.</p>
+
+<p>Pour illustrer mon exemple, je vais utiliser une bdd <em>site</em> et une autre <em>forum</em>.</p>
+
+<h4>Déclarer les connexions dans <em>config.yml</em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # précise la connexion utilisée par défaut
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Déclarer les EM, dans le même fichier</h4>
+
+<p>Tout d&#8217;abord désactivez l&#8217;<em>auto-mapping</em>, comme ça vous pourrez choisir quel EM va gérer les entités de quel <em>bundle</em>.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: Si vous avez une erreur relative à cette ligne, supprimez-la carrément.</em></p>
+
+<p>Ensuite, juste en bas, déclarez les EM en précisant les <em>mappings</em> avec chaque bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # précise l'em utilisé par défaut (lors de l'utilisation de la ligne de commande par exemple)
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksMachinBundle : ~
+          DinduksTrucBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Pour faire simple, les mappings font le lien entre un EM et les entités d&#8217;un bundle spéficique. C&#8217;est eux qui appellent, si j&#8217;ose dire, l&#8217;EM X quand on veut manipuler l&#8217;entité Y.</p>
+
+<p>Attention: N&#8217;oubliez pas de toujours mapper vos bundles fraîchement créés avec un EM, sinon vous aurez un erreur de bundle inexistant lors de l&#8217;utilisation de la commande <code>doctrine:generate:entities</code>.</p>
+
+<h4>Utilisation</h4>
+
+<p>De la même manière que vous appelez votre EM par défaut, appelez l&#8217;EM dont vous avez besoin en prenant soin de passer son nom en paramètres à la fonction <code>getEntityManager()</code>.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>J&#8217;espère que ce tutoriel vous sera utile. A bientôt. :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-utiliser-des-types-de-donnees-non-supportes-par-doctrine/">Symfony2: Utiliser Des Types De Données Non Supportés Par Doctrine</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-18T17:03:43+02:00" pubdate data-updated="true">Aug 18<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>Doctrine2</em>, en tant qu&#8217;ORM, doit assurer la compatibilité des types de données (<em>varchar</em>, <em>integer</em>, <em>datetime</em>, etc&#8230;) entre différents SGBD, et ne supporte donc pas certains types propres à <em>MySQL</em> (dans mon cas).<br/>
+Il est cependant possible de lui ajouter des types manuellement, mais la procédure est assez longue et n&#8217;en vaut pas la peine à mon avis.</p>
+
+<p>Si vous êtes sûr que votre site n&#8217;utilisera qu&#8217;un seul SGBD et que ça ne va pas changer plutard, vous pouvez spécifier, dans vos <em>annotations</em>, <em>une partie</em> du code <em>SQL</em> qui servira à générer le champ.</p>
+
+<h3>Exemple</h3>
+
+<p>Pour générer un champ <em>tinyint</em> qui est <em>NOT NULL</em> et qui a une valeur par défaut de 10, voici le code nécessaire:</p>
+
+<pre><code>/**
+* @ORM\Column(columnDefinition="tinyint(4) NOT NULL DEFAULT '10'", name="foo")
+*/
+protected $foo;
+</code></pre>
+
+<p>A vous d&#8217;adapter ce code pour votre cas. ;)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique/">Symfony2: Executer Les Commandes Console Sur Un Entity Manager Spécifique</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-14T00:19:19+02:00" pubdate data-updated="true">Aug 14<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Ce qui suit n&#8217;est pas une science exacte mais ça peut vous éviter 10 minutes de recherche.<br/>
+C&#8217;est cet argument qui vous sauvera la vie: <code>--em</code>.</p>
+
+<h4>Exemple:</h4>
+
+<p>Dans le cas où vous voudrez générer les informations sur le mapping à partir de l&#8217;Entity Manager &#8220;client&#8221;:</p>
+
+<pre><code>php app/console doctrine:mapping:convert yml /src/Acme/ClientBundle/Resources/config/doctrine/metadata/orm --from-database --force --em="client
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-personnaliser-les-champs-table-generee-par-fosuserbundle/">Symfony2: Personnaliser Les Champs De La Table Générée Par FOSUserBundle</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-10T05:11:15+02:00" pubdate data-updated="true">Aug 10<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bonjour,</p>
+
+<p>Mon premier <em>vrai</em> projet sous <em>Symfony 2</em> est un site pour un serveur World Of Warcraft.<br/>
+Ce serveur, sous <em>MaNGOS</em>, utilise ses propres tables, avec leur propre structure. Je voulais donc, pour des raisons de stabilité et pour éviter les emmerdes, générer une table User avec les mêmes champs et propriétés que celles de MaNGOS.</p>
+
+<p>Pour comprendre la suite de cet article vous devez avoir une idée basique sur le fonctionnement de <em>FOSUserBunde</em>. Si ce n&#8217;est pas le cas, lisez la doc: <a href="https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/Resources/doc/index.md">Getting Started With FOSUserBundle</a>.</p>
+
+<p>Je vous explique le topo: pour créer une table utilisateur avec <em>FOSUB</em>, il faut créer une entité (un modèle Doctrine) <em>User</em> qui étend la classe User du fameux bundle. Cette classe contiendra, entre-autres, des variables (qui se traduisent niveau base de données par des champs) nécessaires à son fonctionnement (exemple: username, canonicalusername, etc&#8230;).<br/>
+La table générée dépendra de votre entité <em>User</em>:</p>
+
+<ul>
+<li>Si vous laissez votre entité User vide: Une table avec les champs par défaut de FOSUB sera générée.</li>
+<li>Si vous définissez des variables dans cette classe: La table générée aura les champs par défaut + les champs portant les noms des variables définies dans la classe.</li>
+<li>Si vous redéfinissez une variable de la classe User de FOSUserBundle: <em>ERROR!</em> - <em>Doctrine</em> ne supporte pas la redéfinition des variables protégées.</li>
+</ul>
+
+
+<p>Arrivés là, vous comprenez que vous êtres dans la merde.</p>
+
+<p>Je vous le dit tout de suite: il n&#8217;y a pas de solution propre et officielle pour ce problème. <a href="https://github.com/stof">Stof</a>, un des principaux contributeurs à FOSUserBundle me l&#8217;a confirmé lui même.</p>
+
+<p>La solution est de hacker le code source de Doctrine, ou de FOSUserBundle. Vous avez même le choix. :)</p>
+
+<h3>Plan A: Bidouiller Doctrine</h3>
+
+<p>Cette solution est super simple. A mon avis, sa simplicité est proportionnelle à l&#8217;importance des dégâts qu&#8217;elle <em>pourrait</em> infliger plutard.</p>
+
+<p>Rendez vous dans le fichier vendors/doctrine/lib/Doctrine/ORM/Mapping/ClassMetadataInfo.php, et commentez ces deux lignes:</p>
+
+<pre><code>throw MappingException::duplicateColumnName($this-&gt;name, $mapping['columnName']);
+</code></pre>
+
+<p>et</p>
+
+<pre><code>throw MappingException::duplicateFieldMapping($this-&gt;name, $mapping['fieldName']);
+</code></pre>
+
+<p>Là, on annule carrément les exceptions balancées lors de la tentative de redéfinition d&#8217;une variable.<br/>
+J&#8217;espère que vous comprenez maintenant pourquoi j&#8217;ai dit que ça peut vous créer des ennuis plutard.<br/>
+Je pense que si les devs de Doctrine ont mis ces exceptions, c&#8217;est pour une raison.</p>
+
+<p>N&#8217;oubliez pas que si vous mettez Doctrine à jour, il y a de fortes chances que le fichier ClassMetadataInfo.php sera écrasé. Pensez-y.</p>
+
+<h3>Plan B: bidouiller FOSUserBundle</h3>
+
+<p>Cette manip est moins suicidaire que la précédente, elle consiste à modifier le fichier <em>FOS/UserBundle/Resources/config/doctrine/User.orm.xml</em>.<br/>
+Ce fichier gère les propriétés des champs générés par le bundle.<br/>
+Je ne vais pas vous expliquer comment, sa structure est assez évidente.</p>
+
+<p>Je vous rappelle que, comme pour le hack précédent, ce fichier peut être modifié par une màj.</p>
+
+<h3>Mon choix</h3>
+
+<p>Mon choix s&#8217;est porté sur la première solution parce qu&#8217;elle me permet de vraiment personnaliser mes champs: directement, elle me donne la possibilité de jouer avec mon entité User.<br/>
+Indirectement elle me permet de:</p>
+
+<ul>
+<li>Donner des types non supportés (<a href="http://symfony2.ylly.fr/add-new-data-type-in-doctrine-2-in-symfony-2-jordscream/">par défaut</a>) par Doctrine, tels que <em>tinyint</em>, <em>timestamp</em> ou encore <em>longtext</em>.
+Référez vous à mon article <a href="http://www.dinduks.com/symfony-2-utiliser-des-types-de-donnees-non-supportes-par-doctrine"><em>Symfony 2: Utiliser des types de données non supportés par Doctrine</em></a> pour plus de détails.</li>
+<li>Donner une valeur par défaut à un champ. Seul hic, lors de l&#8217;insertion d&#8217;un utilisateur, ces champs ne sont pas remplis automatiquement par la valeur par défaut. J&#8217;en parlerai en détails prochainement.</li>
+</ul>
+
+
+<p>Pour finir, je voudrai donner mon avis à propos de FOSUserBundle: c&#8217;est un bundle utile lorsqu&#8217;on veut implémenter un gestionnaire d&#8217;utilisateurs (si on peut appeler ça comme ça) assez basique. Mais il peut vite tourner au cauchemar/mindfuck lorsqu&#8217;on veut faire un truc un peu plus poussé.<br/>
+Ce bundle est en effet assez difficile à appréhender, le style &#8220;PHP5.3 n4m3sp4c3s r so OOP LOL&#8221; et le manque de documentation n&#8217;aident pas tout.</p>
+
+<p>Bon après cet avis n&#8217;engage que moi, et est basé sur ma propre expérience. Je peux donc me tromper ou dire des bêtises.<br/>
+Veuillez me faire part de vos remarques, corrections en commentaire.</p>
+
+<p>Bonne arrachage de cheveux avec le couple FOSUserBundle/Doctrine, et à bientôt!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/8/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/page/6/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Searching several collections with MongoDB (and Scala) - Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="If you need a search system for your web application, you can either roll your own,
+or use a system that does it for you, such as elasticsearch.
+I&# &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Searching Several Collections With MongoDB (and Scala)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-21T22:47:00+01:00" pubdate data-updated="true">Nov 21<span>st</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>If you need a search system for your web application, you can either roll your own,
+or use a system that does it for you, such as <em>elasticsearch</em>.<br/>
+I&#8217;ve recently had to choose, and the latter option was an overkill since I was
+looking for something simple.</p>
+
+<p>The aim was to allow searching for many entities: <em>users</em>, <em>songs</em> and few others.<br/>
+For simplicty&#8217;s sake, I&#8217;ll stick to two: <code>User</code> and <code>Song</code>.</p>
+
+<p>The main idea here is to use an index collection, <em>searchresults</em>, that will be
+updated each time <em>users</em> and <em>songs</em> change.<br/>
+<em>searchresults</em> will be the only collection to get queried, making requests simple,
+and search results&#8217; retrieval fast.</p>
+
+<p>The <code>SearchResult</code> model has 3 fields:</p>
+
+<ul>
+<li><code>entityType</code>: a discriminator field that contains the indexed entity type, <em>user</em>
+or <em>song</em> in this case.</li>
+<li><code>entityId</code>: You think my name is Captain Obvious, don&#8217;t you?</li>
+<li><code>keywords</code>: An array of keywords related to that search.
+ 
+  case class SearchResult(
+
+<pre><code>id:         ObjectID,
+entityType: String,
+entityId:   ObjectID,
+keywords:   List[String]
+</code></pre>
+
+<p>  )</p></li>
+</ul>
+
+
+<p><code>ObjectID</code> is a <a href="http://api.mongodb.org/scala/casbah/current/"><em>Casbah</em></a> type. Feel free to change it with your driver&#8217;s identifier
+type.</p>
+
+<p>Paired with the class described above, a <code>Searchable</code> trait will help forcing the
+implementation of some methods and properties, and more importantly be used as a
+type in methods signatures.</p>
+
+<pre><code>trait Searchable {
+  def entityType:     String,
+  getSearchKeywords: List[String],
+  entityId:           ObjectID
+}
+</code></pre>
+
+<p>Now, each of your entities class, <code>User</code> and <code>Song</code>, will implement the <code>Searchable</code>
+trait, define the <code>entityType</code> property and implement the <code>getSearchKeywords()</code>
+method. The <code>entityId</code> or something similar property should already be implemented
+by your MongoDB driver.</p>
+
+<p><em>Example of a <code>getSearchKeywords()</code> method:</em></p>
+
+<pre><code>def getSearchKeywords: List[String] =
+  List(this.username, this.firstname, this.lastname).filter(_.nonEmpty)
+</code></pre>
+
+<p>The next step is to implement the hooks that update the index collection each time
+<em>users</em> and <em>songs</em> are updated too.</p>
+
+<p>In <em>Casbah</em> for instance, the entities are created and updated when calling the
+<code>save()</code> method, and deleted when <code>remove()</code> is called. Both these methods are
+inherited from <code>SalatDAO</code>.<br/>
+These methods should be overriden, the hooks behaviors added to them —creating or
+updating the concerned <code>SearchResult</code> entry, in case of <code>save()</code> for example—, yet
+without altering their initial role.</p>
+
+<pre><code>override def save(user: User) {
+  createSearchResult(user, SearchResult.findByEntity(user))
+  super.save(user)
+}
+
+private def createSearchResult(user: User, searchResult: Option[SearchResult]) {
+  searchResult match {
+    case Some(sr) =&gt; SearchResult.save(sr.copy(keywords = user.getSearchKeywords))
+    case None =&gt; SearchResult.save(SearchResult(
+      entityType = user.entityType,
+      entityId   = user.id,
+      keywords   = user.getSearchKeywords
+    ))
+  }
+}
+</code></pre>
+
+<p>The last thing to do, is creating a MongoDB index on the keywords field of the
+<em>searchresults</em> collection.<br/>
+This can be done in one single command:</p>
+
+<pre><code>mongo myAwesomeDB --eval "db.searchresults.ensureIndex({keywords: 1});"
+</code></pre>
+
+<p>We&#8217;re done. I guess.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Samy Dindane</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-21T22:47:00+01:00" pubdate data-updated="true">Nov 21<span>st</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/" data-via="Dinduks" data-counturl="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/review-your-code-with-git/" title="Previous Post: Review your code with Git">&laquo; Review your code with Git</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/';
+        var disqus_url = 'http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

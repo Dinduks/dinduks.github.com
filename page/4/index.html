@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="The following isn’t an exact science, however, if you didn&#8217;t --help, it will spare you a 10min research.
+This is your lifesaver: --em. Example &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/page/4/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-execute-console-commands-on-a-specific-entity-manager/">Symfony 2: Execute Console Commands on a Specific Entity Manager</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-16T19:31:57+01:00" pubdate data-updated="true">Dec 16<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The following isn’t an exact science, however, if you didn&#8217;t <code>--help</code>, it will spare you a 10min research.<br/>
+This is your lifesaver: <code>--em</code>.</p>
+
+<h3>Example</h3>
+
+<p>In case you want to generate mapping information using the “client” entity manager:</p>
+
+<pre><code>php app/console doctrine:mapping:convert yml /src/Acme/ClientBundle/Resources/config/doctrine/metadata/orm --from-database --force --em="client
+</code></pre>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique">Symfony2: Executer les commandes console sur un Entity Manager spécifique</a></em></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/php-generate-documentation-with-docblox/">PHP: Generate Documentation With DocBlox</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-08T01:00:17+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I recently have had to generate a PHP project&#8217;s documentation and I&#8217;ve chosen the popular <a href="http://phpdoc.org/">PhpDocumentor</a> for this purpose.<br/>
+This tool is unfortunately outdated, hasn&#8217;t been updated since 2007, and thus throws a lot of PHP warnings and cannot do what I was asking it.</p>
+
+<p>My friend <a href="http://testonsteroid.tumblr.com/">Ludo</a> has suggested using <a href="http://www.docblox-project.org/">DocBlox</a> which is, compared to PhpDocumentor, more modern - supports PHP 5.3, faster, and consumes less memory.</p>
+
+<p>After trying it, I can say that it&#8217;s indeed a great tool, inasmuch as I could generate documentation for my project 5 seconds after installing it.</p>
+
+<h3>How to use it:</h3>
+
+<h4>Installation</h4>
+
+<p>Make PEAR know about DocBlox&#8217;s channel</p>
+
+<pre><code>pear channel-discover pear.docblox-project.org
+</code></pre>
+
+<p>Then install DocBlox(-beta)</p>
+
+<pre><code>pear install docblox/DocBlox-beta
+</code></pre>
+
+<p>The command line <em>docblox</em> should be available for use now.</p>
+
+<h4>Use</h4>
+
+<pre><code>docblox -d /path/folder1,/path/folder1/folder2 -t /path/to/target/directory
+</code></pre>
+
+<p>Easy, ha? :)</p>
+
+<p>Make sure you separate the source directories by commas only, no spaces.<br/>
+You can also use some of the basic PhpDocumentor commands.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-using-global-variables/">Symfony 2: Using Global Variables</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-05T23:50:06+01:00" pubdate data-updated="true">Dec 5<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In order to use variables in a <strong>Symfony2</strong> controller, you’ll have to set them up in <em>parameters.ini</em>, or in any other ini file on condition that you’ll import it into <em>config.yml</em>.<br/>
+In case you want to use them in a Twig template, you must set them up in <em>config.yml</em>.</p>
+
+<p>Once done, you’ll be able to whether call them using <code>getParameter()</code> from a controller or with the syntax &#8220; from a Twig template.</p>
+
+<h4>Set up your variable</h4>
+
+<p>In an ini file:</p>
+
+<pre><code>[parameters]
+    myVariable = 2
+</code></pre>
+
+<p>In <em>config.yml</em>:</p>
+
+<pre><code>twig:
+  globals:
+    myTwigVariable: %myVariable%
+</code></pre>
+
+<h4>Import your ini file into config.yml</h4>
+
+<p>You can skip this step if you already set up the variables in <em>parameters.ini</em>.</p>
+
+<pre><code>imports:
+    - { resource: myFile.ini }
+</code></pre>
+
+<h4>Use the global variable</h4>
+
+<p>In a controller:</p>
+
+<pre><code>$myVariable = $this-&gt;container-&gt;getParameter('myVariable');
+</code></pre>
+
+<p>In a Twig template</p>
+
+<pre><code>&lt;p&gt;
+    My variable: 
+&lt;/p&gt;
+</code></pre>
+
+<p>Enjoy. ;)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony2-using-multiple-databases/">Symfony2: Using Multiple Databases</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-03T19:51:07+01:00" pubdate data-updated="true">Dec 3<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In case your website, built with Symfony2, is using multiple databases, you must setup as much connections and <em>Entity Managers</em> as databases.</p>
+
+<p><em>An Entity Manager is simply an interface that speaks to the database.</em></p>
+
+<p>In order to illustrate my example, I will be using two databases: <em>site</em> and <em>forum</em>.</p>
+
+<h4>Set up the connections in <em><strong>config.yml</strong></em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # specify the connexion used by default
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Set up EM, in the same file</h4>
+
+<p>To begin with, disable <em>auto-mapping</em>, so you will be able to choose which EM is going to manage which <em>bundle</em>’s entities.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: If there’s an error bounded with this line, just delete it.</em></p>
+
+<p>Then, right below, set up EM while specifying <em>mappings</em> to each bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # specify the EM used by default (when using console commands f.e)
+
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksFooBundle : ~
+          DinduksBarBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Simply put, mappings connect and constitute the bridge between an EM and the entities of a specific bundle.
+In other terms, mappings call up an EM X when wanting to manipulate an entity Y.</p>
+
+<p>Warning: Always make sure you map your fresh-created bundles to an EM, otherwise a &#8220;non-existent bundle&#8221; error will occur when using the <code>doctrine:generate:entities</code> command.</p>
+
+<h4>Use</h4>
+
+<p>In the same way you call your default EM, call the EM you need by passing its name to the <code>getEntityManager()</code> function.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>I hope you’ll find this tutorial useful. :)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-plusieurs-bases-de-donnees">Symfony2: Utiliser plusieurs bases de données</a></em></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/git-rename-or-change-a-repository-url/">Git: Rename or Change a Repository URL</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-01T00:13:21+01:00" pubdate data-updated="true">Dec 1<span>st</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>If you’re new to Git, this tip will allow you to save some of your precious time.</p>
+
+<p>Open <em>.git/config</em> in your project’s local directory, and, in the category <em>[remote &#8220;origin&#8221;]</em>, modify the <em>url</em> parameter, using the new location or the new repository’s name.</p>
+
+<p><strong>OR</strong></p>
+
+<p>Use this command:</p>
+
+<pre><code>git remote set-url origin &lt;new url&gt;
+</code></pre>
+
+<p>Note: If you’re using <em>GitHub</em>, you must also rename the project on the platform: Go to the repository&#8217;s homepage, click the Admin button and change the name.</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/git-renommer-ou-changer-l-adresse-dun-depot">Git: Renommer ou changer l’adresse d’un dépôt</a></em></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/5/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/page/3/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

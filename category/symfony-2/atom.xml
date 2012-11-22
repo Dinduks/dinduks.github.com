@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Symfony 2 | Live geek or die tryin']]></title>
+  <link href="http://www.dinduks.com/category/symfony-2/atom.xml" rel="self"/>
+  <link href="http://www.dinduks.com/"/>
+  <updated>2012-11-22T01:01:21+01:00</updated>
+  <id>http://www.dinduks.com/</id>
+  <author>
+    <name><![CDATA[Samy Dindane]]></name>
+    <email><![CDATA[samy@dindane.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony 2: Execute console commands on a specific entity manager]]></title>
+    <link href="http://www.dinduks.com/symfony-2-execute-console-commands-on-a-specific-entity-manager/"/>
+    <updated>2011-12-16T19:31:57+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-execute-console-commands-on-a-specific-entity-manager</id>
+    <content type="html"><![CDATA[<p>The following isn’t an exact science, however, if you didn't <code>--help</code>, it will spare you a 10min research.<br/>
+This is your lifesaver: <code>--em</code>.</p>
+
+<h3>Example</h3>
+
+<p>In case you want to generate mapping information using the “client” entity manager:</p>
+
+<pre><code>php app/console doctrine:mapping:convert yml /src/Acme/ClientBundle/Resources/config/doctrine/metadata/orm --from-database --force --em="client
+</code></pre>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique">Symfony2: Executer les commandes console sur un Entity Manager spécifique</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony 2: Using global variables]]></title>
+    <link href="http://www.dinduks.com/symfony-2-using-global-variables/"/>
+    <updated>2011-12-05T23:50:06+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-using-global-variables</id>
+    <content type="html"><![CDATA[<p>In order to use variables in a <strong>Symfony2</strong> controller, you’ll have to set them up in <em>parameters.ini</em>, or in any other ini file on condition that you’ll import it into <em>config.yml</em>.<br/>
+In case you want to use them in a Twig template, you must set them up in <em>config.yml</em>.</p>
+
+<p>Once done, you’ll be able to whether call them using <code>getParameter()</code> from a controller or with the syntax <code>{{ }}</code> from a Twig template.</p>
+
+<h4>Set up your variable</h4>
+
+<p>In an ini file:</p>
+
+<pre><code>[parameters]
+    myVariable = 2
+</code></pre>
+
+<p>In <em>config.yml</em>:</p>
+
+<pre><code>twig:
+  globals:
+    myTwigVariable: %myVariable%
+</code></pre>
+
+<h4>Import your ini file into config.yml</h4>
+
+<p>You can skip this step if you already set up the variables in <em>parameters.ini</em>.</p>
+
+<pre><code>imports:
+    - { resource: myFile.ini }
+</code></pre>
+
+<h4>Use the global variable</h4>
+
+<p>In a controller:</p>
+
+<pre><code>$myVariable = $this-&gt;container-&gt;getParameter('myVariable');
+</code></pre>
+
+<p>In a Twig template</p>
+
+<pre><code>&lt;p&gt;
+    My variable: {{ myTwigVariable }}
+&lt;/p&gt;
+</code></pre>
+
+<p>Enjoy. ;)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony2: Using multiple databases]]></title>
+    <link href="http://www.dinduks.com/symfony2-using-multiple-databases/"/>
+    <updated>2011-12-03T19:51:07+01:00</updated>
+    <id>http://www.dinduks.com/symfony2-using-multiple-databases</id>
+    <content type="html"><![CDATA[<p>In case your website, built with Symfony2, is using multiple databases, you must setup as much connections and <em>Entity Managers</em> as databases.</p>
+
+<p><em>An Entity Manager is simply an interface that speaks to the database.</em></p>
+
+<p>In order to illustrate my example, I will be using two databases: <em>site</em> and <em>forum</em>.</p>
+
+<h4>Set up the connections in <em><strong>config.yml</strong></em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # specify the connexion used by default
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Set up EM, in the same file</h4>
+
+<p>To begin with, disable <em>auto-mapping</em>, so you will be able to choose which EM is going to manage which <em>bundle</em>’s entities.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: If there’s an error bounded with this line, just delete it.</em></p>
+
+<p>Then, right below, set up EM while specifying <em>mappings</em> to each bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # specify the EM used by default (when using console commands f.e)
+
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksFooBundle : ~
+          DinduksBarBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Simply put, mappings connect and constitute the bridge between an EM and the entities of a specific bundle.
+In other terms, mappings call up an EM X when wanting to manipulate an entity Y.</p>
+
+<p>Warning: Always make sure you map your fresh-created bundles to an EM, otherwise a "non-existent bundle" error will occur when using the <code>doctrine:generate:entities</code> command.</p>
+
+<h4>Use</h4>
+
+<p>In the same way you call your default EM, call the EM you need by passing its name to the <code>getEntityManager()</code> function.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>I hope you’ll find this tutorial useful. :)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-plusieurs-bases-de-donnees">Symfony2: Utiliser plusieurs bases de données</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony2: "render" helper for calling an action from a view]]></title>
+    <link href="http://www.dinduks.com/symfony-2-render-helper-for-calling-an-action-from-a-view/"/>
+    <updated>2011-11-17T21:19:51+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-render-helper-for-calling-an-action-from-a-view</id>
+    <content type="html"><![CDATA[<p>I discovered some days ago a <em>secret</em> Symfony 2's helper. I call it secret because I can't find it anywhere on the documentation.<br/>
+<em>Edit: Here it is on the Symfony2 book: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
+
+<p><code>{% render %}</code> is used to show an action's response in a <em>Twig</em> template. It's very useful when wanting to show a dynamic content in all the app's pages.</p>
+
+<h3>Example: Displaying online users' counter</h3>
+
+<h4>Create a <code>onlineUsersAction()</code> function</h4>
+
+<p>That function fetches, processes the result and returns the counter of the online users.</p>
+
+<h4>Create a Twig template that displays the response returned by the action</h4>
+
+<p>The syntax is the following:</p>
+
+<pre><code>  {% render "LiveGeekBundle:Default:onlineUsers" %}
+</code></pre>
+
+<p>Knowing that <code>onlineUsersAction()</code> is an action of <code>DefaultController</code> which is a controller from the <em>Live\GeekBundle</em> bundle.</p>
+
+<h4>Include that template in our application's default layout</h4>
+
+<p>Thus display the online users' counter in all the app's pages.</p>
+
+<h3>Passing arguments:</h3>
+
+<p>You can pass arguments to the action this way:</p>
+
+<h4>In the Twig template:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
+</code></pre>
+
+<h4>In the controller:</h4>
+
+<pre><code>helloAction($arg1, $arg2)
+</code></pre>
+
+<p>The arguments' order doesn't matter.</p>
+
+<p>Enjoy. ;)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony2: Le helper render pour appeller une action depuis une vue Twig]]></title>
+    <link href="http://www.dinduks.com/symfony-2-le-helper-render-pour-appeller-une-action-depuis-une-vue-twig/"/>
+    <updated>2011-11-13T00:40:19+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-le-helper-render-pour-appeller-une-action-depuis-une-vue-twig</id>
+    <content type="html"><![CDATA[<p>Aujourd'hui j'ai découvert un helper <em>secret</em> de Symfony2. Secret parce que je ne le retrouve nulle part sur la doc.<br/>
+<em>Edit: On en parle sur la doc Symfony2: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
+
+<p><code>{% render %}</code> sert à afficher la réponse d'une action dans un template <em>Twig</em>. C'est surtout utile quand on veut afficher du contenu dynamique dans toutes les pages de notre application.</p>
+
+<h3>Exemple d'utilisation: Afficher le nombre des utilisateurs connectés.</h3>
+
+<h4>Créer une action <code>onlineUsersAction()</code></h4>
+
+<p>Cette fonction récupérera les utilisateurs et calculera leur nombre.</p>
+
+<h4>Créer un template Twig qui affiche la réponse retournée par l'action. La syntaxe est la suivante:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" %}
+</code></pre>
+
+<p>Sachant que <code>onlineUsersAction()</code> est une action de <code>DefaultController</code> qui est lui même un contrôleur du bundle <em>Live\GeekBundle</em>.</p>
+
+<h4>Inclure ce template dans le layout de l'appli</h4>
+
+<p>Et ainsi afficher le nombre des utilisateurs connectés dans toutes mes pages.</p>
+
+<h3>Passer des arguments:</h3>
+
+<p>Vous pouvez passer des arguments à l'action de cette manière:</p>
+
+<h4>Dans le template Twig:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
+</code></pre>
+
+<h4>Dans le contrôleur:</h4>
+
+<pre><code>helloAction($arg1, $arg2)
+</code></pre>
+
+<p>L'ordre des arguments ne compte pas.</p>
+
+<p>Enjoy. ;)</p>
+]]></content>
+  </entry>
+  
+</feed>

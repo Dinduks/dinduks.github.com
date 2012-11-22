@@ -1,0 +1,666 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Salut, Je vais partager un bout de code pour cacher un texte ou un bloc, le mettre à jour, et le ré-afficher avec un nouveau contenu, avec jQuery. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/page/9/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/jquery-faire-reapparaitre-un-element-avec-un-nouveau-contenu/">jQuery: Faire Réapparaître Un élément Avec Un Nouveau Contenu</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-05-29T23:54:51+02:00" pubdate data-updated="true">May 29<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Salut,</p>
+
+<p>Je vais partager un bout de code pour cacher un texte ou un bloc, le mettre à jour, et le ré-afficher avec un nouveau contenu, avec <em>jQuery</em>.</p>
+
+<p>Cette technique est intéressante lorsqu&#8217;on veut mettre à jour un élément avec un contenu <em>AJAX</em>.<br/>
+Il faut noter que dans le cas d&#8217;une utilisation avec ce dernier, il faut mettre une de ces fonctions dans le success.</p>
+
+<p>Vous vous demandez peut-être quel est l&#8217;intérêt d&#8217;un tel code, un <code>fadeOut()</code> suivi d&#8217;un <code>html()</code> puis d&#8217;un <code>fadeIn()</code> feront l&#8217;affaire.<br/>
+Mais en pratique ce n&#8217;est pas aussi simple que ça, car il faut faire une pause entre le <code>fadeOut()</code> et le <code>html()</code> ; on se retrouve du coup avec un <code>setTimeout()</code> dans le meilleur des cas, ou dans le pire, un long code bordélique.</p>
+
+<p>Sans plus attendre, voici les fonctions que j&#8217;utilise:</p>
+
+<h3>Pour le texte</h3>
+
+<pre><code>function refreshText(elemId, content, delay, fadeInDuration){
+  $('#' + elemId)
+    .fadeOut()
+    .delay(delay)
+    .queue(function(n){
+      $('#' + elemId).html(content);
+      n();
+    })
+    .fadeIn(fadeInDuration);
+}
+</code></pre>
+
+<h3>Et pour les blocs</h3>
+
+<p>La même que la première mais avec des <code>slideUp()</code> et <code>slideDown()</code>.</p>
+
+<pre><code>function refreshBlock(elemId, content, delay, slideDownDuration){
+  $('#' + elemId)
+    .slideUp()
+    .delay(delay)
+    .queue(function(n){
+      $('#' + elemId).html(content);
+      n();
+    })
+    .slideDown(slideDownDuration);
+}
+</code></pre>
+
+<p>Enjoy!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/php-tutoriel-pagination-avec-symfony/">PHP: Pagination Avec Symfony</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-19T23:35:27+02:00" pubdate data-updated="true">Apr 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bienvenue,</p>
+
+<p>Dans ce tutoriel je vais vous expliquer comment réaliser une pagination, avec <em>Symfony</em> 1.4 et <em>Doctrine</em>.</p>
+
+<p>Tout d’abord, supposons qu’on a un module <em>user</em> dans l&#8217;application <em>admin</em>.</p>
+
+<h3>Avant la pagination, côté <em>action.class.php</em></h3>
+
+<p>Pour récupérer la liste des utilisateur, il faut exécuter une requête <code>$qUsers</code> dans <em>action.class.php</em>:</p>
+
+<pre><code>$qUsers = Doctrine_Query::create()-&gt;from("User u");
+$this-&gt;aUsers = $qUsers-&gt;fetchArray();
+</code></pre>
+
+<p>Du côté du <em>template</em> ça sera ça:</p>
+
+<pre><code>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;?= __("Nom") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("Prénom") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("Pseudo") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("E-mail") ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+&lt;?
+foreach($aUsers as $user) {
+?&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;?= $user["last_name"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["first_name"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["pseudo"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["email"] ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;?
+}
+?&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+
+<h3>Mise en place de la pagination</h3>
+
+<p>Dans <em>actions.class.php</em>, juste après notre requête, on doit:</p>
+
+<h4>Instancier un objet <em>sfDoctrinePager</em></h4>
+
+<pre><code>$this-&gt;pager = new sfDoctrinePager('user', 3);
+</code></pre>
+
+<p>Et lui donner deux paramètres: un nom, et le nombre de résultats à afficher par page.</p>
+
+<h4>Lui préciser la requête pour récupérer les résultats</h4>
+
+<p>Oui, l&#8217;objet sfDoctrinePager ne devinera pas ce dont on a besoin, on va donc lui donner notre requête, $qUsers dans notre cas:</p>
+
+<pre><code>$this-&gt;pager-&gt;setQuery($qUsers);
+</code></pre>
+
+<h4>Lui demander d&#8217;afficher la première page par défaut:</h4>
+
+<pre><code>$this-&gt;pager-&gt;setPage($this-&gt;getRequestParameter('page', 1));
+</code></pre>
+
+<h4>Initialiser!</h4>
+
+<pre><code>$this-&gt;pager-&gt;init();
+</code></pre>
+
+<h4>Du côté du template</h4>
+
+<p>On commence par vérifier si on a besoin de la mise en page, au cas où le nombre des résultats est inférieur au nombre maximum d&#8217;éléments par page, 3 dans notre exemple.</p>
+
+<pre><code>if( $pager-&gt;haveToPaginate() ){
+}
+</code></pre>
+
+<p>Ensuite, on crée un conteneur pour les numéros de pages, et on fait un lien pour aller à la première page, et un autre à la dernière.</p>
+
+<pre><code>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      &lt;a href="&lt;? url_for('user/index?page='.$pager-&gt;getFirstPage()) ?&gt;"&gt;&lt;/a&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+      &lt;a href="&lt;? url_for('user/index?page='.$pager-&gt;getLastPage()) ?&gt;"&gt;&lt;/a&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</code></pre>
+
+<p>Ouais, les <code>&lt;table&gt;</code> c&#8217;est le mal, mais ce n&#8217;est qu&#8217;un exemple, et ça m&#8217;évite de faire du <em>CSS</em>. #jailaflemme</p>
+
+<p>Maintenant, entre les deux liens, on fait un <code>foreach</code> pour parser les liens vers les autres pages.</p>
+
+<p>Vous pouvez aussi mettre des liens pour la page précédente, et la page suivante, en utilisant respectivement les méthodes <code>getPreviousPage()</code> et <code>getNextPage()</code>. ;)</p>
+
+<pre><code>&lt;? foreach ($pager-&gt;getLinks as $page) : ?&gt;
+&lt;td&gt;
+  &lt;?php echo ($page == $pager-&gt;getPage()) ? $page : "&lt;a href='" . url_for('user/index?page='.$page); "'&gt;". $page ."&lt;/a&gt;" ?&gt;
+&lt;/td&gt;
+&lt;? endforeach; ?&gt;
+</code></pre>
+
+<p>Explications:</p>
+
+<ul>
+<li>On récupére la liste des liens avec le <code>foreach</code></li>
+<li>Ensuite on commence à parser les liens</li>
+<li>A quoi sert la vérification? Tout simplement à ne pas donner de lien au numéro de page sur laquelle on est!</li>
+</ul>
+
+
+<p>Et voilà, c&#8217;est fini.</p>
+
+<p>J&#8217;espère que cet article vous a été utile, n&#8217;hésitez pas à laisser des commentaire au cas où vous avez des remarques, suggestions, ou corrections. :)</p>
+
+<p>Vous pouvez me suivre sur <a href="www.dinduks.com/twitter"><strong>Twitter</strong></a>, des tutoriels comme celui ci y en aura encore tant que j&#8217;utilise <em>Symfony</em>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/les-images-hebergees-sur-imageshack-ne-saffichent-plus/">Les Images Hébergées Sur Imageshack Ne S&#8217;affichent Plus</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-23T12:57:59+01:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>En visitant mon blog ce matin, j&#8217;ai remarqué que les images de celui ci ne s&#8217;affichaient pas, on voyait à la place une affreuse grenouille bloquée dans une glace.</p>
+
+<p>Après une recherche, on dirait que <em>Imageshack.us</em> a changé sa politique, et oblige les utilisateurs a s&#8217;enregistrer et se logger, ou les propriétaires des sites à <em>enregistrer</em> leur domaine, pour voir les images.</p>
+
+<p>Ce changement de politique soudain survient sans avertissement, et donc beaucoup de sites se transforment du jour au lendemain en une mare de grenouilles.</p>
+
+<p>Pour enregistrer un domaine, il faut se rendre sur la page <a href="http://stream.imageshack.us/content.php?page=register_domain">Register Domain</a>, page qui est d&#8217;ailleurs très mal placée et difficile à trouver.<br/>
+Il faut ensuite remplir le formulaire et attendre que le site soit validé par l&#8217;équipe de l&#8217;hébergeur.<br/>
+Je ne sais pas combien de temps ça prend vu que je viens d&#8217;envoyer le formulaire, mais je vous tiendrais au courant.<br/>
+<em>[Edit: Mon domaine a été validé et les images apparaissent, ça a donc pris moins de 9 heures.]</em></p>
+
+<p>Ce n&#8217;est pourtant pas la première fois que <em>Imageshack</em> me surprend, j&#8217;ai déjà été choqué de voir que toutes mes photos étaient publiques par défaut.</p>
+
+<p>Je pense qu&#8217;il est temps de changer d&#8217;hébergeur ou d&#8217;héberger mes photos sur le même serveur que le blog.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/krumo-une-alternative-a-print_r-et-var_dump/">PHP: Krumo, Une Alternative à Print_r() Et Var_dump()</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-15T22:44:07+01:00" pubdate data-updated="true">Feb 15<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>Edit du 24/08/2012: <code>var_dump()</code> couplée à Xdebug s&#8217;avère plus pratique</em></p>
+
+<p>En cherchant un moyen pour afficher <code>print_r()</code> avec une mise en page, je suis tombé sur <em>Krumo</em>, une classe <em>PHP</em> qu&#8217;on peut utiliser à la place, et qui offre une mise en page bien plus compréhensible par les humains que nous sommes.</p>
+
+<h3>Présentation</h3>
+
+<p><em>Krumo</em> est un remplacement pour <code>print()</code> et <code>var_dump()</code>. Autrement dit, <em>Krumo</em> est un outil de débogage (initialement pour <em>PHP4</em>/<em>PHP5</em>, maintenant pour <em>PHP5</em> seulement), qui affiche les informations d&#8217;une variable <em>PHP</em> de manière structurée.</p>
+
+<p>Beaucoup de développeurs utilisent <code>print_r()</code> et <code>var_dump()</code> pour débugger. Bien que ces classes ont été crées pour présenter une varible de façon lisible par l&#8217;humain, ce n&#8217;est malheureusement pas le cas. <em>Krumo</em> est une alternative: elle fait le même travail, mais elle présent l&#8217;information plus esthétiquement en utilisant du <em>CSS</em> et du <em>Javascript</em>.</p>
+
+<p><em>Krumo</em> offre non seulement une présentation plus propre, mais aussi des fonctionnalités intéressantes qu&#8217;on verra plutard.</p>
+
+<h3>Téléchargement</h3>
+
+<p>Rendez vous sur le site officiel: <a href="http://kaloyan.info/krumo/index.php#download">Krumo on SourceForge.net</a>.<br/>
+Ou cliquez sur ce lien pour télécharger la dernière version (15/02/2011): <a href="http://sourceforge.net/projects/krumo/files/krumo/Krumo%200.2.1a%20%28*PHP*5%20Only%29/krumo_0.2.1a_*PHP*5-Only.zip/download">krumo_0.2.1a_<em>PHP</em>5-Only.zip</a>.</p>
+
+<h3>Installation</h3>
+
+<p>L&#8217;installation est simple et classique, il suffit d&#8217;extraire le dossier de <em>Krumo</em> sur votre serveur et de l&#8217;inclure dans votre script (ou <em>bootstrap</em>).<br/>
+Exemple:</p>
+
+<pre><code>require_once(dirname(__FILE__) . '/krumo/class.krumo.php');
+</code></pre>
+
+<p>Notez que vous n&#8217;êtes pas obligés de mettre tous les fichiers dans le répertoire <em>krumo/</em>, seuls <em>class.krumo.php</em>, <em>krumo.ini</em>, <em>krumo.js</em> et le dossier <em>skins/</em> sont nécessaires.</p>
+
+<h3>Paramétrage (facultatif)</h3>
+
+<p>Vous pouvez jeter un coup d&#8217;œil sur <em>krumo.ini</em>, pour:</p>
+
+<h4>Changer de skin</h4>
+
+<pre><code>[ skin ]
+    selected = "green"
+</code></pre>
+
+<p>La valeur de <em>selected</em> doit être le nom d&#8217;un sous-dossier du dossier <em>skins/</em>.</p>
+
+<h4>Indiquer le chemin du dossier où Krumo est installé.</h4>
+
+<pre><code>url = "http://www.dinduks.com/Krumo/"
+</code></pre>
+
+<p>Et cela pour rendre les images des skins accessibles sur le Web.</p>
+
+<h3>Utilisation</h3>
+
+<p>Voici un exemple basique:</p>
+
+<pre><code>krumo(array('a1'=&gt; 'A1', 3, 'rouge'));
+</code></pre>
+
+<p>Comme vous le remarquez, <em>Krumo</em> marche de la même manière que les classes qu&#8217;elle est censée remplacer.</p>
+
+<p>Elle peut aussi afficher plusieurs <em>variables</em>:</p>
+
+<pre><code>krumo($_SERVER, $_ENV);
+</code></pre>
+
+<p>Et possède plusieurs méthodes statiques, par exemple:</p>
+
+<pre><code>// Équivalent à print_r(debug_backtrace());
+krumo::backtrace();
+
+// Affiche tous les fichiers inclus (ou requis)
+krumo::includes();
+
+// Affiche toutes les fonctions incluses
+krumo::functions();
+
+// Affiche toutes les classes déclarées
+krumo::classes();
+
+// Affiche toutes les constantes définies
+krumo::defines();
+</code></pre>
+
+<p>Vous pouvez activer ou désactiver <em>Krumo</em> grâce aux méthodes suivantes:</p>
+
+<pre><code>krumo::enable();
+krumo::disable();
+</code></pre>
+
+<h3>Exemples</h3>
+
+<p>Vous pouvez voir des exemples d&#8217;utilisation sur le <a href="http://krumo.kaloyan.info/#example">site officiel de Krumo</a>.</p>
+
+<h3>Conclusion</h3>
+
+<p><em>Krumo</em> permet non seulement de mieux présenter les tableaux <em>PHP</em>, mais aussi d&#8217;accéder à d&#8217;autres informations plus facilement, parfois méconnues par les développeurs.<br/>
+Pour ma part, cette classe a mérité sa place dans mes dossiers <em>lib/</em>.</p>
+
+<p>Je vous invite à le tester et vous faire une idée. ;)</p>
+
+<h3>Liens</h3>
+
+<p>Apprenez en plus sur le site et la doc officiels:</p>
+
+<ul>
+<li>Le site officiel: <a href="http://krumo.sourceforge.net/">http://krumo.sourceforge.net/</a>.</li>
+<li>La documentation de <em>Krumo</em>: <a href="http://kaloyan.info/krumo/docs/">http://kaloyan.info/krumo/docs/</a>.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/wampee-la-version-portable-de-wampserver/">Wampee, La Version Portable De Wampserver</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-10T01:49:50+01:00" pubdate data-updated="true">Feb 10<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Alors qu&#8217;<em>Internet</em> regorge de versions portables de <em>WAMP</em>, telles que <a href="http://www.clubic.com/telecharger-fiche32659-mov-amp.html">Mov&#8217;Amp</a> ou encore <a href="http://www.apachefriends.org/fr/xampp.html">XAMPP</a>, Wampserver a récemment publié la deuxième bêta de la version portable de sa plate-forme <em>Open Source</em>, <em>Wampee</em>.</p>
+
+<p>L’intérêt de celui-ci, et des WAMP portables en général, réside dans sa portabilité, ce qui veut dire qu&#8217;il ne requiert pas d&#8217;installation, et peut être utilisé à partir de n&#8217;importe quel support amovible: disque-dur externe, clé USB, ou encore <a href="https://www.dropbox.com/referrals/NTY1OTQ0Nzc5?src=global9"><em>Dropbox</em></a>.</p>
+
+<p>Vous pouvez télécharger <em>Wampee</em> sur <a href="http://www.wampserver.com/download.php#bottom">Wampserver.com</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/10/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/page/8/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

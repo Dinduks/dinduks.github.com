@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ruby | Live geek or die tryin']]></title>
+  <link href="http://www.dinduks.com/category/ruby/atom.xml" rel="self"/>
+  <link href="http://www.dinduks.com/"/>
+  <updated>2012-11-22T01:01:21+01:00</updated>
+  <id>http://www.dinduks.com/</id>
+  <author>
+    <name><![CDATA[Samy Dindane]]></name>
+    <email><![CDATA[samy@dindane.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Sinatra, RSpec and DataMapper: Configuring and using a database for tests]]></title>
+    <link href="http://www.dinduks.com/sinatra-rspec-and-datamapper-configuring-and-using-a-database-for-tests/"/>
+    <updated>2012-04-30T18:30:49+02:00</updated>
+    <id>http://www.dinduks.com/sinatra-rspec-and-datamapper-configuring-and-using-a-database-for-tests</id>
+    <content type="html"><![CDATA[<p>Hi there,</p>
+
+<p>When testing your Sinatra application, you may need to check if some data was stored, removed, or changed in the database.</p>
+
+<p>Your application would look like this:</p>
+
+<p><div><script src='https://gist.github.com/2559103.js?file='></script>
+<noscript><pre><code>require 'sinatra'
+
+configure do
+  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog.db&quot;)
+  DataMapper.finalize
+  Post.auto_upgrade!
+  Tag.auto_upgrade!
+end
+
+get '/' do
+  &quot;Hello world!&quot;
+end</code></pre></noscript></div>
+
+<div><script src='https://gist.github.com/2559118.js?file='></script>
+<noscript><pre><code>require File.join(File.dirname(__FILE__), '..', 'blog.rb')
+require 'rack/test'
+
+RSpec.configure do |config|
+  config.include Rack::Test::Methods
+end
+
+def app
+  Sinatra::Application
+end
+
+describe &quot;get /&quot; do
+  it &quot;should display the homepage&quot; do
+    get &quot;/&quot;
+    last_response.should be_ok
+  end
+end</code></pre></noscript></div>
+</p>
+
+<p>Okay. First of all, let's tell RSpec to use a <code>blog_test.db</code> database:</p>
+
+<p><div><script src='https://gist.github.com/2559162.js?file='></script>
+<noscript><pre><code>RSpec.configure do |config|
+  config.include Rack::Test::Methods
+  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog_test.db&quot;)
+  DataMapper.finalize
+  Post.auto_migrate!
+  Tag.auto_migrate!
+end</code></pre></noscript></div>
+</p>
+
+<p><strong>Explanations:</strong></p>
+
+<ul>
+<li><code>DataMapper::setup()</code>: Tells DataMapper which database to use ; it will create it if it doesn't exist.</li>
+<li><code>DataMapper.finalize</code>: <em>Finalize</em>  the models. More information in <a href="http://datamapper.org/getting-started.html">DataMapper's documentation</a>.</li>
+<li><code>auto_migrate!</code> drops and recreate the tables, which is a good thing since we want to have a clean database before each test.</li>
+</ul>
+
+
+<p>If it doesn't already exist, a database will be created in the application's root path the next time RSpec will be called (from the cli for example).</p>
+
+<p>All what is left now is to write the test:</p>
+
+<p><div><script src='https://gist.github.com/2559503.js?file='></script>
+<noscript><pre><code>describe &quot;post /new&quot; do
+  it &quot;should insert the post and its tags in the database&quot; do
+    lambda do
+      post &quot;/new&quot;, params = {
+        :title =&gt; 'title',
+        :body  =&gt; 'body',
+        :tags  =&gt; 'hello, world',
+      }
+    end.should {
+      change(Post, :count).by(1)
+      change(Tag, :count).by(2)
+    }
+  end
+end</code></pre></noscript></div>
+</p>
+
+<p>I hope this quick how-to was helpful.</p>
+
+<p>Happy testing! :)</p>
+]]></content>
+  </entry>
+  
+</feed>

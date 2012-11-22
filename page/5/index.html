@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Hi, I have recently built a site for a World of Warcraft server using Symfony2 framework.
+Among the features I had to implement, there was a shop &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/page/5/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/mangos-executing-gm-commands-via-soap/">MaNGOS: Executing GM Commands via SOAP</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-29T02:10:03+01:00" pubdate data-updated="true">Nov 29<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hi,</p>
+
+<p>I have recently built a site for a World of Warcraft server using <strong>Symfony2</strong> framework.
+Among the features I had to implement, there was a shop where donators can buy rewards, such as levels, gold, items and teleportations.</p>
+
+<p>During my first reflexions, as a Web developer who has no knownledge about MaNGOS server, I thought of rewarding players by adding or updating data in the database. I started experimenting that way, but I quickly realized that it was leading me nowhere.</p>
+
+<p>There are some reasons why:</p>
+
+<ul>
+<li>Adding levels using the database is useless if the player is online. Because it doesn&#8217;t apply instantly and once the player logs off, the server will override the level in the database with the player&#8217;s level on the logout.</li>
+<li>The samething applies for teleportation.</li>
+<li>Sending an item: I won&#8217;t give much details because it&#8217;s too complicated, but basically, sending an item using the database is a pain in the ass since it requires creating many rows here and there. Some of these rows are in tables with non-documented columns, which make them (almost) impossible to create. <em>#mindfuck</em></li>
+</ul>
+
+
+<p>As you may already know if you&#8217;re familiar with MaNGOS, all the actions mentionned above are doable using GM commands.
+Fortunately, MaNGOS server already has a SOAP Web Service allowing to execute GM commands directly on the server.
+Using it will not only allow you to do things quickly and easily, but it is also safe since you know that MaNGOS native commands will do the what you ask them the right way.</p>
+
+<h3>This is how to use SOAP with PHP:</h3>
+
+<h4>Enable SOAP</h4>
+
+<p>First of all, make sure to have the SOAP extension enabled: <em>extension=php_soap.dll</em> on Windows.</p>
+
+<h4>Store your server&#8217;s info in variables:</h4>
+
+<pre><code>$soapUsername = 'mangos_usr';
+$soapPassword = 'mangos_pwd';
+$soapHost = '127.0.0.1';
+$soapPort = '7878';
+</code></pre>
+
+<h4>Then create an instance of SoapClient and pass to it the required parameters</h4>
+
+<pre><code>$client = new SoapClient(NULL, array(
+    'location' =&gt; "http://$soapHost:$soapPort/",
+    'uri'      =&gt; 'urn:MaNGOS',
+    'style'    =&gt; SOAP_RPC,
+    'login'    =&gt; $soapUsername,
+    'password' =&gt; $soapPassword,
+));
+</code></pre>
+
+<p>The login and the passwords are the ones that you use to log into your GM account.</p>
+
+<h4>Create a command</h4>
+
+<pre><code>$command = "character level Dinduks 70";
+</code></pre>
+
+<p>Note that your command musn&#8217;t start with a dot.</p>
+
+<h4>Execute that command</h4>
+
+<pre><code>$result = $client-&gt;executeCommand(new SoapParam($command, 'command'));
+</code></pre>
+
+<p><code>$result</code> will contain the same text that you&#8217;d see in yellow color if you did execute the command in game.</p>
+
+<p>It&#8217;s as simple as that!</p>
+
+<h4>Bonus</h4>
+
+<p>I wrote a short script that allows to execute GM commands from a command prompt. It&#8217;s pretty funny and can be useful if you want to do something without starting an instance of the game.
+You can grab the script on Github: <a href="https://github.com/Dinduks/GM-Commands-Script">GM-Commands-Script</a></p>
+
+<p>Have fun!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/protect-email-addresses-from-spam-crawlers/">Protect Email Addresses From Spam Crawlers</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-19T20:23:35+01:00" pubdate data-updated="true">Nov 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hi,</p>
+
+<p>When displaying a raw email address on a Web page, this address is vulnerable and can be used by <em>spam crawlers</em>, <em>email harvester</em>, or whatever you want to call them to send you spam and such crap.
+That&#8217;s why people write their email address this way &#8220;samy at dindane dot com&#8221;, or &#8220;samy[@]dindane[.]com&#8221;.
+This writing is simple and efficient, but not <em>pretty</em>.</p>
+
+<p>There are many ways to show an email address in its original format and still make it bots-proof. One of these ways is using JavaScript to obfuscate and then show the address.
+But I think that using JS is overdoing things, since it can be done using basic HTML, simply by printing the email address as ASCII and not raw characters.</p>
+
+<h3>These are the steps to follow using PHP:</h3>
+
+<h4>Split the email address into an array of characters</h4>
+
+<pre><code>$aEmail = str_split($email);
+</code></pre>
+
+<h4>Convert each character into an ASCII one:</h4>
+
+<pre><code>$strEmail = '';
+foreach ($aEmail as $char) {
+    $strEmail .= ord($char);
+}
+</code></pre>
+
+<h4>Display it (O RLY?):</h4>
+
+<pre><code>echo "&lt;a href='$strEmail'&gt;$strEmail&lt;/a&gt;";
+</code></pre>
+
+<p>The result is a beautiful and clickable email address. :)</p>
+
+<p><strong>Note:</strong> If you are using <em>Twig</em> as a template engine, you have to use the <code>raw()</code> filter in order to tell Twig to interpret the string and not to display raw ASCII characters: <code>strEmail|raw</code></p>
+
+<p>I hope this tutorial has been helpful.<br/>
+Bye!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/english-motherfucker-do-you-speak-it/">English Motherfucker, Do You Speak It?!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-19T13:41:22+01:00" pubdate data-updated="true">Nov 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hi there!</p>
+
+<p>It has been a while since I started thinking about writing in English, but I neither had the time nor had I the strength to do it, especially that I wanted to write not only in English but also in French.<br/>
+Now I realized that writing in both languages isn&#8217;t worth it since developers understand English. Besides it will take me less time to write in one language rather than two.</p>
+
+<p>I made this decision mainly to reach more people: more people -> more interaction/feedback -> more knowledge.</p>
+
+<p>So from now on, all my technical posts will be written in English.</p>
+
+<p><img class="center" src="http://gfishoutofwater.files.wordpress.com/2009/06/english-do-you-speak-it-demotivational-poster.jpg"  alt="Engligh Motherfucker, do you speak it?"></p>
+
+<p>Happy reading. :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-render-helper-for-calling-an-action-from-a-view/">Symfony2: &#8220;Render&#8221; Helper for Calling an Action From a View</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-17T21:19:51+01:00" pubdate data-updated="true">Nov 17<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I discovered some days ago a <em>secret</em> Symfony 2&#8217;s helper. I call it secret because I can&#8217;t find it anywhere on the documentation.<br/>
+<em>Edit: Here it is on the Symfony2 book: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
+
+<p><code>{% render %}</code> is used to show an action&#8217;s response in a <em>Twig</em> template. It&#8217;s very useful when wanting to show a dynamic content in all the app&#8217;s pages.</p>
+
+<h3>Example: Displaying online users&#8217; counter</h3>
+
+<h4>Create a <code>onlineUsersAction()</code> function</h4>
+
+<p>That function fetches, processes the result and returns the counter of the online users.</p>
+
+<h4>Create a Twig template that displays the response returned by the action</h4>
+
+<p>The syntax is the following:</p>
+
+<pre><code>  {% render "LiveGeekBundle:Default:onlineUsers" %}
+</code></pre>
+
+<p>Knowing that <code>onlineUsersAction()</code> is an action of <code>DefaultController</code> which is a controller from the <em>Live\GeekBundle</em> bundle.</p>
+
+<h4>Include that template in our application&#8217;s default layout</h4>
+
+<p>Thus display the online users&#8217; counter in all the app&#8217;s pages.</p>
+
+<h3>Passing arguments:</h3>
+
+<p>You can pass arguments to the action this way:</p>
+
+<h4>In the Twig template:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
+</code></pre>
+
+<h4>In the controller:</h4>
+
+<pre><code>helloAction($arg1, $arg2)
+</code></pre>
+
+<p>The arguments&#8217; order doesn&#8217;t matter.</p>
+
+<p>Enjoy. ;)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-le-helper-render-pour-appeller-une-action-depuis-une-vue-twig/">Symfony2: Le Helper Render Pour Appeller Une Action Depuis Une Vue Twig</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-13T00:40:19+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Aujourd&#8217;hui j&#8217;ai découvert un helper <em>secret</em> de Symfony2. Secret parce que je ne le retrouve nulle part sur la doc.<br/>
+<em>Edit: On en parle sur la doc Symfony2: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
+
+<p><code>{% render %}</code> sert à afficher la réponse d&#8217;une action dans un template <em>Twig</em>. C&#8217;est surtout utile quand on veut afficher du contenu dynamique dans toutes les pages de notre application.</p>
+
+<h3>Exemple d&#8217;utilisation: Afficher le nombre des utilisateurs connectés.</h3>
+
+<h4>Créer une action <code>onlineUsersAction()</code></h4>
+
+<p>Cette fonction récupérera les utilisateurs et calculera leur nombre.</p>
+
+<h4>Créer un template Twig qui affiche la réponse retournée par l&#8217;action. La syntaxe est la suivante:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" %}
+</code></pre>
+
+<p>Sachant que <code>onlineUsersAction()</code> est une action de <code>DefaultController</code> qui est lui même un contrôleur du bundle <em>Live\GeekBundle</em>.</p>
+
+<h4>Inclure ce template dans le layout de l&#8217;appli</h4>
+
+<p>Et ainsi afficher le nombre des utilisateurs connectés dans toutes mes pages.</p>
+
+<h3>Passer des arguments:</h3>
+
+<p>Vous pouvez passer des arguments à l&#8217;action de cette manière:</p>
+
+<h4>Dans le template Twig:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
+</code></pre>
+
+<h4>Dans le contrôleur:</h4>
+
+<pre><code>helloAction($arg1, $arg2)
+</code></pre>
+
+<p>L&#8217;ordre des arguments ne compte pas.</p>
+
+<p>Enjoy. ;)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/6/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/page/4/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

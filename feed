@@ -1,0 +1,1255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Live geek or die tryin']]></title>
+  <link href="http://www.dinduks.com/atom.xml" rel="self"/>
+  <link href="http://www.dinduks.com/"/>
+  <updated>2012-11-22T01:01:21+01:00</updated>
+  <id>http://www.dinduks.com/</id>
+  <author>
+    <name><![CDATA[Samy Dindane]]></name>
+    <email><![CDATA[samy@dindane.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Searching several collections with MongoDB (and Scala)]]></title>
+    <link href="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/"/>
+    <updated>2012-11-21T22:47:00+01:00</updated>
+    <id>http://www.dinduks.com/simple-search-system-with-mongodb-and-scala</id>
+    <content type="html"><![CDATA[<p>If you need a search system for your web application, you can either roll your own,
+or use a system that does it for you, such as <em>elasticsearch</em>.<br/>
+I&#8217;ve recently had to choose, and the latter option was an overkill since I was
+looking for something simple.</p>
+
+<p>The aim was to allow searching for many entities: <em>users</em>, <em>songs</em> and few others.<br/>
+For simplicty&#8217;s sake, I&#8217;ll stick to two: <code>User</code> and <code>Song</code>.</p>
+
+<p>The main idea here is to use an index collection, <em>searchresults</em>, that will be
+updated each time <em>users</em> and <em>songs</em> change.<br/>
+<em>searchresults</em> will be the only collection to get queried, making requests simple,
+and search results&#8217; retrieval fast.</p>
+
+<p>The <code>SearchResult</code> model has 3 fields:</p>
+
+<ul>
+<li><code>entityType</code>: a discriminator field that contains the indexed entity type, <em>user</em>
+or <em>song</em> in this case.</li>
+<li><code>entityId</code>: You think my name is Captain Obvious, don&#8217;t you?</li>
+<li><code>keywords</code>: An array of keywords related to that search.
+ 
+  case class SearchResult(
+
+<pre><code>id:         ObjectID,
+entityType: String,
+entityId:   ObjectID,
+keywords:   List[String]
+</code></pre>
+
+<p>  )</p></li>
+</ul>
+
+
+<p><code>ObjectID</code> is a <a href="http://api.mongodb.org/scala/casbah/current/"><em>Casbah</em></a> type. Feel free to change it with your driver&#8217;s identifier
+type.</p>
+
+<p>Paired with the class described above, a <code>Searchable</code> trait will help forcing the
+implementation of some methods and properties, and more importantly be used as a
+type in methods signatures.</p>
+
+<pre><code>trait Searchable {
+  def entityType:     String,
+  getSearchKeywords: List[String],
+  entityId:           ObjectID
+}
+</code></pre>
+
+<p>Now, each of your entities class, <code>User</code> and <code>Song</code>, will implement the <code>Searchable</code>
+trait, define the <code>entityType</code> property and implement the <code>getSearchKeywords()</code>
+method. The <code>entityId</code> or something similar property should already be implemented
+by your MongoDB driver.</p>
+
+<p><em>Example of a <code>getSearchKeywords()</code> method:</em></p>
+
+<pre><code>def getSearchKeywords: List[String] =
+  List(this.username, this.firstname, this.lastname).filter(_.nonEmpty)
+</code></pre>
+
+<p>The next step is to implement the hooks that update the index collection each time
+<em>users</em> and <em>songs</em> are updated too.</p>
+
+<p>In <em>Casbah</em> for instance, the entities are created and updated when calling the
+<code>save()</code> method, and deleted when <code>remove()</code> is called. Both these methods are
+inherited from <code>SalatDAO</code>.<br/>
+These methods should be overriden, the hooks behaviors added to them —creating or
+updating the concerned <code>SearchResult</code> entry, in case of <code>save()</code> for example—, yet
+without altering their initial role.</p>
+
+<pre><code>override def save(user: User) {
+  createSearchResult(user, SearchResult.findByEntity(user))
+  super.save(user)
+}
+
+private def createSearchResult(user: User, searchResult: Option[SearchResult]) {
+  searchResult match {
+    case Some(sr) =&gt; SearchResult.save(sr.copy(keywords = user.getSearchKeywords))
+    case None =&gt; SearchResult.save(SearchResult(
+      entityType = user.entityType,
+      entityId   = user.id,
+      keywords   = user.getSearchKeywords
+    ))
+  }
+}
+</code></pre>
+
+<p>The last thing to do, is creating a MongoDB index on the keywords field of the
+<em>searchresults</em> collection.<br/>
+This can be done in one single command:</p>
+
+<pre><code>mongo myAwesomeDB --eval "db.searchresults.ensureIndex({keywords: 1});"
+</code></pre>
+
+<p>We&#8217;re done. I guess.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Review your code with Git]]></title>
+    <link href="http://www.dinduks.com/review-your-code-with-git/"/>
+    <updated>2012-10-13T14:47:00+02:00</updated>
+    <id>http://www.dinduks.com/review-your-code-with-git</id>
+    <content type="html"><![CDATA[<p>Whether you want to commit a part of your changes only or simply check your work
+before you commit it, one of the Git commands you probably use the most, <code>add</code>, can
+help you doing it throught its option <code>-p</code> (<em>patch</em>).</p>
+
+<p>This option allows to choose the changes you want to stage.<br/>
+Or word for word, from Git&#8217;s man:</p>
+
+<blockquote><p>Interactively choose hunks of patch between the index and
+  the work tree and add them to the index. This gives the
+  user a chance to review the difference before adding
+  modified contents to the index.</p></blockquote>
+
+<p>This is how it works, or rather how I use it:</p>
+
+<p>After executing <code>git add -p .</code>, git enters an interactive mode, from where many
+actions can be taken. Below are the ones I use the most.</p>
+
+<ul>
+<li>If the diff is too long, you can try splitting it with <code>s</code>. That will split it into
+the smallest possible parts.</li>
+<li>If you want to stage the diff, simply choose <code>y</code>es.</li>
+<li>Otherwise, say <code>n</code>o.</li>
+<li>When the whole diff has been viewed, the interactive mode will quit automatically.
+You can do it yourself tough, through the classic <code>^C</code>, or by selecting <code>q</code>.<br/>
+Note that this will simply quit the interactive mode and won&#8217;t undo your actions.</li>
+</ul>
+
+
+<p>Feel free to ask <code>?</code> about the other commands meaning, they might be useful in some
+cases.</p>
+
+<p><code>git add -p</code> your best friend to review your code and not to commit stuff like
+<code>console.log()</code>.<br/>
+Make the most of it!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Why are trailing whitespaces bad]]></title>
+    <link href="http://www.dinduks.com/why-are-trailing-whitespaces-bad/"/>
+    <updated>2012-10-07T13:12:00+02:00</updated>
+    <id>http://www.dinduks.com/why-are-trailing-whitespaces-bad</id>
+    <content type="html"><![CDATA[<p>Whenever I see a trailing whitespace, my teeth gnash and I realize that <em>some
+people just want to see the world burn</em>.</p>
+
+<p>Trailing whitespaces suck, please, don&#8217;t use them and ask your code editor to
+highlight them. Below are some reasons why.</p>
+
+<h2>Revision control systems and diff tools</h2>
+
+<p>This is the most important point.<br/>
+For a diff tool, basically the <em>thing</em> used by CVS to detect code changes, this
+code:</p>
+
+<pre><code>function updateRepositoriesList($scope, Repository) {
+</code></pre>
+
+<p>Is not the same as:</p>
+
+<pre><code>function updateRepositoriesList($scope, Repository) {..
+</code></pre>
+
+<p>This, along with wrong indentation or using tabs instead of spaces, leads to
+unnecessary conflicts and is annoying when merging commits.</p>
+
+<h2>Moving inside the code</h2>
+
+<p>When I tell my editor to go to the end of the line, I obviously mean the end of
+the meaningful code, not some spaces after it.</p>
+
+<h2>Code display inside editors</h2>
+
+<p>On editors that wrap long lines, such as VIM, few spaces at the end of the line may
+lead to a useless line wrap.</p>
+
+<pre><code>function updateRepositoriesList($scope, Repository) {..|
+...                                                    |
+    loadingAnimation('show');                          |
+</code></pre>
+
+<h2>Other reasons</h2>
+
+<h3>Additional spaces increase the file size</h3>
+
+<p>That&#8217;s a very important point&#8230; If you store your code on floppy disks.</p>
+
+<h3>The parser will have to skip an extra character when compiling</h3>
+
+<p>Yet another important point. When coding on a
+<a href="http://en.wikipedia.org/wiki/Intel_8086">Intel 8086 processor</a>.</p>
+
+<h1>How to fight trailing whitespaces</h1>
+
+<h2>By correctly configuring your editor</h2>
+
+<h3>Highlighting them</h3>
+
+<p>If you don&#8217;t use VIM, skip this part.</p>
+
+<p>If you do, add <code>set list</code> to your <em>.vimrc</em>, this will display unprintable characters
+such as our lovely trailing whitespaces and non-breaking spaces.<br/>
+You can customise the characters used for that purpose thanks to the <code>listchars</code>
+command:</p>
+
+<pre><code>set listchars=trail:◃,nbsp:•
+</code></pre>
+
+<h3>Wiping them</h3>
+
+<p>By searching and replacing them: <code>%s/\s\+$//g</code>.</p>
+
+<p>I personally created a function that does the dirty work for me:</p>
+
+<pre><code>function! FutureShock()
+  silent! %retab        " Replace tabs by spaces
+  silent! %s/\%u00a0/ / " Replace nbsp by spaces
+  silent! %s/\s\+$//    " Replace twsp by spaces
+endfunction
+</code></pre>
+
+<p>And mapped it to <em>&lt;LEADER>f</em>:</p>
+
+<pre><code>map &lt;LEADER&gt;f :call FutureShock()&lt;CR&gt;
+</code></pre>
+
+<p><em><a href="http://youtu.be/aDEX1XO9uW0">Future Shock</a> is a Stratovarius song.</em></p>
+
+<p>Check <a href="https://github.com/Dinduks/dotfiles/blob/master/.vimrc">my VIM configuration</a>
+for more awesome commands.</p>
+
+<h2>By looking for them before you commit</h2>
+
+<p>You review your code before committing it, don&#8217;t you? ;)<br/>
+Thanks to the Git diff tool, you can clearly see trailing whitespaces highlighted in red when using <code>git diff</code>; <code>git show</code>, or <code>git add -p</code> (among others).</p>
+
+<p>You now have no excuse for having these abominations in your code.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Don't comment your code, write good one]]></title>
+    <link href="http://www.dinduks.com/dont-comment-your-code/"/>
+    <updated>2012-09-29T17:42:00+02:00</updated>
+    <id>http://www.dinduks.com/dont-comment-your-code</id>
+    <content type="html"><![CDATA[<p><em>Dislaimer: I&#8217;m not a pro and I&#8217;m open to your feedback and critics.</em></p>
+
+<p>Whether you&#8217;ve learned programming alone or had classes about the subject, you&#8217;ve
+probably been taught to <em>use comments</em>.<br/>
+The more I write code and read about good practices, the more I realize that
+<em>advice</em> is exactly the one you shouldn&#8217;t give. It only encourages laziness,
+writing dirty code, and filling the cracks in by commenting every piece of code.</p>
+
+<p>I believe that most of the time you should not use comments, but instead think
+every time before you write one: why are you doing this? Is your method or function
+name not explicit enough? Fix it. Is it complex? Refactor it and move its main parts
+to new methods or functions. Is it hard to understand? You&#8217;re writing bad code.</p>
+
+<p>When I say <em>exception</em>, I mean specific cases where you really need to explain
+what you are doing: you&#8217;re hacking to get the shit done, writing some complex
+algorithm, etc.<br/>
+Also, if one needs to specify where you did copy some code from, comments might be a
+good place for this purpose.</p>
+
+<pre><code>/**
+* Source: http://stackoverflow.com/a/9261887/604041
+*/
+function getPopoverPlacement(popover, element) {
+}
+</code></pre>
+
+<p>The reason why I&#8217;m writing this post is that I&#8217;ve seen this piece of code</p>
+
+<pre><code>// The logo's copyright checksum
+const CHECKSUM = "herpderp";
+</code></pre>
+
+<p>used to justify the use of comments.</p>
+
+<p>Wrong. I didn&#8217;t need to think twice before recommending to name that constant
+<code>LOGO_COPYRIGHT_CHECKSUM</code>.<br/>
+That&#8217;s quite an easy example to counter, but one could improve almost any code out
+there as effortlessly as shown above.</p>
+
+<p>Another downside of using comments, as mentionned by my friend
+<a href="http://www.badmood.eu/">Nicolas</a>, is that comments need to be maintained, just like
+the code.<br/>
+Not only this means more things to take care of and more work to do, but in real
+life the code gets updated while comments don&#8217;t.</p>
+
+<p>Let&#8217;s see some examples of how we can avoid comments by writing better code:</p>
+
+<h3>From Jeff Atwood&#8217;s <a href="http://www.codinghorror.com/blog/2008/07/coding-without-comments.html">Coding without comments</a> blog post</h3>
+
+<p>A simple but efficient example:</p>
+
+<pre><code>// square root of n with Newton-Raphson approximation
+r = n / 2;
+while ( abs( r - (n/r) ) &gt; t ) {
+    r = 0.5 * ( r + (n/r) );
+}
+
+System.out.println( "r = " + r );
+</code></pre>
+
+<p>Could be refactored to:</p>
+
+<pre><code>private double SquareRootApproximation(n) {
+    r = n / 2;
+    while ( abs( r - (n/r) ) &gt; t ) {
+        r = 0.5 * ( r + (n/r) );
+    }
+
+    return r;
+}
+
+System.out.println( "r = " + SquareRootApproximation(r) );
+</code></pre>
+
+<p>I recommend reading his article where he too, calls to avoid comments.<br/>
+After all, Jeff Atwood&#8217;s word&#8217;s more valuable than mine, right? ;)</p>
+
+<h3>From the awesome <a href="http://www.bennadel.com/resources/uploads/2012/ObjectCalisthenics.pdf">Objects Calisthenics</a> manifesto</h3>
+
+<p>Here, it isn&#8217;t about comments, but a complex code that a lazy-ass would have used
+comments to explain:</p>
+
+<pre><code>String board() {
+    StringBuffer buf = new StringBuffer();
+    for (int i = 0; i &lt; 10; i++) {
+        for (int j = 0; j &lt; 10; j++)
+        buf.append(data[i][j]);
+        buf.append(“\n”);
+    }
+
+    return buf.toString();
+}
+</code></pre>
+
+<p>Well written, it looks like:</p>
+
+<pre><code>String board() {
+    StringBuffer buf = new StringBuffer();
+    collectRows(buf);
+    return buf.toString();
+}
+
+void collectRows(StringBuffer buf) {
+    for (int i = 0; i &lt; 10; i++)
+      collectRow(buf, i);
+}
+
+void collectRow(StringBuffer buf, int row) {
+    for (int i = 0; i &lt; 10; i++)
+        Buf.append(data[row][i]);
+    buf.append(“\n”);
+}
+</code></pre>
+
+<p>Is that a lot of code? Oh, sorry. :( I didn&#8217;t know you pay a fee for each single LoC
+you write.</p>
+
+<p>Objects Calisthenics is a wonderful book about improving the object oriented
+thinking and coding. <strong>Read it</strong>, and if you can&#8217;t follow all the rules, start with
+some and improve accordingly.</p>
+
+<h3>Some code of mine</h3>
+
+<p>Take a look at this code:</p>
+
+<pre><code>def find_user_repos(username)
+  resp = @http_client.call("/users/#{username}/repos")
+  raise UserNotFound.new(username) if resp['message'].to_s == 'Not Found' if resp.is_a? Hash
+
+  repositories_array = Array.new
+  resp.each do |repository_hash|
+    repo = RepositoryConverter.fill_object_from_hash repository_hash
+    repositories_array.push(repo)
+  end
+  repositories_array
+end
+</code></pre>
+
+<p>Starting from line 5, you have to carefully read the code to understand it. One
+might think <em>let&#8217;s just add a comment!</em>. No.<br/>
+Let&#8217;s clean that mess.</p>
+
+<pre><code>def find_user_repos(username)
+  resp = @http_client.call("/users/#{username}/repos")
+  raise UserNotFound.new(username) if resp['message'].to_s == 'Not Found' if resp.is_a? Hash
+
+  create_repos_array(resp) do |hash|
+    RepositoryConverter.fill_object_from_hash hash
+  end
+end
+
+private
+def create_repos_array(repositories)
+  repositories_array = Array.new
+  repositories.each do |repository_hash|
+    repo = yield repository_hash
+    repositories_array.push(repo)
+  end
+  repositories_array
+end
+</code></pre>
+
+<p>Here, I simply moved the code that creates a repositories array in another method,
+this has many advantages:</p>
+
+<ul>
+<li>One can read the code and understand what&#8217;s happening, without caring about the
+implementation.</li>
+<li>This method can be used elsewhere.</li>
+<li>It can be tested&#8230; If it wasn&#8217;t private.</li>
+</ul>
+
+
+<h3>Where to explain how the big parts of my app fit together?</h3>
+
+<p>Probably not in the code itself.<br/>
+I&#8217;d suggest doing this in a separate or in the <em>README</em> file.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Yet another blog that migrates to Octopress]]></title>
+    <link href="http://www.dinduks.com/yet-another-blog-that-migrates-to-octopress/"/>
+    <updated>2012-07-25T19:45:00+02:00</updated>
+    <id>http://www.dinduks.com/yet-another-blog-that-migrates-to-octopress</id>
+    <content type="html"><![CDATA[<p>I recently migrated my blog from Wordpress to <a href="http://octopress.org/">Octopress</a>.</p>
+
+<blockquote><p>Octopress is a framework for Jekyll, the blog aware static site generator
+powering Github Pages. To start blogging with Jekyll, you have to write your own
+HTML templates, CSS, Javascripts and set up your configuration. But with Octopress
+All of that is already taken care of. Simply clone or fork Octopress,
+install dependencies and the theme, and you’re set.</p></blockquote>
+
+<h3>Here are some reasons behind this choice:</h3>
+
+<h4>Markdown</h4>
+
+<p>I&#8217;m become a fluent Markdown speaker after spending a decent amount of time at
+GitHub and Stack Overflow. Not only it&#8217;s a pleasure to write using it, but it also
+let focusing on the most important thing — writing, and not to worry about pointless
+things such as HTML formatting for example.</p>
+
+<h4>Speed</h4>
+
+<p>The blog posts being written in Markdown, there&#8217;s a HTML version of them generated
+before each deploy. You can add <code>/index.html</code> at the end of this page&#8217;s URL to
+understand what I&#8217;m talking about.<br/>
+That basically means that the blog is simply a bunch of HTML files and doesn&#8217;t
+require or have a database, which makes it fast to load and search engines friendly.</p>
+
+<h4>Portabiliy</h4>
+
+<p>Many points here:</p>
+
+<ul>
+<li>Posts are born in Markdown: I can easily version them.</li>
+<li>Posts reborn as HTML: I can server them from anywhere, and they&#8217;ll just <em>work</em>.</li>
+<li>Since the blog is static, the comments are hosted elsewhere, Disqus in my case,
+thus making them protable from a blog platform to another.</li>
+</ul>
+
+
+<h4>Other random detail</h4>
+
+<p>Octopress ships with a nice theme, which is perfect in my eyes: it&#8217;s simple,
+responsive and its font size is big enough to not screw up the reader&#8217;s eyes.</p>
+
+<h3>The migration</h3>
+
+<p>Now I&#8217;ll show you how you can migrate your own blog to Octopress.</p>
+
+<h4>Migrate your blogs comment to Disqus</h4>
+
+<p>As I mentioned above, the blog doesn&#8217;t have a database; you have to use an external
+comments <em>provider</em> for your Octopress blog.<br/>
+I personnaly went for Disqus because it&#8217;s popular and well integrated with Octopress.</p>
+
+<p>What you need to do is:</p>
+
+<ul>
+<li>Creating a <a href="http://octopress.org/docs/deploying/">Disqus</a> account</li>
+<li>Installing the Disqus Wordpress plugin</li>
+<li>Importing your Wordpress blog comments to Disqus (this feature is available in your
+user panel)</li>
+</ul>
+
+
+<h4>Create an Octopress blog</h4>
+
+<p>You don&#8217;t say?!<br/>
+Start reading the <a href="http://octopress.org/docs/setup/">Octopress Setup</a> chapter from
+Octopress&#8217; documentation. It&#8217;ll guide you through the installation steps.</p>
+
+<h4>Migrate Wordpress&#8217; posts</h4>
+
+<p>For this, use the <a href="https://github.com/thomasf/exitwp">exitwp</a> tool.<br/>
+It&#8217;s pretty easy to install and use:</p>
+
+<ul>
+<li>Clone it</li>
+<li>Export your Wordpress blog</li>
+<li>Run the tool on it</li>
+</ul>
+
+
+<p>You&#8217;ll now have a <em>_post/</em> directory that you&#8217;ll need to move to your fresh
+created blog <em>source/</em> folder.</p>
+
+<p>More in depth use explanations can be found in <em>exitwp</em>&#8217;s README.</p>
+
+<h4>Fix the generated posts syntax</h4>
+
+<p>Heh, you really believed it would be that easy?! ;)</p>
+
+<p>Although <em>exitwp</em> helps <em>a lot</em> in the migration process, it sometimes doesn&#8217;t
+convert stuff as it should do. That&#8217;s especially true if you have some fucked up
+HTML formatting, some specific tags, such as the Syntax Highlighter plugin ones.</p>
+
+<p>What you need to do now is going throught all the posts, one by one, and fix what
+should be fixed.<br/>
+Good luck.</p>
+
+<h4>Deploy it!</h4>
+
+<p>Now that the migration is complete, you want to show your blog to the internets.</p>
+
+<p>You can either host it on your own server as you would do for a classic Wordpress
+blog, for free on Heroku, or, if you&#8217;re as cool as me, as GitHub pages.</p>
+
+<p>Whatever the way you choose, the <a href="http://octopress.org/docs/deploying/">Deploying</a>
+chapter on Octopress&#8217; doc will help deploy your blog.</p>
+
+<h4>Keeping the blog on the same domain name</h4>
+
+<p>This part was straightforward for me, it is well explained in the
+<a href="http://octopress.org/docs/deploying/github/#custom_domains">docs</a>.</p>
+
+<p>There was little problem though, with Disqus: my blog was hosted at <em>www.dinduks.com</em>,
+the comments were correctly imported as coming from the <em>www</em> subdomain, except that
+new comments, on the new blog, were detected as coming from the TLD <em>dinduks.com</em>
+and not the subdomain <em>www.dinduks.com</em>.<br/>
+I made sure <em>www</em> was mentioned everywhere, but it didn&#8217;t fix the problem.</p>
+
+<p>I solved this problem by  <em>migrating</em> the old comments from the correct domain
+(<em>www.dinduks.com</em>), to the one Disqus was detecting (<em>dinduks.com</em>).<br/>
+It&#8217;s not logical, but it&#8217;s better than having no comments at all.</p>
+
+<p>The <a href="disqus.com/admin/tools/migrate/">Migrate Threads</a> feature can be found in the
+the <em>Tools</em> section of your Disqus admin panel.</p>
+
+<h3>Conclusion</h3>
+
+<p>Now that I migrated, I&#8217;m disappointed to see that the Octopress project is (almost)
+deserted by its maintainer. As I&#8217;m writing this, there&#8217;s 73 opened Pull Requests
+and 138 issues. And the commits rate is low.</p>
+
+<p>Nevertheless, I&#8217;m still convinced that Octopress suits my needs more than Wordpress
+or any <em>dynamic</em> blogging platform outta here, and I encourage you to, at least,
+give it a try.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git: More control over git push]]></title>
+    <link href="http://www.dinduks.com/git-more-control-over-git-push/"/>
+    <updated>2012-06-06T18:35:29+02:00</updated>
+    <id>http://www.dinduks.com/git-more-control-over-git-push</id>
+    <content type="html"><![CDATA[<p>I&#8217;ve recently had to do a <code>git push -f</code> which not only pushed the branch I&#8217;m on, but also all my other local branches, overriding the remote ones.
+Fortunately for my teammates and I, the other branches were not crucial.</p>
+
+<p>This behavior is due to Git&#8217;s <em><a href="http://www.kernel.org/pub/software/scm/git/docs/v1.7.2.5/git-config.html">push.default</a></em> option set to <em>matching</em>, which means <em>Push all matching branches</em>. That&#8217;s nonsense to me considering the problems it may cause.</p>
+
+<p>This can be changed of course, by setting the <em>push.default</em> to another value:</p>
+
+<ul>
+<li><em>nothing</em>: do not push anything.</li>
+<li><em>matching</em>: push all matching branches. All branches having the same name in both ends are considered to be matching. This is the default.</li>
+<li><em>tracking</em>: push the current branch to its upstream branch.</li>
+<li><em>current</em>: push the current branch to a branch of the same name.</li>
+</ul>
+
+
+<p>The most suitable option in most of situations, in my opinion, is the <em>tracking</em> option.</p>
+
+<p>Happy versionning and be careful!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Apache: Enable HTTPS locally]]></title>
+    <link href="http://www.dinduks.com/apache-enable-https-locally/"/>
+    <updated>2012-05-24T15:37:11+02:00</updated>
+    <id>http://www.dinduks.com/apache-enable-https-locally</id>
+    <content type="html"><![CDATA[<p>Sometime you&#8217;d like to use SSL on a local website, for development purposes. This is possible to do in few minutes.</p>
+
+<h4>Enable Apache&#8217;s SSL mod</h4>
+
+<p>If you&#8217;re on some Debian based distro, and installed Apache with <em>aptitude</em> or <em>apt-get</em>, executing the <code>a2enmod ssl</code> command will do the trick.
+This means <em>Apache2 Enable MOD</em>, and will simply create a symbolic link to <em>/etc/apache2/mods-available/ssl.** in </em>/etc/apache2/mods-enabled/*.</p>
+
+<p>If you installed Apache in some other way, enable the SSL mod manually.</p>
+
+<h4>Ask Apache to listen on the port 443</h4>
+
+<p>443 is the default SSL port. Ask Apache to listen on it by adding <code>Listen 443</code> in your config file (<em>httpd.conf</em> for example).
+You don&#8217;t need to do that if you installed Apache with <em>aptitude</em> or <em>apt-get</em>. Apache automatically listens on this port when the <em>SSL mod</em> in enabled.</p>
+
+<h4>Create an SSL certificate</h4>
+
+<pre><code>mkdir /etc/apache2/ssl/
+make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
+</code></pre>
+
+<p>This will generate a SSL certificate, based on the <em>ssleay.cnf</em> template.</p>
+
+<h4>Setup your application&#8217;s virtual host</h4>
+
+<p>Setting up SSL is over. Now it&#8217;s time to create a virtual host for our application.</p>
+
+<pre><code>&lt;VirtualHost *:443&gt; # listen on the 443 port
+  ServerName myawesomeapp.dev
+
+  SSLEngine On # enabled SSL
+  SSLCertificateFile /etc/apache2/ssl/apache.pem # specify the certificate file
+
+  DocumentRoot /var/www/dev/myawesomeapp/
+&lt;/VirtualHost&gt;
+</code></pre>
+
+<p>We&#8217;re done, happy coding!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Sinatra, RSpec and DataMapper: Configuring and using a database for tests]]></title>
+    <link href="http://www.dinduks.com/sinatra-rspec-and-datamapper-configuring-and-using-a-database-for-tests/"/>
+    <updated>2012-04-30T18:30:49+02:00</updated>
+    <id>http://www.dinduks.com/sinatra-rspec-and-datamapper-configuring-and-using-a-database-for-tests</id>
+    <content type="html"><![CDATA[<p>Hi there,</p>
+
+<p>When testing your Sinatra application, you may need to check if some data was stored, removed, or changed in the database.</p>
+
+<p>Your application would look like this:</p>
+
+<div><script src='https://gist.github.com/2559103.js?file='></script>
+<noscript><pre><code>require 'sinatra'
+
+configure do
+  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog.db&quot;)
+  DataMapper.finalize
+  Post.auto_upgrade!
+  Tag.auto_upgrade!
+end
+
+get '/' do
+  &quot;Hello world!&quot;
+end</code></pre></noscript></div>
+
+
+
+
+<div><script src='https://gist.github.com/2559118.js?file='></script>
+<noscript><pre><code>require File.join(File.dirname(__FILE__), '..', 'blog.rb')
+require 'rack/test'
+
+RSpec.configure do |config|
+  config.include Rack::Test::Methods
+end
+
+def app
+  Sinatra::Application
+end
+
+describe &quot;get /&quot; do
+  it &quot;should display the homepage&quot; do
+    get &quot;/&quot;
+    last_response.should be_ok
+  end
+end</code></pre></noscript></div>
+
+
+<p>Okay. First of all, let&#8217;s tell RSpec to use a <code>blog_test.db</code> database:</p>
+
+<div><script src='https://gist.github.com/2559162.js?file='></script>
+<noscript><pre><code>RSpec.configure do |config|
+  config.include Rack::Test::Methods
+  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog_test.db&quot;)
+  DataMapper.finalize
+  Post.auto_migrate!
+  Tag.auto_migrate!
+end</code></pre></noscript></div>
+
+
+<p><strong>Explanations:</strong></p>
+
+<ul>
+<li><code>DataMapper::setup()</code>: Tells DataMapper which database to use ; it will create it if it doesn&#8217;t exist.</li>
+<li><code>DataMapper.finalize</code>: <em>Finalize</em>  the models. More information in <a href="http://datamapper.org/getting-started.html">DataMapper&#8217;s documentation</a>.</li>
+<li><code>auto_migrate!</code> drops and recreate the tables, which is a good thing since we want to have a clean database before each test.</li>
+</ul>
+
+
+<p>If it doesn&#8217;t already exist, a database will be created in the application&#8217;s root path the next time RSpec will be called (from the cli for example).</p>
+
+<p>All what is left now is to write the test:</p>
+
+<div><script src='https://gist.github.com/2559503.js?file='></script>
+<noscript><pre><code>describe &quot;post /new&quot; do
+  it &quot;should insert the post and its tags in the database&quot; do
+    lambda do
+      post &quot;/new&quot;, params = {
+        :title =&gt; 'title',
+        :body  =&gt; 'body',
+        :tags  =&gt; 'hello, world',
+      }
+    end.should {
+      change(Post, :count).by(1)
+      change(Tag, :count).by(2)
+    }
+  end
+end</code></pre></noscript></div>
+
+
+<p>I hope this quick how-to was helpful.</p>
+
+<p>Happy testing! :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails: Load assets in a specific order]]></title>
+    <link href="http://www.dinduks.com/rails-load-assets-in-a-specific-order/"/>
+    <updated>2012-01-31T00:57:22+01:00</updated>
+    <id>http://www.dinduks.com/rails-load-assets-in-a-specific-order</id>
+    <content type="html"><![CDATA[<p>Let&#8217;s pretend you have many CSS/SASS stylesheets and JS/Coffee scripts in your project, and you want to load some before the rest.
+This can be done in <code>stylesheets/application.css</code> and <code>javascripts/application.js</code> by using the keyword <code>require</code>.</p>
+
+<h2>Examples:</h2>
+
+<h3>Stylesheets:</h3>
+
+<p>If you want to load Bootstrap&#8217;s stylesheet first:</p>
+
+<div><script src='https://gist.github.com/1707651.js?file='></script>
+<noscript><pre><code>/*
+ *= require bootstrap.min.css
+ *= require_self
+ *= require_tree .
+ */</code></pre></noscript></div>
+
+
+<h3>Javascripts:</h3>
+
+<p>This is how to load jQuery and Boostrap&#8217;s scripts before the others:</p>
+
+<div><script src='https://gist.github.com/1707655.js?file='></script>
+<noscript><pre><code>//= require jquery-1.7.1.min.js
+//= require bootstrap-alerts.js
+//= require bootstrap-modal.js
+//= require_tree .</code></pre></noscript></div>
+
+
+<p>You can omit the files extensions.</p>
+
+<p>I believe they call this the awesomeness of Rails.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Clean code vs Efficiency]]></title>
+    <link href="http://www.dinduks.com/clean-code-vs-efficiency/"/>
+    <updated>2012-01-29T16:42:22+01:00</updated>
+    <id>http://www.dinduks.com/clean-code-vs-efficiency</id>
+    <content type="html"><![CDATA[<p>I have recently submitted <a href="https://github.com/symfony/symfony/pull/3209">my first pull request</a> ever, to the Symfony2 project.</p>
+
+<p><a href="https://github.com/Dinduks/symfony/commit/5306457f4b1073c6544dd4235a74c4d5f612ed9d">The code I contributed with</a> is a 3 lines long method that simply checks whether a form field is hidden or not.
+I have no doubt about the usefulness of this method, especially after seeing few people using a similar one (it seems that it was removed).</p>
+
+<p>The pull request was <a href="https://github.com/symfony/symfony/pull/3209#issuecomment-3707718">refused</a> because the class in question isn&#8217;t supposed to be <em>aware of information we need</em>.
+I agree with this and approve the good practices and clean code, but in this case we penalize the end user for the sake of doing things the <em>right</em> way.</p>
+
+<p>The purpose of my post is to answer the following question: should efficiency and simplicity be sacrificed for the sake of good practices and clean code?</p>
+
+<p>In my opinion, the answer is no. Especially when we&#8217;re dealing with a big project that thousands of people use, and that claims easiness and simplicity.</p>
+
+<p>I&#8217;m looking forward to know your opinion about the subject. Feel free to leave a comment.</p>
+
+<p><img class="center" src="http://www.dinduks.com/images/uploads/2012/01/programming-motherfucker.jpg"  alt="Programming Motherfucker"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[VMware Workstation: Enable folder sharing]]></title>
+    <link href="http://www.dinduks.com/vmware-workstation-enable-folder-sharing/"/>
+    <updated>2012-01-16T21:57:48+01:00</updated>
+    <id>http://www.dinduks.com/vmware-workstation-enable-folder-sharing</id>
+    <content type="html"><![CDATA[<p>Hello,</p>
+
+<p>I daily use VMware Workstation to code on Linux.<br/>
+Yesterday my dear Debian&#8217;s Gnome broke because of a bad manipulation, so I just took it as a call to move on and try some other distro.<br/>
+I first installed Linux Mint Debian, and removed it because folder sharing didn&#8217;t work, despite my effort to fix the problem. Then I tried with Kubuntu: the same issue.</p>
+
+<p>The problem there was that my shared folders didn&#8217;t show in <code>/mnt/hgfs/</code>.<br/>
+After reading many documentations, forums, and mailing lists, and trying to mount the shared folder manually, I reached a point where I got a <strong>FATAL: Module vmhgfs not found</strong> error.<br/>
+This error, as far as I understood, was occurring because of a bad installation of <em>VMware Tools</em>. Re-installing the latter didn&#8217;t work.</p>
+
+<p>The <em>vmhgfs</em> module, like some others, isn&#8217;t sometimes built because it is not included in the <em>VMware tools</em>.
+To build the required modules, you just have to install <em>open-vm-dkms</em>:</p>
+
+<pre><code>apt-get install open-vm-dkms
+</code></pre>
+
+<p>Now restart <em>VMware Tools</em>:</p>
+
+<pre><code>/etc/init.d/vmware-tools restart
+</code></pre>
+
+<p>And finally, mount the your shared folder!</p>
+
+<pre><code>mkdir /mnt/hgfs/my_shared_folder
+mount -t vmhgfs .host:/my_shared_folder /mnt/hgfs/my_shared_folder
+</code></pre>
+
+<p>If that doesn&#8217;t work, just log out and on your session.</p>
+
+<p>I hope this tutorial has been helpful.</p>
+
+<p><em>Note</em>: The last post of this thread <a href="http://communities.vmware.com/thread/332887">http://communities.vmware.com/thread/332887</a> was useful to me.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A question about applications' design]]></title>
+    <link href="http://www.dinduks.com/a-question-about-applications-design/"/>
+    <updated>2012-01-07T00:22:23+01:00</updated>
+    <id>http://www.dinduks.com/a-question-about-applications-design</id>
+    <content type="html"><![CDATA[<p>The idea of creating a blog post to gather people&#8217;s opinions is pretty weird, but <em>nothing ventured, nothing gained</em>.</p>
+
+<p>Hello,</p>
+
+<p>I&#8217;m building an application that will have many types of multilingual dynamic content: news, about, announces, meta tags, meta description, and maybe more.
+The app is a <strong>Rails</strong> one, so I&#8217;ll be talking about tables and not entities.</p>
+
+<p>I&#8217;ve been creating a database table for each of the content types above, and I noticed halfway that they have (almost) the same columns: <em>title</em>, <em>body</em>, <em>lang_id</em>.
+I decided then to use one single table, called <em>text</em>, which will have a <em>text_type_id</em> column, additionally to all the previous columns. <em>type_text</em> will only contain the type of the content (news, about, announce, etc&#8230;).</p>
+
+<p>The thing is that I&#8217;m not very convinced about what I&#8217;ve done, I find it a bit dirty because many kind of data will be stored in the same place. On the other hand, if I create a table for each type, it seems to me that there will be some kind of redundancy, which is also messy in my eyes.</p>
+
+<p>What do you think about this? Please leave a comment explaining what you would have done if you were in my shoes, and why.</p>
+
+<p>Thanks!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails: cannot load such file -- openssl]]></title>
+    <link href="http://www.dinduks.com/rails-cannot-load-such-file-openssl/"/>
+    <updated>2012-01-05T18:57:21+01:00</updated>
+    <id>http://www.dinduks.com/rails-cannot-load-such-file-openssl</id>
+    <content type="html"><![CDATA[<p>While setting up my <em>Rails</em> development environment on my fresh Kubuntu VM, I&#8217;ve encountered many errors.
+This one was occurring when trying to launch a WEBrick server:</p>
+
+<blockquote><p>/home/dinduks/.rvm/gems/ruby-1.9.3-p0/gems/activesupport-3.1.3/lib/active_support/dependencies.rb:240:in `require&#8217;: cannot load such file &#8211; openssl (LoadError)</p></blockquote>
+
+<p>This error means that your Ruby isn&#8217;t compiled with <em>openssl</em>.</p>
+
+<p>Assuming that you use RVM, these are the steps to follow to fix this issue.</p>
+
+<p>Install the <em>openssl</em> package</p>
+
+<pre><code>rvm pkg install openssl
+</code></pre>
+
+<p>Remove the Ruby installation you&#8217;re using</p>
+
+<pre><code>rvm remove 1.9.3
+</code></pre>
+
+<p>And finally recompile Ruby with <em>openssl</em></p>
+
+<pre><code>rvm install 1.9.3 --with-openssl-dir=$HOME/.rvm/usr
+</code></pre>
+
+<p>Everything should be working now. Don&#8217;t forget to:</p>
+
+<pre><code>rvm use 1.9.3 --default
+</code></pre>
+
+<p>I hope my first Rails related tutorial was helpful, happy coding! :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GitHub: Free plans for students and teachers]]></title>
+    <link href="http://www.dinduks.com/github-free-plans-for-students-and-teachers/"/>
+    <updated>2012-01-05T10:00:24+01:00</updated>
+    <id>http://www.dinduks.com/github-free-plans-for-students-and-teachers</id>
+    <content type="html"><![CDATA[<p>I&#8217;ll be soon working on a school project, which led me to look for a place where to version my code.</p>
+
+<p>Since I use GitHub daily, I checked its plans first. The cheapest one, called <em>micro</em>, gives 5 private repos for $7/month. I unfortunately only need a single private repo, and I don&#8217;t want to pay for 4 ones that I probably won&#8217;t be using.</p>
+
+<p>Although I knew about Bitbucket&#8217;s free private repos, the ideas of leaving GitHub and having my repos here and there didn&#8217;t please me that much.</p>
+
+<p>Luckily, I stumbled upon <a href="https://github.com/edu">GitHub&#8217;s Educational offers</a>, that are available to both teachers and students.<br/>
+The teachers&#8217; offer concerns organization accounts. And the students&#8217; one on the other hand is simply a micro plan, and lasts 2 years, enough to get your ass a job and pay a subscription.</p>
+
+<p><img class="center" src="http://www.dinduks.com/images/uploads/2012/01/github-edu-micro-plan.png"  alt="GitHub"></p>
+
+<p>To benefit from this offer, just contact GitHub from the <a href="https://github.com/edu">Request an educational account</a> page.<br/>
+Make sure you are logged in with the account you want the plan for, and tell them why you need it.</p>
+
+<p>Thank you GitHub!</p>
+
+<p><img class="center" src="http://www.dinduks.com/images/uploads/2012/01/sucks-to-be-a-student.jpg"  alt="Programming Motherfucker"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Implementing a simple caching system]]></title>
+    <link href="http://www.dinduks.com/implementing-a-simple-caching-system/"/>
+    <updated>2011-12-20T11:55:05+01:00</updated>
+    <id>http://www.dinduks.com/implementing-a-simple-caching-system</id>
+    <content type="html"><![CDATA[<p>Hello,</p>
+
+<p>I&#8217;m going to show you a simple way to cache a file.</p>
+
+<p>To illustrate my example, I will use a script that creates a single image from multiple images.
+I have written <a href="https://github.com/Dinduks/Lastfm-Top-Albums">that script</a> a few months ago to generate a patchwork of my top albums in <a href="http://www.lastfm.com/user/Dinduks">Last.fm</a>, due to the lack of working similar scripts.</p>
+
+<p><a href="http://lastfmtopalbums.dinduks.com/">
+<img class="center" src="http://lastfmtopalbums.dinduks.com/patchwork.php?user=Dinduks&period=3month&rows=2&cols=2&imageSize=200"  alt="Dinduks\">
+</a></p>
+
+<p>First, let&#8217;s see how the script works, without the cache <em>system</em>:</p>
+
+<div><script src='https://gist.github.com/1707693.js?file='></script>
+<noscript><pre><code>&lt;?php
+
+$apiUrl = 'http://ws.audioscrobbler.com/2.0/';
+$apiKey = '61d580c50e6e5e3f14b6bd9527e5395f';
+$method = 'user.gettopalbums';
+
+$user   = $_GET['user'];
+$period = $_GET['period'];
+$rows   = $_GET['rows'];
+$cols   = $_GET['cols'];
+
+$limit  = $cols * $rows;
+
+$query = &quot;$apiUrl?method=$method&amp;user=$user&amp;period=$period&amp;limit=$limit&amp;api_key=$apiKey&quot;;
+
+// create a DOMDocument which will contain the xml document returned by Last.fm's Web service
+$topAlbums = new DOMDocument();
+$topAlbums-&gt;load($query);
+
+/*
+The code for generating the image...
+*/
+
+// display the image
+header(&quot;Content-type: image/jpg&quot;);
+imagejpeg($patchwork);</code></pre></noscript></div>
+
+
+<p>As you can see, the image is generated whenever the script is called. This isn&#8217;t only greedy on the server&#8217;s resources, but does also take a little time ; between 4 and 6 seconds for a common patchwork.</p>
+
+<p>To avoid this repetitive task, the idea is to save the generated image on a file, and, each time the script is called, check if the image doesn&#8217;t already exist before creating it again.</p>
+
+<h3>Create a signature of the source file</h3>
+
+<p>Since the image is generated from data that comes from the Last.fm Web Service, it will change according to it&#8217;s response. Let&#8217;s then create a MD5 hash of it.</p>
+
+<pre><code>$response     = file_get_contents($query);
+$responseHash = md5($response);
+</code></pre>
+
+<h3>Name the generated file</h3>
+
+<p>It&#8217;s time now to choose a name format for our file. I chose the following:</p>
+
+<pre><code>$fileName = "images/$user.$period.$rows.$cols.$imagesSize.$responseHash";
+</code></pre>
+
+<p><strong>Note</strong>: Make sure you have the write and read permissions on <code>images/</code>.</p>
+
+<h3>Save the file</h3>
+
+<p>At the end of the script, just before displaying the image, save it.</p>
+
+<pre><code>imagejpeg($patchwork, $fileName);
+</code></pre>
+
+<p>You&#8217;ll have to use <code>fwrite()</code> or a similar function depending on the type of the file you want to save.</p>
+
+<h3>Check if the file exists</h3>
+
+<p>The file is well saved now.<br/>
+The final step consists in checking, at the next request, if that file exists. If it&#8217;s the case, answer with it, if it is not, run the usual code ; which is the image creation.<br/>
+The code below should be put right before the image creation process.</p>
+
+<pre><code>if (file_exists($fileName)) {
+    header("Content-type: image/jpg");
+    echo file_get_contents($fileName);
+    exit;
+}
+</code></pre>
+
+<p>You are now ready to implement your own little cache system. Have fun. :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony 2: Execute console commands on a specific entity manager]]></title>
+    <link href="http://www.dinduks.com/symfony-2-execute-console-commands-on-a-specific-entity-manager/"/>
+    <updated>2011-12-16T19:31:57+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-execute-console-commands-on-a-specific-entity-manager</id>
+    <content type="html"><![CDATA[<p>The following isn’t an exact science, however, if you didn&#8217;t <code>--help</code>, it will spare you a 10min research.<br/>
+This is your lifesaver: <code>--em</code>.</p>
+
+<h3>Example</h3>
+
+<p>In case you want to generate mapping information using the “client” entity manager:</p>
+
+<pre><code>php app/console doctrine:mapping:convert yml /src/Acme/ClientBundle/Resources/config/doctrine/metadata/orm --from-database --force --em="client
+</code></pre>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique">Symfony2: Executer les commandes console sur un Entity Manager spécifique</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[PHP: Generate documentation with DocBlox]]></title>
+    <link href="http://www.dinduks.com/php-generate-documentation-with-docblox/"/>
+    <updated>2011-12-08T01:00:17+01:00</updated>
+    <id>http://www.dinduks.com/php-generate-documentation-with-docblox</id>
+    <content type="html"><![CDATA[<p>I recently have had to generate a PHP project&#8217;s documentation and I&#8217;ve chosen the popular <a href="http://phpdoc.org/">PhpDocumentor</a> for this purpose.<br/>
+This tool is unfortunately outdated, hasn&#8217;t been updated since 2007, and thus throws a lot of PHP warnings and cannot do what I was asking it.</p>
+
+<p>My friend <a href="http://testonsteroid.tumblr.com/">Ludo</a> has suggested using <a href="http://www.docblox-project.org/">DocBlox</a> which is, compared to PhpDocumentor, more modern - supports PHP 5.3, faster, and consumes less memory.</p>
+
+<p>After trying it, I can say that it&#8217;s indeed a great tool, inasmuch as I could generate documentation for my project 5 seconds after installing it.</p>
+
+<h3>How to use it:</h3>
+
+<h4>Installation</h4>
+
+<p>Make PEAR know about DocBlox&#8217;s channel</p>
+
+<pre><code>pear channel-discover pear.docblox-project.org
+</code></pre>
+
+<p>Then install DocBlox(-beta)</p>
+
+<pre><code>pear install docblox/DocBlox-beta
+</code></pre>
+
+<p>The command line <em>docblox</em> should be available for use now.</p>
+
+<h4>Use</h4>
+
+<pre><code>docblox -d /path/folder1,/path/folder1/folder2 -t /path/to/target/directory
+</code></pre>
+
+<p>Easy, ha? :)</p>
+
+<p>Make sure you separate the source directories by commas only, no spaces.<br/>
+You can also use some of the basic PhpDocumentor commands.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony 2: Using global variables]]></title>
+    <link href="http://www.dinduks.com/symfony-2-using-global-variables/"/>
+    <updated>2011-12-05T23:50:06+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-using-global-variables</id>
+    <content type="html"><![CDATA[<p>In order to use variables in a <strong>Symfony2</strong> controller, you’ll have to set them up in <em>parameters.ini</em>, or in any other ini file on condition that you’ll import it into <em>config.yml</em>.<br/>
+In case you want to use them in a Twig template, you must set them up in <em>config.yml</em>.</p>
+
+<p>Once done, you’ll be able to whether call them using <code>getParameter()</code> from a controller or with the syntax &#8220; from a Twig template.</p>
+
+<h4>Set up your variable</h4>
+
+<p>In an ini file:</p>
+
+<pre><code>[parameters]
+    myVariable = 2
+</code></pre>
+
+<p>In <em>config.yml</em>:</p>
+
+<pre><code>twig:
+  globals:
+    myTwigVariable: %myVariable%
+</code></pre>
+
+<h4>Import your ini file into config.yml</h4>
+
+<p>You can skip this step if you already set up the variables in <em>parameters.ini</em>.</p>
+
+<pre><code>imports:
+    - { resource: myFile.ini }
+</code></pre>
+
+<h4>Use the global variable</h4>
+
+<p>In a controller:</p>
+
+<pre><code>$myVariable = $this-&gt;container-&gt;getParameter('myVariable');
+</code></pre>
+
+<p>In a Twig template</p>
+
+<pre><code>&lt;p&gt;
+    My variable: 
+&lt;/p&gt;
+</code></pre>
+
+<p>Enjoy. ;)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony2: Using multiple databases]]></title>
+    <link href="http://www.dinduks.com/symfony2-using-multiple-databases/"/>
+    <updated>2011-12-03T19:51:07+01:00</updated>
+    <id>http://www.dinduks.com/symfony2-using-multiple-databases</id>
+    <content type="html"><![CDATA[<p>In case your website, built with Symfony2, is using multiple databases, you must setup as much connections and <em>Entity Managers</em> as databases.</p>
+
+<p><em>An Entity Manager is simply an interface that speaks to the database.</em></p>
+
+<p>In order to illustrate my example, I will be using two databases: <em>site</em> and <em>forum</em>.</p>
+
+<h4>Set up the connections in <em><strong>config.yml</strong></em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # specify the connexion used by default
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Set up EM, in the same file</h4>
+
+<p>To begin with, disable <em>auto-mapping</em>, so you will be able to choose which EM is going to manage which <em>bundle</em>’s entities.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: If there’s an error bounded with this line, just delete it.</em></p>
+
+<p>Then, right below, set up EM while specifying <em>mappings</em> to each bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # specify the EM used by default (when using console commands f.e)
+
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksFooBundle : ~
+          DinduksBarBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Simply put, mappings connect and constitute the bridge between an EM and the entities of a specific bundle.
+In other terms, mappings call up an EM X when wanting to manipulate an entity Y.</p>
+
+<p>Warning: Always make sure you map your fresh-created bundles to an EM, otherwise a &#8220;non-existent bundle&#8221; error will occur when using the <code>doctrine:generate:entities</code> command.</p>
+
+<h4>Use</h4>
+
+<p>In the same way you call your default EM, call the EM you need by passing its name to the <code>getEntityManager()</code> function.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>I hope you’ll find this tutorial useful. :)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-plusieurs-bases-de-donnees">Symfony2: Utiliser plusieurs bases de données</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git: Rename or change a repository URL]]></title>
+    <link href="http://www.dinduks.com/git-rename-or-change-a-repository-url/"/>
+    <updated>2011-12-01T00:13:21+01:00</updated>
+    <id>http://www.dinduks.com/git-rename-or-change-a-repository-url</id>
+    <content type="html"><![CDATA[<p>If you’re new to Git, this tip will allow you to save some of your precious time.</p>
+
+<p>Open <em>.git/config</em> in your project’s local directory, and, in the category <em>[remote &#8220;origin&#8221;]</em>, modify the <em>url</em> parameter, using the new location or the new repository’s name.</p>
+
+<p><strong>OR</strong></p>
+
+<p>Use this command:</p>
+
+<pre><code>git remote set-url origin &lt;new url&gt;
+</code></pre>
+
+<p>Note: If you’re using <em>GitHub</em>, you must also rename the project on the platform: Go to the repository&#8217;s homepage, click the Admin button and change the name.</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/git-renommer-ou-changer-l-adresse-dun-depot">Git: Renommer ou changer l’adresse d’un dépôt</a></em></p>
+]]></content>
+  </entry>
+  
+</feed>

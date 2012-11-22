@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>MaNGOS: executing GM commands via SOAP - Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Hi, I have recently built a site for a World of Warcraft server using Symfony2 framework.
+Among the features I had to implement, there was a shop &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/mangos-executing-gm-commands-via-soap/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">MaNGOS: Executing GM Commands via SOAP</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-29T02:10:03+01:00" pubdate data-updated="true">Nov 29<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Hi,</p>
+
+<p>I have recently built a site for a World of Warcraft server using <strong>Symfony2</strong> framework.
+Among the features I had to implement, there was a shop where donators can buy rewards, such as levels, gold, items and teleportations.</p>
+
+<p>During my first reflexions, as a Web developer who has no knownledge about MaNGOS server, I thought of rewarding players by adding or updating data in the database. I started experimenting that way, but I quickly realized that it was leading me nowhere.</p>
+
+<p>There are some reasons why:</p>
+
+<ul>
+<li>Adding levels using the database is useless if the player is online. Because it doesn&#8217;t apply instantly and once the player logs off, the server will override the level in the database with the player&#8217;s level on the logout.</li>
+<li>The samething applies for teleportation.</li>
+<li>Sending an item: I won&#8217;t give much details because it&#8217;s too complicated, but basically, sending an item using the database is a pain in the ass since it requires creating many rows here and there. Some of these rows are in tables with non-documented columns, which make them (almost) impossible to create. <em>#mindfuck</em></li>
+</ul>
+
+
+<p>As you may already know if you&#8217;re familiar with MaNGOS, all the actions mentionned above are doable using GM commands.
+Fortunately, MaNGOS server already has a SOAP Web Service allowing to execute GM commands directly on the server.
+Using it will not only allow you to do things quickly and easily, but it is also safe since you know that MaNGOS native commands will do the what you ask them the right way.</p>
+
+<h3>This is how to use SOAP with PHP:</h3>
+
+<h4>Enable SOAP</h4>
+
+<p>First of all, make sure to have the SOAP extension enabled: <em>extension=php_soap.dll</em> on Windows.</p>
+
+<h4>Store your server&#8217;s info in variables:</h4>
+
+<pre><code>$soapUsername = 'mangos_usr';
+$soapPassword = 'mangos_pwd';
+$soapHost = '127.0.0.1';
+$soapPort = '7878';
+</code></pre>
+
+<h4>Then create an instance of SoapClient and pass to it the required parameters</h4>
+
+<pre><code>$client = new SoapClient(NULL, array(
+    'location' =&gt; "http://$soapHost:$soapPort/",
+    'uri'      =&gt; 'urn:MaNGOS',
+    'style'    =&gt; SOAP_RPC,
+    'login'    =&gt; $soapUsername,
+    'password' =&gt; $soapPassword,
+));
+</code></pre>
+
+<p>The login and the passwords are the ones that you use to log into your GM account.</p>
+
+<h4>Create a command</h4>
+
+<pre><code>$command = "character level Dinduks 70";
+</code></pre>
+
+<p>Note that your command musn&#8217;t start with a dot.</p>
+
+<h4>Execute that command</h4>
+
+<pre><code>$result = $client-&gt;executeCommand(new SoapParam($command, 'command'));
+</code></pre>
+
+<p><code>$result</code> will contain the same text that you&#8217;d see in yellow color if you did execute the command in game.</p>
+
+<p>It&#8217;s as simple as that!</p>
+
+<h4>Bonus</h4>
+
+<p>I wrote a short script that allows to execute GM commands from a command prompt. It&#8217;s pretty funny and can be useful if you want to do something without starting an instance of the game.
+You can grab the script on Github: <a href="https://github.com/Dinduks/GM-Commands-Script">GM-Commands-Script</a></p>
+
+<p>Have fun!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Samy Dindane</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-29T02:10:03+01:00" pubdate data-updated="true">Nov 29<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/category/development/'>Development</a>, <a class='category' href='/category/pieces-of-code/'>Pieces of code</a>, <a class='category' href='/category/tutorials/'>Tutorials</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/mangos-executing-gm-commands-via-soap/" data-via="Dinduks" data-counturl="http://www.dinduks.com/mangos-executing-gm-commands-via-soap/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/protect-email-addresses-from-spam-crawlers/" title="Previous Post: Protect email addresses from spam crawlers">&laquo; Protect email addresses from spam crawlers</a>
+      
+      
+        <a class="basic-alignment right" href="/git-rename-or-change-a-repository-url/" title="Next Post: Git: Rename or change a repository URL">Git: Rename or change a repository URL &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.dinduks.com/mangos-executing-gm-commands-via-soap/';
+        var disqus_url = 'http://www.dinduks.com/mangos-executing-gm-commands-via-soap/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Tutorials | Live geek or die tryin']]></title>
+  <link href="http://www.dinduks.com/category/tutorials/atom.xml" rel="self"/>
+  <link href="http://www.dinduks.com/"/>
+  <updated>2012-11-22T01:01:21+01:00</updated>
+  <id>http://www.dinduks.com/</id>
+  <author>
+    <name><![CDATA[Samy Dindane]]></name>
+    <email><![CDATA[samy@dindane.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Apache: Enable HTTPS locally]]></title>
+    <link href="http://www.dinduks.com/apache-enable-https-locally/"/>
+    <updated>2012-05-24T15:37:11+02:00</updated>
+    <id>http://www.dinduks.com/apache-enable-https-locally</id>
+    <content type="html"><![CDATA[<p>Sometime you'd like to use SSL on a local website, for development purposes. This is possible to do in few minutes.</p>
+
+<h4>Enable Apache's SSL mod</h4>
+
+<p>If you're on some Debian based distro, and installed Apache with <em>aptitude</em> or <em>apt-get</em>, executing the <code>a2enmod ssl</code> command will do the trick.
+This means <em>Apache2 Enable MOD</em>, and will simply create a symbolic link to <em>/etc/apache2/mods-available/ssl.** in </em>/etc/apache2/mods-enabled/*.</p>
+
+<p>If you installed Apache in some other way, enable the SSL mod manually.</p>
+
+<h4>Ask Apache to listen on the port 443</h4>
+
+<p>443 is the default SSL port. Ask Apache to listen on it by adding <code>Listen 443</code> in your config file (<em>httpd.conf</em> for example).
+You don't need to do that if you installed Apache with <em>aptitude</em> or <em>apt-get</em>. Apache automatically listens on this port when the <em>SSL mod</em> in enabled.</p>
+
+<h4>Create an SSL certificate</h4>
+
+<pre><code>mkdir /etc/apache2/ssl/
+make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
+</code></pre>
+
+<p>This will generate a SSL certificate, based on the <em>ssleay.cnf</em> template.</p>
+
+<h4>Setup your application's virtual host</h4>
+
+<p>Setting up SSL is over. Now it's time to create a virtual host for our application.</p>
+
+<pre><code>&lt;VirtualHost *:443&gt; # listen on the 443 port
+  ServerName myawesomeapp.dev
+
+  SSLEngine On # enabled SSL
+  SSLCertificateFile /etc/apache2/ssl/apache.pem # specify the certificate file
+
+  DocumentRoot /var/www/dev/myawesomeapp/
+&lt;/VirtualHost&gt;
+</code></pre>
+
+<p>We're done, happy coding!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails: cannot load such file -- openssl]]></title>
+    <link href="http://www.dinduks.com/rails-cannot-load-such-file-openssl/"/>
+    <updated>2012-01-05T18:57:21+01:00</updated>
+    <id>http://www.dinduks.com/rails-cannot-load-such-file-openssl</id>
+    <content type="html"><![CDATA[<p>While setting up my <em>Rails</em> development environment on my fresh Kubuntu VM, I've encountered many errors.
+This one was occurring when trying to launch a WEBrick server:</p>
+
+<blockquote><p>/home/dinduks/.rvm/gems/ruby-1.9.3-p0/gems/activesupport-3.1.3/lib/active_support/dependencies.rb:240:in `require': cannot load such file -- openssl (LoadError)</p></blockquote>
+
+<p>This error means that your Ruby isn't compiled with <em>openssl</em>.</p>
+
+<p>Assuming that you use RVM, these are the steps to follow to fix this issue.</p>
+
+<p>Install the <em>openssl</em> package</p>
+
+<pre><code>rvm pkg install openssl
+</code></pre>
+
+<p>Remove the Ruby installation you're using</p>
+
+<pre><code>rvm remove 1.9.3
+</code></pre>
+
+<p>And finally recompile Ruby with <em>openssl</em></p>
+
+<pre><code>rvm install 1.9.3 --with-openssl-dir=$HOME/.rvm/usr
+</code></pre>
+
+<p>Everything should be working now. Don't forget to:</p>
+
+<pre><code>rvm use 1.9.3 --default
+</code></pre>
+
+<p>I hope my first Rails related tutorial was helpful, happy coding! :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Implementing a simple caching system]]></title>
+    <link href="http://www.dinduks.com/implementing-a-simple-caching-system/"/>
+    <updated>2011-12-20T11:55:05+01:00</updated>
+    <id>http://www.dinduks.com/implementing-a-simple-caching-system</id>
+    <content type="html"><![CDATA[<p>Hello,</p>
+
+<p>I'm going to show you a simple way to cache a file.</p>
+
+<p>To illustrate my example, I will use a script that creates a single image from multiple images.
+I have written <a href="https://github.com/Dinduks/Lastfm-Top-Albums">that script</a> a few months ago to generate a patchwork of my top albums in <a href="http://www.lastfm.com/user/Dinduks">Last.fm</a>, due to the lack of working similar scripts.</p>
+
+<p><a href="http://lastfmtopalbums.dinduks.com/">
+<img class="center" src="http://lastfmtopalbums.dinduks.com/patchwork.php?user=Dinduks&amp;period=3month&amp;rows=2&amp;cols=2&amp;imageSize=200"  alt="Dinduks\">
+</a></p>
+
+<p>First, let's see how the script works, without the cache <em>system</em>:</p>
+
+<p><div><script src='https://gist.github.com/1707693.js?file='></script>
+<noscript><pre><code>&lt;?php
+
+$apiUrl = 'http://ws.audioscrobbler.com/2.0/';
+$apiKey = '61d580c50e6e5e3f14b6bd9527e5395f';
+$method = 'user.gettopalbums';
+
+$user   = $_GET['user'];
+$period = $_GET['period'];
+$rows   = $_GET['rows'];
+$cols   = $_GET['cols'];
+
+$limit  = $cols * $rows;
+
+$query = &quot;$apiUrl?method=$method&amp;user=$user&amp;period=$period&amp;limit=$limit&amp;api_key=$apiKey&quot;;
+
+// create a DOMDocument which will contain the xml document returned by Last.fm's Web service
+$topAlbums = new DOMDocument();
+$topAlbums-&gt;load($query);
+
+/*
+The code for generating the image...
+*/
+
+// display the image
+header(&quot;Content-type: image/jpg&quot;);
+imagejpeg($patchwork);</code></pre></noscript></div>
+</p>
+
+<p>As you can see, the image is generated whenever the script is called. This isn't only greedy on the server's resources, but does also take a little time ; between 4 and 6 seconds for a common patchwork.</p>
+
+<p>To avoid this repetitive task, the idea is to save the generated image on a file, and, each time the script is called, check if the image doesn't already exist before creating it again.</p>
+
+<h3>Create a signature of the source file</h3>
+
+<p>Since the image is generated from data that comes from the Last.fm Web Service, it will change according to it's response. Let's then create a MD5 hash of it.</p>
+
+<pre><code>$response     = file_get_contents($query);
+$responseHash = md5($response);
+</code></pre>
+
+<h3>Name the generated file</h3>
+
+<p>It's time now to choose a name format for our file. I chose the following:</p>
+
+<pre><code>$fileName = "images/$user.$period.$rows.$cols.$imagesSize.$responseHash";
+</code></pre>
+
+<p><strong>Note</strong>: Make sure you have the write and read permissions on <code>images/</code>.</p>
+
+<h3>Save the file</h3>
+
+<p>At the end of the script, just before displaying the image, save it.</p>
+
+<pre><code>imagejpeg($patchwork, $fileName);
+</code></pre>
+
+<p>You'll have to use <code>fwrite()</code> or a similar function depending on the type of the file you want to save.</p>
+
+<h3>Check if the file exists</h3>
+
+<p>The file is well saved now.<br/>
+The final step consists in checking, at the next request, if that file exists. If it's the case, answer with it, if it is not, run the usual code ; which is the image creation.<br/>
+The code below should be put right before the image creation process.</p>
+
+<pre><code>if (file_exists($fileName)) {
+    header("Content-type: image/jpg");
+    echo file_get_contents($fileName);
+    exit;
+}
+</code></pre>
+
+<p>You are now ready to implement your own little cache system. Have fun. :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony2: Using multiple databases]]></title>
+    <link href="http://www.dinduks.com/symfony2-using-multiple-databases/"/>
+    <updated>2011-12-03T19:51:07+01:00</updated>
+    <id>http://www.dinduks.com/symfony2-using-multiple-databases</id>
+    <content type="html"><![CDATA[<p>In case your website, built with Symfony2, is using multiple databases, you must setup as much connections and <em>Entity Managers</em> as databases.</p>
+
+<p><em>An Entity Manager is simply an interface that speaks to the database.</em></p>
+
+<p>In order to illustrate my example, I will be using two databases: <em>site</em> and <em>forum</em>.</p>
+
+<h4>Set up the connections in <em><strong>config.yml</strong></em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # specify the connexion used by default
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Set up EM, in the same file</h4>
+
+<p>To begin with, disable <em>auto-mapping</em>, so you will be able to choose which EM is going to manage which <em>bundle</em>’s entities.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: If there’s an error bounded with this line, just delete it.</em></p>
+
+<p>Then, right below, set up EM while specifying <em>mappings</em> to each bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # specify the EM used by default (when using console commands f.e)
+
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksFooBundle : ~
+          DinduksBarBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Simply put, mappings connect and constitute the bridge between an EM and the entities of a specific bundle.
+In other terms, mappings call up an EM X when wanting to manipulate an entity Y.</p>
+
+<p>Warning: Always make sure you map your fresh-created bundles to an EM, otherwise a "non-existent bundle" error will occur when using the <code>doctrine:generate:entities</code> command.</p>
+
+<h4>Use</h4>
+
+<p>In the same way you call your default EM, call the EM you need by passing its name to the <code>getEntityManager()</code> function.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>I hope you’ll find this tutorial useful. :)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-plusieurs-bases-de-donnees">Symfony2: Utiliser plusieurs bases de données</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MaNGOS: executing GM commands via SOAP]]></title>
+    <link href="http://www.dinduks.com/mangos-executing-gm-commands-via-soap/"/>
+    <updated>2011-11-29T02:10:03+01:00</updated>
+    <id>http://www.dinduks.com/mangos-executing-gm-commands-via-soap</id>
+    <content type="html"><![CDATA[<p>Hi,</p>
+
+<p>I have recently built a site for a World of Warcraft server using <strong>Symfony2</strong> framework.
+Among the features I had to implement, there was a shop where donators can buy rewards, such as levels, gold, items and teleportations.</p>
+
+<p>During my first reflexions, as a Web developer who has no knownledge about MaNGOS server, I thought of rewarding players by adding or updating data in the database. I started experimenting that way, but I quickly realized that it was leading me nowhere.</p>
+
+<p>There are some reasons why:</p>
+
+<ul>
+<li>Adding levels using the database is useless if the player is online. Because it doesn't apply instantly and once the player logs off, the server will override the level in the database with the player's level on the logout.</li>
+<li>The samething applies for teleportation.</li>
+<li>Sending an item: I won't give much details because it's too complicated, but basically, sending an item using the database is a pain in the ass since it requires creating many rows here and there. Some of these rows are in tables with non-documented columns, which make them (almost) impossible to create. <em>#mindfuck</em></li>
+</ul>
+
+
+<p>As you may already know if you're familiar with MaNGOS, all the actions mentionned above are doable using GM commands.
+Fortunately, MaNGOS server already has a SOAP Web Service allowing to execute GM commands directly on the server.
+Using it will not only allow you to do things quickly and easily, but it is also safe since you know that MaNGOS native commands will do the what you ask them the right way.</p>
+
+<h3>This is how to use SOAP with PHP:</h3>
+
+<h4>Enable SOAP</h4>
+
+<p>First of all, make sure to have the SOAP extension enabled: <em>extension=php_soap.dll</em> on Windows.</p>
+
+<h4>Store your server's info in variables:</h4>
+
+<pre><code>$soapUsername = 'mangos_usr';
+$soapPassword = 'mangos_pwd';
+$soapHost = '127.0.0.1';
+$soapPort = '7878';
+</code></pre>
+
+<h4>Then create an instance of SoapClient and pass to it the required parameters</h4>
+
+<pre><code>$client = new SoapClient(NULL, array(
+    'location' =&gt; "http://$soapHost:$soapPort/",
+    'uri'      =&gt; 'urn:MaNGOS',
+    'style'    =&gt; SOAP_RPC,
+    'login'    =&gt; $soapUsername,
+    'password' =&gt; $soapPassword,
+));
+</code></pre>
+
+<p>The login and the passwords are the ones that you use to log into your GM account.</p>
+
+<h4>Create a command</h4>
+
+<pre><code>$command = "character level Dinduks 70";
+</code></pre>
+
+<p>Note that your command musn't start with a dot.</p>
+
+<h4>Execute that command</h4>
+
+<pre><code>$result = $client-&gt;executeCommand(new SoapParam($command, 'command'));
+</code></pre>
+
+<p><code>$result</code> will contain the same text that you'd see in yellow color if you did execute the command in game.</p>
+
+<p>It's as simple as that!</p>
+
+<h4>Bonus</h4>
+
+<p>I wrote a short script that allows to execute GM commands from a command prompt. It's pretty funny and can be useful if you want to do something without starting an instance of the game.
+You can grab the script on Github: <a href="https://github.com/Dinduks/GM-Commands-Script">GM-Commands-Script</a></p>
+
+<p>Have fun!</p>
+]]></content>
+  </entry>
+  
+</feed>

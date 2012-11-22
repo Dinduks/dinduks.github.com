@@ -1,0 +1,574 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Bonjour, Je vais à travers ce tutoriel, vous montrer comment utiliser concrètement cURL avec PHP, en récupérant une description à partir de Wikipedia &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/page/10/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/tutoriel-recuperer-le-contenu-dune-page-web-avec-curl/">PHP: Récupérer Le Contenu D&#8217;une Page Web Avec cURL</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-03T18:51:57+01:00" pubdate data-updated="true">Feb 3<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bonjour,</p>
+
+<p>Je vais à travers ce tutoriel, vous montrer comment utiliser concrètement <em>cURL</em> avec <em>PHP</em>, en récupérant une description à partir de <em>Wikipedia</em>.<br/>
+Vous pouvez retrouver le code commenté en bas de l&#8217;article.</p>
+
+<p><em>cURL</em> (abréviation de <em>Client URL Request Library</em>) est une interface en ligne de commande destinée à récupérer le contenu d&#8217;une ressource accessible par un réseau informatique. (source: <a href="http://fr.wikipedia.org/wiki/CURL"><em>Wikipedia</em></a>)</p>
+
+<h3>Installer cURL</h3>
+
+<p>Sous <em>Linux</em> il suffit d&#8217;installer le paquet <em><em>php5-curl</em></em>: <code>sudo apt-get install php5-curl</code> pour les distributions dérivées de <em>Debian</em>.<br/>
+Et de redémarrer <em>Apache</em>: <code>sudo /etc/init.d/apache2 restart</code>.</p>
+
+<p>Sous <em>Windows</em> cURL est disponible avec <em>WAMP</em>.<br/>
+Il faut cependant l&#8217;activer en <em>décommentant</em> la ligne <code>;extension=php_curl.dll</code> (enlever le point virgule (;) au début de ligne) dans le fichier <em>php.ini</em>.</p>
+
+<p>Pour les hébergeur de sites, cURL est activé sur la plupart d&#8217;entre eux.</p>
+
+<h3>Récupérer la page</h3>
+
+<pre><code>$wikipediaURL = 'http://fr.wikipedia.org/wiki/Megadeth';
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $wikipediaURL);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_USERAGENT, 'Le blog de Samy Dindane (www.dinduks.com)');
+$resultat = curl_exec ($ch);
+curl_close($ch);
+</code></pre>
+
+<p>Explications:</p>
+
+<ul>
+<li>On initialise cURL avec <code>curl_init();</code></li>
+<li>Oui lui fourni l&#8217;url de la page à récupérer</li>
+<li>On lui demande de ne retourner la page <code>curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);</code></li>
+<li>On fournit un User Agent avec une description de notre script, pour ne pas être identifié en tant que bot malicieux. (pas obligatoire dans tous les cas)</li>
+<li>On exécute la requête qui nous retourne le contenu de la page dans un tableau.</li>
+<li>Et finalement on ferme la connexion cURL.</li>
+</ul>
+
+
+<p>Vous pouvez maintenant faire un <code>echo $resultat;</code> pour afficher le contenu récupéré.</p>
+
+<h3>Passer des cookies</h3>
+
+<p>Au cas où le site source demanderait des cookies, récupérez les (à partir des entêtes HTTP que vous envoie la page), et passez les de cette manière:</p>
+
+<pre><code>$cookies = "foo=bar";
+curl_setopt($ch, CURLOPT_COOKIE, $cookies);
+</code></pre>
+
+<p>Jusque là notre variable <code>$resultat</code> contient le code <em>HTML</em> brut de la page.
+Il faut alors récupérer la section qui nous intéresse, et c&#8217;est la partie la plus intéressante de ce tutoriel. :)</p>
+
+<h3>Récupérer la description</h3>
+
+<p>On va utiliser pour cela la classe <em>DOMDocument</em> de <em>PHP5</em>.
+On instancie un objet DOMDocument et on charge le contenu de la variable $resultat dans cet objet:</p>
+
+<pre><code>$wikipediaPage = new DOMDocument();
+$wikipediaPage-&gt;loadHTML($resultat);
+</code></pre>
+
+<p>On peut maintenant manipuler <code>$wikipediaPage</code> en tant que contenu DOM.<br/>
+Il faut tracer notre chemin dans ce labyrinthe de balises, mais avant, jetons un coup d&#8217;œil sur le code de notre page Wikipedia.</p>
+
+<p>On remarque que la description se trouve entre les premières balises <code>&lt;p&gt;</code> de <code>&lt;div id="bodyContent"&gt;</code><br/>
+On va alors accéder à cette <code>&lt;div&gt;</code> avec un <code>foreach</code>:</p>
+
+<pre><code>foreach($wikipediaPage-&gt;getElementsByTagName('div') as $div){
+    if($div-&gt;getAttribute('id') == "bodyContent"){
+    }
+}
+</code></pre>
+
+<p>Et on récupère le contenu de la fameuse <code>&lt;p&gt;</code> dans une variable:</p>
+
+<pre><code>$description = '&lt;p&gt;' . $div-&gt;getElementsByTagName('p')-&gt;item(0)-&gt;nodeValue. '&lt;/p&gt;';
+</code></pre>
+
+<p>Une petite explication s&#8217;impose:</p>
+
+<ul>
+<li>Avec <code>foreach</code> on parcours toutes les balises <code>&lt;div&gt;</code></li>
+<li>Si leur (attribut) <code>id</code> est <code>bodyContent</code>, on récupère le contenu (<code>nodeValue</code>) de la première (<code>item(0)</code>) balise <code>&lt;p&gt;</code>.</li>
+</ul>
+
+
+<p>On enlève maintenant la syntaxe propre à Wikipedia, les ancres ([1], [2]) et les virgules qui les suivent par exemple.</p>
+
+<pre><code>$description = preg_replace('/\[[0-9]*\][,]|\[[0-9]*\]/', '', $description);
+</code></pre>
+
+<p>Je précise que cette expression régulière n&#8217;est pas définitive et qu&#8217;elle est sujette à l&#8217;amélioration.</p>
+
+<p>Un <code>echo $description;</code> nous affiche la description et confirme que notre script a marché.<br/>
+Ici on peut dire que le tutoriel est fini et qu&#8217;on a réussi à récupérer notre description. Mais.</p>
+
+<p>Mais que faire s&#8217;il y a une <code>&lt;p&gt;</code> vide, ou un <code>&lt;p&gt;</code> dans la balise <code>&lt;table&gt;</code>, avant le <code>&lt;p&gt;</code> qui contient la description?<br/>
+Il faut qu&#8217;on prenne nos précautions et prévoir les mauvaises surprises.</p>
+
+<h3>Prévoir les mauvaises surprises</h3>
+
+<p>Et cela en nettoyant $wikipediaPage (rappellez vous, notre object DOMDocument) du contenu indésirable.</p>
+
+<p>Le code suivant doit être placé dans la condition avant la récupération de la description.</p>
+
+<p>On va d&#8217;abord s&#8217;occuper des <code>&lt;p&gt;</code> vides:</p>
+
+<pre><code>$premierP = trim($div-&gt;getElementsByTagName('p')-&gt;item(0)-&gt;nodeValue);
+while($premierP == '&lt;br&gt;' || $premierP == '&lt;br&gt;&lt;/br&gt;' || $premierP == ''){
+    $div-&gt;removeChild($div-&gt;getElementsByTagName('p')-&gt;item(0));
+    $premierP = trim($div-&gt;getElementsByTagName('p')-&gt;item(0)-&gt;nodeValue);
+};
+</code></pre>
+
+<ul>
+<li>On travaille sur le contenu du premier <code>&lt;p&gt;</code></li>
+<li><a href="http://php.net/manual/fr/function.trim.php"><code>trim()</code></a> enlève les caractères invisibles du début et fin de la chaîne</li>
+<li>Tant que son contenu est vide, ou égal à un retour à la ligne (exemple que j&#8217;ai personnellement rencontré)</li>
+<li>On le supprime avec <code>removeChild()</code></li>
+<li>On passe au le <code>&lt;p&gt;</code> suivantet ainsi de suite</li>
+</ul>
+
+
+<p>Au tour des tables qui m&#8217;ont posé problème, puisqu&#8217;on en a pas besoin dans cet exemple, on va tout simplement les <em>purger</em>.</p>
+
+<pre><code>try{
+    foreach( $div-&gt;getElementsByTagName('table') as $table ){
+        $div-&gt;removeChild($table);
+    }
+} catch(Exception $e){
+}
+</code></pre>
+
+<p>La requête est simple, mais pourquoi un try/catch?<br/>
+Parce que dans certains cas, l&#8217;élément <code>&lt;table&gt;</code> n&#8217;existe pas et PHP retourne une erreur, erreur dont on peut se passer volontiers.<br/>
+(en plus c&#8217;est mon premier try/catch en php :D)</p>
+
+<p>Ce guide est terminé et j&#8217;espère qu&#8217;il vous a été utile. N&#8217;oubliez pas que ce n&#8217;est qu&#8217;un exemple et qu&#8217;il faudra le modeler selon vos besoins.<br/>
+Je vais de ma part l&#8217;améliorer au fur et à mesure que je découvre cURL.</p>
+
+<p>Vous pouvez télécharger le code commenté ici: <a href="http://pastebin.com/u2NeMt8k">Pastebin.com</a></p>
+
+<p>N&#8217;hésitez pas à laisser vos retours, suggestions ou corrections par commentaire. :)<br/>
+Je vous dis à bientôt.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/convertisseur-de-notes-de-musique/">Convertisseur De Notes De Musique</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-27T00:38:28+01:00" pubdate data-updated="true">Dec 27<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>Convertisseur de notes</em>&#8230; Qu&#8217;est ce que cela peut bien être?</p>
+
+<p>C&#8217;est un simple formulaire qui converti les notes de musique <em>latines</em> (Do, Ré, Mi, Fa, Sol, La, Si) en notes <em>anglo-saxonnes</em> (A, B, C, D, E, F, G). Le contraire est possible aussi. Je l&#8217;ai réalisé plusieurs mois plutôt parce que j&#8217;avais parfois du mal à assimiler la notation anglo-saxonne.</p>
+
+<p><img class="center" src="/images/uploads/2010/12/notes-converter-janne-wirman.jpg" title="'Janne Wirman'" ></p>
+
+<p>Mes connaissances techniques étaient assez limitées à l&#8217;époque, le convertisseur est assez simple.<br/>
+Je compte l&#8217;améliorer, avec un rafraîchissement automatique par exemple.</p>
+
+<p>Sans plus attendre, voici l&#8217;application en question: <a href="http://www.dinduks.com/notes-converter/">Notes Converter</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/dhtmlx-touch-nouveau-framework-pour-les-appareils-mobiles/">DHTMLX Touch: Nouveau Framework Pour Les Appareils Mobiles</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-20T13:29:31+01:00" pubdate data-updated="true">Dec 20<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>DHTMLX</em> a publié la version alpha de <em>DHTMLX Touch</em>, un framework open source <em>Javascript</em> et <em>HTML5</em> qui permet la création d&#8217;applications web pour des interfaces intuitives et tactiles.</p>
+
+<p>Il a été développé spécialement pour les appareils mobiles tels que l&#8217;<em>iPad</em>, l&#8217;<em>iPhone</em> et les dispositifs tournant sous <em>Android OS</em>.</p>
+
+<p>Cette version alpha offre une documentation complète ainsi qu&#8217;un outil <em>WYSIWYG</em> qui permet aux développeurs de créer des applications par le biais de simples glisser-déposer.</p>
+
+<p><em>DHTMLX Touch</em> rejoint <em>Sencha Touch</em> et <em>jQuery Mobile</em> pour enrichir le marché des applications mobiles, marché est en pleine expansion mais qui manque encore d&#8217;acteurs.</p>
+
+<p>Le site officiel de <em>DHTMLX Touch</em>: <a href="http://www.dhtmlx.com/touch">http://www.dhtmlx.com/touch</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/gagnez-5-invitations-diaspora/">Gagnez 5 Invitations Diaspora!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-20T00:04:28+01:00" pubdate data-updated="true">Dec 20<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>[Edit: Les invitations sont épuisées!]</em></p>
+
+<p>Pour ceux d&#8217;entre vous qui ne le connaissent pas, <em>Diaspora</em> est un <em>réseau social</em> qui se veut:</p>
+
+<ul>
+<li><em>Open source</em>: son code source est libre.</li>
+<li><em>Décentralisé</em>: L&#8217;utilisateur pourra héberger ses données dans un emplacement qu&#8217;il a lui même choisi, et aura donc le contrôle total sur ce qu&#8217;il veut partager.</li>
+</ul>
+
+
+<p>Le projet est actuellement en version alpha, les inscriptions sont fermées et l&#8217;accès n&#8217;est possible que sur invitation.<br/>
+J&#8217;offre donc 5 <em>invitations</em> aux premières personnes qui les demandent dans un commentaire.</p>
+
+<p>Bon surf sur <em>Diaspora</em>!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/url-rewriting-avec-wordpress/">L&#8217;URL Rewriting Avec Wordpress</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-02T15:08:24+01:00" pubdate data-updated="true">Dec 2<span>nd</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>L&#8217;<em>URL Rewriting</em>, c&#8217;est quoi?</h3>
+
+<p>L&#8217;<em>URL Rewriting</em> est une technique qui permet non seulement de réécrire les urls pour les simplifier, mais aussi d&#8217;améliorer le <em>référencement</em> de votre site.<br/>
+Votre url va alors ressembler à ça <em>http://www.dinduks.com/url-rewriting-avec-wordpress</em> au lieu de <em>http://www.dinduks.com/?p=359</em>.</p>
+
+<h3>Comment l&#8217;activer?</h3>
+
+<p>Il suffit de vous rendre sur la page <em><a href="http://www.dinduks.com/wp-admin/options-general.php">Permaliens</a></em> dans les Réglages de votre blog <em>Wordpress</em>, de sélectionner <em>Structure personnalisée</em>, et finalement mettre le tag suivant dans le champ qui nous intéresse: <code>_/%postname%_</code>.</p>
+
+<p>Ce tag indique au blog qu&#8217;il faut afficher les liens sous cette forme: <em>domaine.com/titre-du-post</em>.<br/>
+La syntaxe est personnalisable à souhait, une multitude d&#8217;autres tags est disponible sur <a href="http://codex.wordpress.org/Using_Permalinks">le Codex de <em>Wordpress</em></a>.</p>
+
+<h3>Performances</h3>
+
+<p>L&#8217;utilisation de l&#8217;<em>URL Rewriting</em> peut avoir un impact néfaste sur les performances, consultez <a href="http://bit.ly/g2LDxu">cet article</a> pour plus d&#8217;informations.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/11/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/page/9/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

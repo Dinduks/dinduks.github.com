@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Pieces of code | Live geek or die tryin']]></title>
+  <link href="http://www.dinduks.com/category/pieces-of-code/atom.xml" rel="self"/>
+  <link href="http://www.dinduks.com/"/>
+  <updated>2012-11-22T01:01:21+01:00</updated>
+  <id>http://www.dinduks.com/</id>
+  <author>
+    <name><![CDATA[Samy Dindane]]></name>
+    <email><![CDATA[samy@dindane.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Rails: Load assets in a specific order]]></title>
+    <link href="http://www.dinduks.com/rails-load-assets-in-a-specific-order/"/>
+    <updated>2012-01-31T00:57:22+01:00</updated>
+    <id>http://www.dinduks.com/rails-load-assets-in-a-specific-order</id>
+    <content type="html"><![CDATA[<p>Let's pretend you have many CSS/SASS stylesheets and JS/Coffee scripts in your project, and you want to load some before the rest.
+This can be done in <code>stylesheets/application.css</code> and <code>javascripts/application.js</code> by using the keyword <code>require</code>.</p>
+
+<h2>Examples:</h2>
+
+<h3>Stylesheets:</h3>
+
+<p>If you want to load Bootstrap's stylesheet first:</p>
+
+<p>{% gist 1707651 %}</p>
+
+<h3>Javascripts:</h3>
+
+<p>This is how to load jQuery and Boostrap's scripts before the others:
+{% gist 1707655 %}</p>
+
+<p>You can omit the files extensions.</p>
+
+<p>I believe they call this the awesomeness of Rails.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony 2: Execute console commands on a specific entity manager]]></title>
+    <link href="http://www.dinduks.com/symfony-2-execute-console-commands-on-a-specific-entity-manager/"/>
+    <updated>2011-12-16T19:31:57+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-execute-console-commands-on-a-specific-entity-manager</id>
+    <content type="html"><![CDATA[<p>The following isn’t an exact science, however, if you didn't <code>--help</code>, it will spare you a 10min research.<br/>
+This is your lifesaver: <code>--em</code>.</p>
+
+<h3>Example</h3>
+
+<p>In case you want to generate mapping information using the “client” entity manager:</p>
+
+<pre><code>php app/console doctrine:mapping:convert yml /src/Acme/ClientBundle/Resources/config/doctrine/metadata/orm --from-database --force --em="client
+</code></pre>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique">Symfony2: Executer les commandes console sur un Entity Manager spécifique</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony 2: Using global variables]]></title>
+    <link href="http://www.dinduks.com/symfony-2-using-global-variables/"/>
+    <updated>2011-12-05T23:50:06+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-using-global-variables</id>
+    <content type="html"><![CDATA[<p>In order to use variables in a <strong>Symfony2</strong> controller, you’ll have to set them up in <em>parameters.ini</em>, or in any other ini file on condition that you’ll import it into <em>config.yml</em>.<br/>
+In case you want to use them in a Twig template, you must set them up in <em>config.yml</em>.</p>
+
+<p>Once done, you’ll be able to whether call them using <code>getParameter()</code> from a controller or with the syntax <code>{{ }}</code> from a Twig template.</p>
+
+<h4>Set up your variable</h4>
+
+<p>In an ini file:</p>
+
+<pre><code>[parameters]
+    myVariable = 2
+</code></pre>
+
+<p>In <em>config.yml</em>:</p>
+
+<pre><code>twig:
+  globals:
+    myTwigVariable: %myVariable%
+</code></pre>
+
+<h4>Import your ini file into config.yml</h4>
+
+<p>You can skip this step if you already set up the variables in <em>parameters.ini</em>.</p>
+
+<pre><code>imports:
+    - { resource: myFile.ini }
+</code></pre>
+
+<h4>Use the global variable</h4>
+
+<p>In a controller:</p>
+
+<pre><code>$myVariable = $this-&gt;container-&gt;getParameter('myVariable');
+</code></pre>
+
+<p>In a Twig template</p>
+
+<pre><code>&lt;p&gt;
+    My variable: {{ myTwigVariable }}
+&lt;/p&gt;
+</code></pre>
+
+<p>Enjoy. ;)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MaNGOS: executing GM commands via SOAP]]></title>
+    <link href="http://www.dinduks.com/mangos-executing-gm-commands-via-soap/"/>
+    <updated>2011-11-29T02:10:03+01:00</updated>
+    <id>http://www.dinduks.com/mangos-executing-gm-commands-via-soap</id>
+    <content type="html"><![CDATA[<p>Hi,</p>
+
+<p>I have recently built a site for a World of Warcraft server using <strong>Symfony2</strong> framework.
+Among the features I had to implement, there was a shop where donators can buy rewards, such as levels, gold, items and teleportations.</p>
+
+<p>During my first reflexions, as a Web developer who has no knownledge about MaNGOS server, I thought of rewarding players by adding or updating data in the database. I started experimenting that way, but I quickly realized that it was leading me nowhere.</p>
+
+<p>There are some reasons why:</p>
+
+<ul>
+<li>Adding levels using the database is useless if the player is online. Because it doesn't apply instantly and once the player logs off, the server will override the level in the database with the player's level on the logout.</li>
+<li>The samething applies for teleportation.</li>
+<li>Sending an item: I won't give much details because it's too complicated, but basically, sending an item using the database is a pain in the ass since it requires creating many rows here and there. Some of these rows are in tables with non-documented columns, which make them (almost) impossible to create. <em>#mindfuck</em></li>
+</ul>
+
+
+<p>As you may already know if you're familiar with MaNGOS, all the actions mentionned above are doable using GM commands.
+Fortunately, MaNGOS server already has a SOAP Web Service allowing to execute GM commands directly on the server.
+Using it will not only allow you to do things quickly and easily, but it is also safe since you know that MaNGOS native commands will do the what you ask them the right way.</p>
+
+<h3>This is how to use SOAP with PHP:</h3>
+
+<h4>Enable SOAP</h4>
+
+<p>First of all, make sure to have the SOAP extension enabled: <em>extension=php_soap.dll</em> on Windows.</p>
+
+<h4>Store your server's info in variables:</h4>
+
+<pre><code>$soapUsername = 'mangos_usr';
+$soapPassword = 'mangos_pwd';
+$soapHost = '127.0.0.1';
+$soapPort = '7878';
+</code></pre>
+
+<h4>Then create an instance of SoapClient and pass to it the required parameters</h4>
+
+<pre><code>$client = new SoapClient(NULL, array(
+    'location' =&gt; "http://$soapHost:$soapPort/",
+    'uri'      =&gt; 'urn:MaNGOS',
+    'style'    =&gt; SOAP_RPC,
+    'login'    =&gt; $soapUsername,
+    'password' =&gt; $soapPassword,
+));
+</code></pre>
+
+<p>The login and the passwords are the ones that you use to log into your GM account.</p>
+
+<h4>Create a command</h4>
+
+<pre><code>$command = "character level Dinduks 70";
+</code></pre>
+
+<p>Note that your command musn't start with a dot.</p>
+
+<h4>Execute that command</h4>
+
+<pre><code>$result = $client-&gt;executeCommand(new SoapParam($command, 'command'));
+</code></pre>
+
+<p><code>$result</code> will contain the same text that you'd see in yellow color if you did execute the command in game.</p>
+
+<p>It's as simple as that!</p>
+
+<h4>Bonus</h4>
+
+<p>I wrote a short script that allows to execute GM commands from a command prompt. It's pretty funny and can be useful if you want to do something without starting an instance of the game.
+You can grab the script on Github: <a href="https://github.com/Dinduks/GM-Commands-Script">GM-Commands-Script</a></p>
+
+<p>Have fun!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Symfony2: "render" helper for calling an action from a view]]></title>
+    <link href="http://www.dinduks.com/symfony-2-render-helper-for-calling-an-action-from-a-view/"/>
+    <updated>2011-11-17T21:19:51+01:00</updated>
+    <id>http://www.dinduks.com/symfony-2-render-helper-for-calling-an-action-from-a-view</id>
+    <content type="html"><![CDATA[<p>I discovered some days ago a <em>secret</em> Symfony 2's helper. I call it secret because I can't find it anywhere on the documentation.<br/>
+<em>Edit: Here it is on the Symfony2 book: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
+
+<p><code>{% render %}</code> is used to show an action's response in a <em>Twig</em> template. It's very useful when wanting to show a dynamic content in all the app's pages.</p>
+
+<h3>Example: Displaying online users' counter</h3>
+
+<h4>Create a <code>onlineUsersAction()</code> function</h4>
+
+<p>That function fetches, processes the result and returns the counter of the online users.</p>
+
+<h4>Create a Twig template that displays the response returned by the action</h4>
+
+<p>The syntax is the following:</p>
+
+<pre><code>  {% render "LiveGeekBundle:Default:onlineUsers" %}
+</code></pre>
+
+<p>Knowing that <code>onlineUsersAction()</code> is an action of <code>DefaultController</code> which is a controller from the <em>Live\GeekBundle</em> bundle.</p>
+
+<h4>Include that template in our application's default layout</h4>
+
+<p>Thus display the online users' counter in all the app's pages.</p>
+
+<h3>Passing arguments:</h3>
+
+<p>You can pass arguments to the action this way:</p>
+
+<h4>In the Twig template:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
+</code></pre>
+
+<h4>In the controller:</h4>
+
+<pre><code>helloAction($arg1, $arg2)
+</code></pre>
+
+<p>The arguments' order doesn't matter.</p>
+
+<p>Enjoy. ;)</p>
+]]></content>
+  </entry>
+  
+</feed>

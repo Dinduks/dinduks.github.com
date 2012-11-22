@@ -1,0 +1,570 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="I&#8217;ve recently had to do a git push -f which not only pushed the branch I&#8217;m on, but also all my other local branches, overriding the &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/page/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/git-more-control-over-git-push/">Git: More Control Over Git Push</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-06T18:35:29+02:00" pubdate data-updated="true">Jun 6<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&#8217;ve recently had to do a <code>git push -f</code> which not only pushed the branch I&#8217;m on, but also all my other local branches, overriding the remote ones.
+Fortunately for my teammates and I, the other branches were not crucial.</p>
+
+<p>This behavior is due to Git&#8217;s <em><a href="http://www.kernel.org/pub/software/scm/git/docs/v1.7.2.5/git-config.html">push.default</a></em> option set to <em>matching</em>, which means <em>Push all matching branches</em>. That&#8217;s nonsense to me considering the problems it may cause.</p>
+
+<p>This can be changed of course, by setting the <em>push.default</em> to another value:</p>
+
+<ul>
+<li><em>nothing</em>: do not push anything.</li>
+<li><em>matching</em>: push all matching branches. All branches having the same name in both ends are considered to be matching. This is the default.</li>
+<li><em>tracking</em>: push the current branch to its upstream branch.</li>
+<li><em>current</em>: push the current branch to a branch of the same name.</li>
+</ul>
+
+
+<p>The most suitable option in most of situations, in my opinion, is the <em>tracking</em> option.</p>
+
+<p>Happy versionning and be careful!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/apache-enable-https-locally/">Apache: Enable HTTPS Locally</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T15:37:11+02:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Sometime you&#8217;d like to use SSL on a local website, for development purposes. This is possible to do in few minutes.</p>
+
+<h4>Enable Apache&#8217;s SSL mod</h4>
+
+<p>If you&#8217;re on some Debian based distro, and installed Apache with <em>aptitude</em> or <em>apt-get</em>, executing the <code>a2enmod ssl</code> command will do the trick.
+This means <em>Apache2 Enable MOD</em>, and will simply create a symbolic link to <em>/etc/apache2/mods-available/ssl.** in </em>/etc/apache2/mods-enabled/*.</p>
+
+<p>If you installed Apache in some other way, enable the SSL mod manually.</p>
+
+<h4>Ask Apache to listen on the port 443</h4>
+
+<p>443 is the default SSL port. Ask Apache to listen on it by adding <code>Listen 443</code> in your config file (<em>httpd.conf</em> for example).
+You don&#8217;t need to do that if you installed Apache with <em>aptitude</em> or <em>apt-get</em>. Apache automatically listens on this port when the <em>SSL mod</em> in enabled.</p>
+
+<h4>Create an SSL certificate</h4>
+
+<pre><code>mkdir /etc/apache2/ssl/
+make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
+</code></pre>
+
+<p>This will generate a SSL certificate, based on the <em>ssleay.cnf</em> template.</p>
+
+<h4>Setup your application&#8217;s virtual host</h4>
+
+<p>Setting up SSL is over. Now it&#8217;s time to create a virtual host for our application.</p>
+
+<pre><code>&lt;VirtualHost *:443&gt; # listen on the 443 port
+  ServerName myawesomeapp.dev
+
+  SSLEngine On # enabled SSL
+  SSLCertificateFile /etc/apache2/ssl/apache.pem # specify the certificate file
+
+  DocumentRoot /var/www/dev/myawesomeapp/
+&lt;/VirtualHost&gt;
+</code></pre>
+
+<p>We&#8217;re done, happy coding!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/sinatra-rspec-and-datamapper-configuring-and-using-a-database-for-tests/">Sinatra, RSpec and DataMapper: Configuring and Using a Database for Tests</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-30T18:30:49+02:00" pubdate data-updated="true">Apr 30<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hi there,</p>
+
+<p>When testing your Sinatra application, you may need to check if some data was stored, removed, or changed in the database.</p>
+
+<p>Your application would look like this:</p>
+
+<div><script src='https://gist.github.com/2559103.js?file='></script>
+<noscript><pre><code>require 'sinatra'
+
+configure do
+  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog.db&quot;)
+  DataMapper.finalize
+  Post.auto_upgrade!
+  Tag.auto_upgrade!
+end
+
+get '/' do
+  &quot;Hello world!&quot;
+end</code></pre></noscript></div>
+
+
+
+
+<div><script src='https://gist.github.com/2559118.js?file='></script>
+<noscript><pre><code>require File.join(File.dirname(__FILE__), '..', 'blog.rb')
+require 'rack/test'
+
+RSpec.configure do |config|
+  config.include Rack::Test::Methods
+end
+
+def app
+  Sinatra::Application
+end
+
+describe &quot;get /&quot; do
+  it &quot;should display the homepage&quot; do
+    get &quot;/&quot;
+    last_response.should be_ok
+  end
+end</code></pre></noscript></div>
+
+
+<p>Okay. First of all, let&#8217;s tell RSpec to use a <code>blog_test.db</code> database:</p>
+
+<div><script src='https://gist.github.com/2559162.js?file='></script>
+<noscript><pre><code>RSpec.configure do |config|
+  config.include Rack::Test::Methods
+  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog_test.db&quot;)
+  DataMapper.finalize
+  Post.auto_migrate!
+  Tag.auto_migrate!
+end</code></pre></noscript></div>
+
+
+<p><strong>Explanations:</strong></p>
+
+<ul>
+<li><code>DataMapper::setup()</code>: Tells DataMapper which database to use ; it will create it if it doesn&#8217;t exist.</li>
+<li><code>DataMapper.finalize</code>: <em>Finalize</em>  the models. More information in <a href="http://datamapper.org/getting-started.html">DataMapper&#8217;s documentation</a>.</li>
+<li><code>auto_migrate!</code> drops and recreate the tables, which is a good thing since we want to have a clean database before each test.</li>
+</ul>
+
+
+<p>If it doesn&#8217;t already exist, a database will be created in the application&#8217;s root path the next time RSpec will be called (from the cli for example).</p>
+
+<p>All what is left now is to write the test:</p>
+
+<div><script src='https://gist.github.com/2559503.js?file='></script>
+<noscript><pre><code>describe &quot;post /new&quot; do
+  it &quot;should insert the post and its tags in the database&quot; do
+    lambda do
+      post &quot;/new&quot;, params = {
+        :title =&gt; 'title',
+        :body  =&gt; 'body',
+        :tags  =&gt; 'hello, world',
+      }
+    end.should {
+      change(Post, :count).by(1)
+      change(Tag, :count).by(2)
+    }
+  end
+end</code></pre></noscript></div>
+
+
+<p>I hope this quick how-to was helpful.</p>
+
+<p>Happy testing! :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/rails-load-assets-in-a-specific-order/">Rails: Load Assets in a Specific Order</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-31T00:57:22+01:00" pubdate data-updated="true">Jan 31<span>st</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Let&#8217;s pretend you have many CSS/SASS stylesheets and JS/Coffee scripts in your project, and you want to load some before the rest.
+This can be done in <code>stylesheets/application.css</code> and <code>javascripts/application.js</code> by using the keyword <code>require</code>.</p>
+
+<h2>Examples:</h2>
+
+<h3>Stylesheets:</h3>
+
+<p>If you want to load Bootstrap&#8217;s stylesheet first:</p>
+
+<div><script src='https://gist.github.com/1707651.js?file='></script>
+<noscript><pre><code>/*
+ *= require bootstrap.min.css
+ *= require_self
+ *= require_tree .
+ */</code></pre></noscript></div>
+
+
+<h3>Javascripts:</h3>
+
+<p>This is how to load jQuery and Boostrap&#8217;s scripts before the others:</p>
+
+<div><script src='https://gist.github.com/1707655.js?file='></script>
+<noscript><pre><code>//= require jquery-1.7.1.min.js
+//= require bootstrap-alerts.js
+//= require bootstrap-modal.js
+//= require_tree .</code></pre></noscript></div>
+
+
+<p>You can omit the files extensions.</p>
+
+<p>I believe they call this the awesomeness of Rails.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/clean-code-vs-efficiency/">Clean Code vs Efficiency</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-29T16:42:22+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have recently submitted <a href="https://github.com/symfony/symfony/pull/3209">my first pull request</a> ever, to the Symfony2 project.</p>
+
+<p><a href="https://github.com/Dinduks/symfony/commit/5306457f4b1073c6544dd4235a74c4d5f612ed9d">The code I contributed with</a> is a 3 lines long method that simply checks whether a form field is hidden or not.
+I have no doubt about the usefulness of this method, especially after seeing few people using a similar one (it seems that it was removed).</p>
+
+<p>The pull request was <a href="https://github.com/symfony/symfony/pull/3209#issuecomment-3707718">refused</a> because the class in question isn&#8217;t supposed to be <em>aware of information we need</em>.
+I agree with this and approve the good practices and clean code, but in this case we penalize the end user for the sake of doing things the <em>right</em> way.</p>
+
+<p>The purpose of my post is to answer the following question: should efficiency and simplicity be sacrificed for the sake of good practices and clean code?</p>
+
+<p>In my opinion, the answer is no. Especially when we&#8217;re dealing with a big project that thousands of people use, and that claims easiness and simplicity.</p>
+
+<p>I&#8217;m looking forward to know your opinion about the subject. Feel free to leave a comment.</p>
+
+<p><img class="center" src="/images/uploads/2012/01/programming-motherfucker.jpg"  alt="Programming Motherfucker"></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/3/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

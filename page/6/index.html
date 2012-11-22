@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Live geek or die tryin'</title>
+  <meta name="author" content="Samy Dindane">
+
+  
+  <meta name="description" content="Ce billet est une note pour ceux qui tomberaient un jour dans ce genre de situations. J&#8217;ai créé un contrôleur qui me renvoie la réponse &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.dinduks.com/page/6/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/feed" rel="alternate" title="Live geek or die tryin'" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-19893937-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Live geek or die tryin'</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/feed" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.dinduks.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-erreur-inconnue-en-environnement-de-production/">Symfony2: Erreur Inconnue en Environnement De Production</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-08T15:44:23+01:00" pubdate data-updated="true">Nov 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Ce billet est une note pour ceux qui tomberaient un jour dans ce genre de situations.</p>
+
+<p>J&#8217;ai créé un contrôleur qui me renvoie la réponse attendue lorsque je suis en environnement de dev (<em>site/app_dev.php/foo/bar</em>), mais j&#8217;ai une page blanche en prod (<em>site/foo/bar</em>).<br/>
+Rien dans le fichier de logs (<em>/logs/prod.log</em>), même pas une nouvelle ligne quand j&#8217;accède à la page.</p>
+
+<p>Ne sachant plus quoi faire, je décide de nettoyer le cache de prod, et c&#8217;est justement ce dernier qui m&#8217;indique la source de mon problème. J&#8217;avais en effet changé le nom d&#8217;un Entity Manager, et j&#8217;ai oublié de mettre à jour quelques lignes dans <em>app/config/config_prod.yml</em>.<br/>
+Celle-ci n&#8217;est évidemment pas l&#8217;unique raison possible, mais nous montre qu&#8217;une erreur peut survenir de n&#8217;importe où, que Symfony 2 ne nous montre pas toujours les erreurs, et qu&#8217;un nettoyage du cache peut le faire à sa place.</p>
+
+<p>Morale du jour: un php <code>app/console cache:clear --env="prod"</code> après des heures de travail ne fait de mal à personne! :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/twig-traduction-dans-du-javascript/">Twig: Traduction Dans Du JavaScript</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-23T13:18:32+02:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hello,</p>
+
+<p>Lors du développement d&#8217;une application <em>Silex</em>, je devais générer du code à la volée à l&#8217;aide de <em>JavaScript</em>.
+Le code généré ne pouvait évidemment pas être traduit. Pour palier à cela, le principe est de mettre les traductions dans un objet javascript, et de l&#8217;utiliser dans votre code <em>JS</em>.</p>
+
+<p>Ce qui suit est une manière de procéder.</p>
+
+<p>Je pars du principe que votre traduction est déjà mise en place et qu&#8217;elle marche correctement dans vos templates <em>Twig</em>.</p>
+
+<h4>Créer un fichier translations.html.twig</h4>
+
+<p>Je l&#8217;ai personnellement mis avec les autres vues.
+Mettez y un script JS avec les expressions que vous voulez traduire.</p>
+
+<pre><code>&lt;script type="text/javascript"&gt;
+    var translations = {
+        'hello_world': '{% trans %}hello_world{% endtrans}',
+        'foobar': '{% trans %}foobar{% endtrans}'
+    }
+&lt;/script&gt;
+</code></pre>
+
+<h4>Inclure ce template dans votre layout</h4>
+
+<p>Avant la déclaration des autre scripts bien sûr.</p>
+
+<pre><code>{% include './translations.html.twig' %}
+</code></pre>
+
+<p>Et voilà, vous pouvez maintenant accéder à l&#8217;objet <em>translations</em> depuis vos scripts JS.</p>
+
+<h4>Exemple:</h4>
+
+<pre><code>console.log(translations.hello_world);
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/silex-le-service-de-traduction-et-les-templates-twig/">Silex: Le Service De Traduction Et Les Templates Twig</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-19T00:12:43+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://silex.sensiolabs.org/"><em>Silex</em></a> est un micro-framework basé sur les composants de Symfony 2 grâce auquel je suis entrain de développer une sorte de <a href="https://github.com/Dinduks/ChaoticCard">vCard ou page d&#8217;accueil</a> (faute de meilleur terme).</p>
+
+<p>Parmi ses nombreuses fonctionnalités: La traduction. Bien qu&#8217;elle soit très facile à implémenter, la méthode n&#8217;est décrite nulle part sur la doc.<br/>
+Heureusement, sinon je n&#8217;aurais rien à poster sur ce blog.</p>
+
+<p>Trêve de plaisanteries, voici sans attendre comment implémenter la traduction avec Silex.</p>
+
+<h3>Déclarer les traductions</h3>
+
+<p>Dans un répertoire <em>src/locales/</em> créez autant de fichiers <em>yml</em> que de langues désirées.</p>
+
+<h4>Exemple de fichiers:</h4>
+
+<p><em>en.yml</em>:</p>
+
+<pre><code>  hello:      Hello
+  about_me:   About me
+  contact_me: Contact me
+</code></pre>
+
+<p><em>fr.yml</em>:</p>
+
+<pre><code>hello:      Bonjour
+about_me:   A propos de moi
+contact_me: Contactez-moi
+</code></pre>
+
+<h3>Déclarer le service <em>TranslationServiceProvider</em> dans votre <em>app.php</em></h3>
+
+<pre><code>$app-&gt;register(new Silex\Provider\TranslationServiceProvider(), array(
+    'locale'                    =&gt; LiveGeekUtil::getClientLanguage(),
+    'locale_fallback'           =&gt; 'en',
+    'translation.class_path'    =&gt; __DIR__.'/vendor/Symfony/Component',
+));
+</code></pre>
+
+<p><code>locale</code> indique la langue utilisée.<br/>
+<code>locale_fallback</code> indique la langue utilisée si notre application ne supporte pas la langue donnée dans locale.</p>
+
+<p>Notez que j&#8217;ai utilisé une méthode statique pour récupérer la langue du navigateur du visiteur. La voici:</p>
+
+<pre><code>public static function getClientLanguage() {
+    $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    return substr($langs[0], 0, 2);
+}
+</code></pre>
+
+<h3>Indiquer à l&#8217;application où se trouvent vos fichiers de langue:</h3>
+
+<pre><code>$app['translator.messages'] = array(
+    'fr' =&gt; __DIR__.'/../src/locales/fr.yml',
+    'en' =&gt; __DIR__.'/../src/locales/en.yml'
+);
+</code></pre>
+
+<h3>Charger le composant qui lit les fichiers <em>yml</em></h3>
+
+<p>PHP ne comprennant pas les fichiers <em>YAML</em>, on utilise le composant <em>YAML</em> de Symfony;</p>
+
+<pre><code>$app['autoloader']-&gt;registerNamespace('Symfony', __DIR__.'/../vendor/Symfony/src');
+$app['translator.loader'] = new Symfony\Component\Translation\Loader\YamlFileLoader();
+</code></pre>
+
+<h3>Déclarer <code>SymfonyBridgesServiceProvider</code></h3>
+
+<p>Ce service fait la liaison entre la traduction et les templates <em>Twig</em>.</p>
+
+<pre><code>$app-&gt;register(new Silex\Provider\SymfonyBridgesServiceProvider(), array(
+    'symfony_bridges.class_path' =&gt; __DIR__.'/vendor/Symfony/Component',
+));
+</code></pre>
+
+<p>Et voilà.</p>
+
+<p>A partir de maintenant, affichez le texte dans vos templates grâce aux balises <em>Twig</em> <code>{% trans %}</code>, ceux-ci seront automatiquement traduits dans la langue du navigateur de votre utilisateur, du moment qu&#8217;elle soit supportée.</p>
+
+<pre><code>{% trans %}contact_me{% endtrans %}
+</code></pre>
+
+<h3>Liens utiles:</h3>
+
+<ul>
+<li>La documentation de Silex: <a href="http://silex.sensiolabs.org/documentation">http://silex.sensiolabs.org/documentation</a>.</li>
+</ul>
+
+
+<p>Bon courage et amusez-vous bien avec Silex! :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/utiliser-le-format-exfat-sous-linux/">Utiliser Le Format exFat Sous Linux</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-13T02:00:03+02:00" pubdate data-updated="true">Oct 13<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bonjour,</p>
+
+<p>Si comme moi vos disques durs externes sont formatés en exFat (pour gérer les fichiers de plus de 4Go par exemple), et que vous utilisez souvent Linux, vous savez sûrement que le système de fichiers de Microsoft n&#8217;est pas géré nativement par Linux.<br/>
+Il y a par contre une solution, facile mais difficilement trouvable sur le net, et c&#8217;est celle que je partagerai avec vous.</p>
+
+<p>Pour cela, il faut installer FUSE:</p>
+
+<pre><code>sudo apt-add-repository ppa:relan/exfat
+sudo apt-get install fuse-exfat
+</code></pre>
+
+<p>Ensuite, branchez votre disque dur si ce n&#8217;est déjà fait, et vérifiez le nom de votre lecteur avec la commande suivante:</p>
+
+<pre><code>more /proc/partitions
+</code></pre>
+
+<p>Une liste de tous les périphériques de stockage sera alors affichée, votre disque dur externe sera sûrement dans la fin de la liste, vous le reconnaîtrez grâce à sa taille.
+Notez son nom, on va utiliser <em>/dev/sdc1</em> dans cet exemple.</p>
+
+<p>Maintenant créer un répertoire vide pour y monter votre DD:</p>
+
+<pre><code>cd /mnt
+sudo mkdir usbdrive/
+</code></pre>
+
+<p>Et montez le disque dur:</p>
+
+<pre><code>sudo mount -t exfat /dev/sdc1 usbdrive
+</code></pre>
+
+<p>Et voilà, votre lecteur devra s&#8217;afficher sur le bureau. Si ce n&#8217;est pas le cas, accédez à /mnt/usbdrive avec votre explorateur de fichier.</p>
+
+<p>Si vous avez terminé d&#8217;utiliser votre disque dur et que vous voulez le démonter, un simple <code>umount</code> suffit:</p>
+
+<pre><code>umount /mnt/usbdrive
+</code></pre>
+
+<p>Tutoriel basé sur: <a href="http://apcmag.com/how-to-enable-exfat-in-ubuntu.htm">http://apcmag.com/how-to-enable-exfat-in-ubuntu.htm</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-creer-un-utilisateur-depuis-un-controleur-avec-fosub/">Symfony2: Créer Un Utilisateur Depuis Un Contrôleur Avec FOSUB</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-09T22:09:41+02:00" pubdate data-updated="true">Oct 9<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Si vous utilisez <em>FOSUserBundle</em> et que vous voulez créer un nouvel utilisateur depuis un contrôleur, sachez que vous pouvez le faire sans vous taper une série de lignes de code. Il existe en effet une classe pour cela, <a href="https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/Util/UserManipulator.php">UserManipulator</a>, qui fera la sale besogne à votre place, <strong>et en une seule ligne</strong>!</p>
+
+<p>Pour l&#8217;utiliser, rien de plus simple:</p>
+
+<pre><code>$user = $this-&gt;get('fos_user.util.user_manipulator')-&gt;create($username, $password, $email, 1, 0);
+</code></pre>
+
+<p>Comme indiqué dans le fichier de la classe, le quatrième paramètre sert à définir si le compte sera activé ou pas et le cinquième à définir si ce compte est un super admin.</p>
+
+<p>Cette méthode vous renverra une instance de l&#8217;objet User qui vient d&#8217;être créé.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/7/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/page/5/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/simple-search-system-with-mongodb-and-scala/">Searching several collections with MongoDB (and Scala)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/review-your-code-with-git/">Review your code with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/Dinduks">@Dinduks</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Dinduks',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("Dinduks", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Samy Dindane -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'livegeekordietryin';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
