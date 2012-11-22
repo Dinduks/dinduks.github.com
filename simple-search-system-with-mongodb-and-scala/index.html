@@ -20,7 +20,7 @@ I&# &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.dinduks.com/building-search-system-with-mongodb-and-scala/">
+  <link rel="canonical" href="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -104,10 +104,10 @@ I&# &hellip;">
 
 <div class="entry-content"><p>If you need a search system for your web application, you can either roll your own,
 or use a system that does it for you, such as <em>elasticsearch</em>.<br/>
-I&#8217;ve recently had to choose, and the latter option was an overkill since I was
-looking for something simple.</p>
+I&#8217;ve recently had to choose, and the second option was an overkill since I was looking
+for something simple.</p>
 
-<p>The main idea here is to use an index collection, let&#8217;s call it <em>searchresults</em>,
+<p>The main idea here is using an index collection, let&#8217;s call it <em>searchresults</em>,
 that will be updated each time the <em>real</em> entities change, thanks to hooks
 implemented on the default create/update/delete tasks.<br/>
 <em>searchresults</em> will be the only collection to get queried, thus making requests
@@ -223,7 +223,7 @@ This can be done in one single command:</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/building-search-system-with-mongodb-and-scala/" data-via="Dinduks" data-counturl="http://www.dinduks.com/building-search-system-with-mongodb-and-scala/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/" data-via="Dinduks" data-counturl="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/" >Tweet</a>
   
   
   
@@ -254,7 +254,7 @@ This can be done in one single command:</p>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/building-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
+        <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
@@ -337,8 +337,8 @@ This can be done in one single command:</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.dinduks.com/building-search-system-with-mongodb-and-scala/';
-        var disqus_url = 'http://www.dinduks.com/building-search-system-with-mongodb-and-scala/';
+        var disqus_identifier = 'http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/';
+        var disqus_url = 'http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/';
         var disqus_script = 'embed.js';
       
     (function () {

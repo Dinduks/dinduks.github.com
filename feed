@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2012-11-22T23:19:30+01:00</updated>
+  <updated>2012-11-22T23:26:09+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -15,15 +15,15 @@
   
   <entry>
     <title type="html"><![CDATA[Building a search system with MongoDB (and Scala)]]></title>
-    <link href="http://www.dinduks.com/building-search-system-with-mongodb-and-scala/"/>
+    <link href="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/"/>
     <updated>2012-11-21T22:47:00+01:00</updated>
-    <id>http://www.dinduks.com/building-search-system-with-mongodb-and-scala</id>
+    <id>http://www.dinduks.com/simple-search-system-with-mongodb-and-scala</id>
     <content type="html"><![CDATA[<p>If you need a search system for your web application, you can either roll your own,
 or use a system that does it for you, such as <em>elasticsearch</em>.<br/>
-I&#8217;ve recently had to choose, and the latter option was an overkill since I was
-looking for something simple.</p>
+I&#8217;ve recently had to choose, and the second option was an overkill since I was looking
+for something simple.</p>
 
-<p>The main idea here is to use an index collection, let&#8217;s call it <em>searchresults</em>,
+<p>The main idea here is using an index collection, let&#8217;s call it <em>searchresults</em>,
 that will be updated each time the <em>real</em> entities change, thanks to hooks
 implemented on the default create/update/delete tasks.<br/>
 <em>searchresults</em> will be the only collection to get queried, thus making requests
