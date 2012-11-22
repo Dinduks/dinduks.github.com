@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2012-11-22T01:01:21+01:00</updated>
+  <updated>2012-11-22T01:07:40+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Searching several collections with MongoDB (and Scala)]]></title>
+    <title type="html"><![CDATA[Building a search system with MongoDB (and Scala)]]></title>
     <link href="http://www.dinduks.com/simple-search-system-with-mongodb-and-scala/"/>
     <updated>2012-11-21T22:47:00+01:00</updated>
     <id>http://www.dinduks.com/simple-search-system-with-mongodb-and-scala</id>
