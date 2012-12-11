@@ -8,16 +8,18 @@ categories:
 
 If you need a search system for your web application, you can either roll your own,
 or use a system that does it for you, such as *elasticsearch*.  
-I've recently had to choose, and the latter option was an overkill since I was
-looking for something simple.
+I've recently had to choose, and the second option was an overkill since I was looking
+for something simple.
 
-The aim was to allow searching for many entities: *users*, *songs* and few others.  
-For simplicty's sake, I'll stick to two: `User` and `Song`.
+The main idea here is using an index collection, let's call it *searchresults*,
+that will be updated each time the *real* entities change, thanks to hooks
+implemented on the default create/update/delete tasks.  
+*searchresults* will be the only collection to get queried, thus making requests
+simple and search results' retrieval fast.  
 
-The main idea here is to use an index collection, *searchresults*, that will be
-updated each time *users* and *songs* change.  
-*searchresults* will be the only collection to get queried, making requests simple,
-and search results' retrieval fast.
+### More in details
+
+I'll use two entities in my example: `User` and `Song`.
 
 The `SearchResult` model has 3 fields:
 
@@ -25,7 +27,9 @@ The `SearchResult` model has 3 fields:
 or *song* in this case.
 * `entityId`: You think my name is Captain Obvious, don't you?
 * `keywords`: An array of keywords related to that search.
- 
+
+That class' signature should look like this:
+
     case class SearchResult(
       id:         ObjectID,
       entityType: String,
@@ -33,23 +37,20 @@ or *song* in this case.
       keywords:   List[String]
     )
 
-`ObjectID` is a [*Casbah*](http://api.mongodb.org/scala/casbah/current/) type. Feel free to change it with your driver's identifier
-type.
-
 Paired with the class described above, a `Searchable` trait will help forcing the
 implementation of some methods and properties, and more importantly be used as a
 type in methods signatures.
 
     trait Searchable {
-      def entityType:     String,
+      def entityType:    String = this.getClass.getSimpleName,
       getSearchKeywords: List[String],
-      entityId:           ObjectID
+      entityId:          ObjectID
     }
 
 Now, each of your entities class, `User` and `Song`, will implement the `Searchable`
 trait, define the `entityType` property and implement the `getSearchKeywords()`
-method. The `entityId` or something similar property should already be implemented
-by your MongoDB driver.
+method. The `entityId` property, or some entity with the same name, should already
+be implemented by your MongoDB driver.
 
 *Example of a `getSearchKeywords()` method:*
 
@@ -59,9 +60,8 @@ by your MongoDB driver.
 The next step is to implement the hooks that update the index collection each time
 *users* and *songs* are updated too.
 
-In *Casbah* for instance, the entities are created and updated when calling the
-`save()` method, and deleted when `remove()` is called. Both these methods are
-inherited from `SalatDAO`.  
+If you use *Casbah* and *Salat* for instance, the entities are created and updated when calling the
+`save()` method, and deleted when `remove()` is called.  
 These methods should be overriden, the hooks behaviors added to them —creating or
 updating the concerned `SearchResult` entry, in case of `save()` for example—, yet
 without altering their initial role.  
