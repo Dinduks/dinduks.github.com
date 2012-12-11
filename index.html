@@ -9,9 +9,9 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="If you need a search system for your web application, you can either roll your own,
-or use a system that does it for you, such as elasticsearch.
-I&# &hellip;">
+  <meta name="description" content="I won&#8217;t go though explaining how to create a build.xml file, the
+official manual, which is really good,
+does it better than I would. The error &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +76,59 @@ I&# &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/java-no-main-manifest-attribute/">Java: No Main Manifest Attribute</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-11T11:42:00+01:00" pubdate data-updated="true">Dec 11<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I won&#8217;t go though explaining how to create a <em>build.xml</em> file, the
+<a href="http://ant.apache.org/manual/using.html">official manual</a>, which is really good,
+does it better than I would.</p>
+
+<p>The error in question occurs because the <em>java</em> executable, after reading the
+<a href="http://en.wikipedia.org/wiki/Manifest_file">Manifest</a> file from the inside of the
+JAR, doesn&#8217;t know what is the entry point of the program; i.e. the class that
+contains the ugly <code>public static void main(String[] args)</code> function.</p>
+
+<p>To fix the error, that class&#8217; full name needs to be specified in the <em>build.xml</em> file.<br/>
+For example:</p>
+
+<pre><code>&lt;jar destfile="${jar}" basedir="${build}"&gt;
+    &lt;manifest&gt;
+      &lt;attribute name="Main-Class" value="my.awesome.package.Main" /&gt;
+    &lt;/manifest&gt;
+&lt;/jar&gt;
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -613,175 +666,6 @@ I&#8217;d suggest doing this in a separate or in the <em>README</em> file.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/yet-another-blog-that-migrates-to-octopress/">Yet Another Blog That Migrates to Octopress</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-25T19:45:00+02:00" pubdate data-updated="true">Jul 25<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I recently migrated my blog from Wordpress to <a href="http://octopress.org/">Octopress</a>.</p>
-
-<blockquote><p>Octopress is a framework for Jekyll, the blog aware static site generator
-powering Github Pages. To start blogging with Jekyll, you have to write your own
-HTML templates, CSS, Javascripts and set up your configuration. But with Octopress
-All of that is already taken care of. Simply clone or fork Octopress,
-install dependencies and the theme, and you’re set.</p></blockquote>
-
-<h3>Here are some reasons behind this choice:</h3>
-
-<h4>Markdown</h4>
-
-<p>I&#8217;m become a fluent Markdown speaker after spending a decent amount of time at
-GitHub and Stack Overflow. Not only it&#8217;s a pleasure to write using it, but it also
-let focusing on the most important thing — writing, and not to worry about pointless
-things such as HTML formatting for example.</p>
-
-<h4>Speed</h4>
-
-<p>The blog posts being written in Markdown, there&#8217;s a HTML version of them generated
-before each deploy. You can add <code>/index.html</code> at the end of this page&#8217;s URL to
-understand what I&#8217;m talking about.<br/>
-That basically means that the blog is simply a bunch of HTML files and doesn&#8217;t
-require or have a database, which makes it fast to load and search engines friendly.</p>
-
-<h4>Portabiliy</h4>
-
-<p>Many points here:</p>
-
-<ul>
-<li>Posts are born in Markdown: I can easily version them.</li>
-<li>Posts reborn as HTML: I can server them from anywhere, and they&#8217;ll just <em>work</em>.</li>
-<li>Since the blog is static, the comments are hosted elsewhere, Disqus in my case,
-thus making them protable from a blog platform to another.</li>
-</ul>
-
-
-<h4>Other random detail</h4>
-
-<p>Octopress ships with a nice theme, which is perfect in my eyes: it&#8217;s simple,
-responsive and its font size is big enough to not screw up the reader&#8217;s eyes.</p>
-
-<h3>The migration</h3>
-
-<p>Now I&#8217;ll show you how you can migrate your own blog to Octopress.</p>
-
-<h4>Migrate your blogs comment to Disqus</h4>
-
-<p>As I mentioned above, the blog doesn&#8217;t have a database; you have to use an external
-comments <em>provider</em> for your Octopress blog.<br/>
-I personnaly went for Disqus because it&#8217;s popular and well integrated with Octopress.</p>
-
-<p>What you need to do is:</p>
-
-<ul>
-<li>Creating a <a href="http://octopress.org/docs/deploying/">Disqus</a> account</li>
-<li>Installing the Disqus Wordpress plugin</li>
-<li>Importing your Wordpress blog comments to Disqus (this feature is available in your
-user panel)</li>
-</ul>
-
-
-<h4>Create an Octopress blog</h4>
-
-<p>You don&#8217;t say?!<br/>
-Start reading the <a href="http://octopress.org/docs/setup/">Octopress Setup</a> chapter from
-Octopress&#8217; documentation. It&#8217;ll guide you through the installation steps.</p>
-
-<h4>Migrate Wordpress&#8217; posts</h4>
-
-<p>For this, use the <a href="https://github.com/thomasf/exitwp">exitwp</a> tool.<br/>
-It&#8217;s pretty easy to install and use:</p>
-
-<ul>
-<li>Clone it</li>
-<li>Export your Wordpress blog</li>
-<li>Run the tool on it</li>
-</ul>
-
-
-<p>You&#8217;ll now have a <em>_post/</em> directory that you&#8217;ll need to move to your fresh
-created blog <em>source/</em> folder.</p>
-
-<p>More in depth use explanations can be found in <em>exitwp</em>&#8217;s README.</p>
-
-<h4>Fix the generated posts syntax</h4>
-
-<p>Heh, you really believed it would be that easy?! ;)</p>
-
-<p>Although <em>exitwp</em> helps <em>a lot</em> in the migration process, it sometimes doesn&#8217;t
-convert stuff as it should do. That&#8217;s especially true if you have some fucked up
-HTML formatting, some specific tags, such as the Syntax Highlighter plugin ones.</p>
-
-<p>What you need to do now is going throught all the posts, one by one, and fix what
-should be fixed.<br/>
-Good luck.</p>
-
-<h4>Deploy it!</h4>
-
-<p>Now that the migration is complete, you want to show your blog to the internets.</p>
-
-<p>You can either host it on your own server as you would do for a classic Wordpress
-blog, for free on Heroku, or, if you&#8217;re as cool as me, as GitHub pages.</p>
-
-<p>Whatever the way you choose, the <a href="http://octopress.org/docs/deploying/">Deploying</a>
-chapter on Octopress&#8217; doc will help deploy your blog.</p>
-
-<h4>Keeping the blog on the same domain name</h4>
-
-<p>This part was straightforward for me, it is well explained in the
-<a href="http://octopress.org/docs/deploying/github/#custom_domains">docs</a>.</p>
-
-<p>There was little problem though, with Disqus: my blog was hosted at <em>www.dinduks.com</em>,
-the comments were correctly imported as coming from the <em>www</em> subdomain, except that
-new comments, on the new blog, were detected as coming from the TLD <em>dinduks.com</em>
-and not the subdomain <em>www.dinduks.com</em>.<br/>
-I made sure <em>www</em> was mentioned everywhere, but it didn&#8217;t fix the problem.</p>
-
-<p>I solved this problem by  <em>migrating</em> the old comments from the correct domain
-(<em>www.dinduks.com</em>), to the one Disqus was detecting (<em>dinduks.com</em>).<br/>
-It&#8217;s not logical, but it&#8217;s better than having no comments at all.</p>
-
-<p>The <a href="disqus.com/admin/tools/migrate/">Migrate Threads</a> feature can be found in the
-the <em>Tools</em> section of your Disqus admin panel.</p>
-
-<h3>Conclusion</h3>
-
-<p>Now that I migrated, I&#8217;m disappointed to see that the Octopress project is (almost)
-deserted by its maintainer. As I&#8217;m writing this, there&#8217;s 73 opened Pull Requests
-and 138 issues. And the commits rate is low.</p>
-
-<p>Nevertheless, I&#8217;m still convinced that Octopress suits my needs more than Wordpress
-or any <em>dynamic</em> blogging platform outta here, and I encourage you to, at least,
-give it a try.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/2/">&larr; Older</a>
@@ -797,15 +681,15 @@ give it a try.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
+      </li>
+    
+      <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
         <a href="/review-your-code-with-git/">Review your code with Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
       </li>
     
   </ul>

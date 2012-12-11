@@ -5,11 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Silex: Le service de traduction et les templates Twig - Live geek or die tryin'</title>
+  <title>Java: no main manifest attribute - Live geek or die tryin'</title>
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Silex est un micro-framework basé sur les composants de Symfony 2 grâce auquel je suis entrain de développer une sorte de vCard ou page d&#8217; &hellip;">
+  <meta name="description" content="I won&#8217;t go though explaining how to create a build.xml file, the
+official manual, which is really good,
+does it better than I would. The error &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/">
+  <link rel="canonical" href="http://www.dinduks.com/java-no-main-manifest-attribute/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,7 +79,7 @@
   
   <header>
     
-      <h1 class="entry-title">Silex: Le Service De Traduction Et Les Templates Twig</h1>
+      <h1 class="entry-title">Java: No Main Manifest Attribute</h1>
     
     
       <p class="meta">
@@ -93,100 +95,31 @@
   
 
 
-<time datetime="2011-10-19T00:12:43+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
+<time datetime="2012-12-11T11:42:00+01:00" pubdate data-updated="true">Dec 11<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><a href="http://silex.sensiolabs.org/"><em>Silex</em></a> est un micro-framework basé sur les composants de Symfony 2 grâce auquel je suis entrain de développer une sorte de <a href="https://github.com/Dinduks/ChaoticCard">vCard ou page d&#8217;accueil</a> (faute de meilleur terme).</p>
+<div class="entry-content"><p>I won&#8217;t go though explaining how to create a <em>build.xml</em> file, the
+<a href="http://ant.apache.org/manual/using.html">official manual</a>, which is really good,
+does it better than I would.</p>
 
-<p>Parmi ses nombreuses fonctionnalités: La traduction. Bien qu&#8217;elle soit très facile à implémenter, la méthode n&#8217;est décrite nulle part sur la doc.<br/>
-Heureusement, sinon je n&#8217;aurais rien à poster sur ce blog.</p>
+<p>The error in question occurs because the <em>java</em> executable, after reading the
+<a href="http://en.wikipedia.org/wiki/Manifest_file">Manifest</a> file from the inside of the
+JAR, doesn&#8217;t know what is the entry point of the program; i.e. the class that
+contains the ugly <code>public static void main(String[] args)</code> function.</p>
 
-<p>Trêve de plaisanteries, voici sans attendre comment implémenter la traduction avec Silex.</p>
+<p>To fix the error, that class&#8217; full name needs to be specified in the <em>build.xml</em> file.<br/>
+For example:</p>
 
-<h3>Déclarer les traductions</h3>
-
-<p>Dans un répertoire <em>src/locales/</em> créez autant de fichiers <em>yml</em> que de langues désirées.</p>
-
-<h4>Exemple de fichiers:</h4>
-
-<p><em>en.yml</em>:</p>
-
-<pre><code>  hello:      Hello
-  about_me:   About me
-  contact_me: Contact me
+<pre><code>&lt;jar destfile="${jar}" basedir="${build}"&gt;
+    &lt;manifest&gt;
+      &lt;attribute name="Main-Class" value="my.awesome.package.Main" /&gt;
+    &lt;/manifest&gt;
+&lt;/jar&gt;
 </code></pre>
-
-<p><em>fr.yml</em>:</p>
-
-<pre><code>hello:      Bonjour
-about_me:   A propos de moi
-contact_me: Contactez-moi
-</code></pre>
-
-<h3>Déclarer le service <em>TranslationServiceProvider</em> dans votre <em>app.php</em></h3>
-
-<pre><code>$app-&gt;register(new Silex\Provider\TranslationServiceProvider(), array(
-    'locale'                    =&gt; LiveGeekUtil::getClientLanguage(),
-    'locale_fallback'           =&gt; 'en',
-    'translation.class_path'    =&gt; __DIR__.'/vendor/Symfony/Component',
-));
-</code></pre>
-
-<p><code>locale</code> indique la langue utilisée.<br/>
-<code>locale_fallback</code> indique la langue utilisée si notre application ne supporte pas la langue donnée dans locale.</p>
-
-<p>Notez que j&#8217;ai utilisé une méthode statique pour récupérer la langue du navigateur du visiteur. La voici:</p>
-
-<pre><code>public static function getClientLanguage() {
-    $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-    return substr($langs[0], 0, 2);
-}
-</code></pre>
-
-<h3>Indiquer à l&#8217;application où se trouvent vos fichiers de langue:</h3>
-
-<pre><code>$app['translator.messages'] = array(
-    'fr' =&gt; __DIR__.'/../src/locales/fr.yml',
-    'en' =&gt; __DIR__.'/../src/locales/en.yml'
-);
-</code></pre>
-
-<h3>Charger le composant qui lit les fichiers <em>yml</em></h3>
-
-<p>PHP ne comprennant pas les fichiers <em>YAML</em>, on utilise le composant <em>YAML</em> de Symfony;</p>
-
-<pre><code>$app['autoloader']-&gt;registerNamespace('Symfony', __DIR__.'/../vendor/Symfony/src');
-$app['translator.loader'] = new Symfony\Component\Translation\Loader\YamlFileLoader();
-</code></pre>
-
-<h3>Déclarer <code>SymfonyBridgesServiceProvider</code></h3>
-
-<p>Ce service fait la liaison entre la traduction et les templates <em>Twig</em>.</p>
-
-<pre><code>$app-&gt;register(new Silex\Provider\SymfonyBridgesServiceProvider(), array(
-    'symfony_bridges.class_path' =&gt; __DIR__.'/vendor/Symfony/Component',
-));
-</code></pre>
-
-<p>Et voilà.</p>
-
-<p>A partir de maintenant, affichez le texte dans vos templates grâce aux balises <em>Twig</em> <code>{% trans %}</code>, ceux-ci seront automatiquement traduits dans la langue du navigateur de votre utilisateur, du moment qu&#8217;elle soit supportée.</p>
-
-<pre><code>{% trans %}contact_me{% endtrans %}
-</code></pre>
-
-<h3>Liens utiles:</h3>
-
-<ul>
-<li>La documentation de Silex: <a href="http://silex.sensiolabs.org/documentation">http://silex.sensiolabs.org/documentation</a>.</li>
-</ul>
-
-
-<p>Bon courage et amusez-vous bien avec Silex! :)</p>
 </div>
 
 
@@ -209,21 +142,15 @@ $app['translator.loader'] = new Symfony\Component\Translation\Loader\YamlFileLoa
   
 
 
-<time datetime="2011-10-19T00:12:43+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
+<time datetime="2012-12-11T11:42:00+01:00" pubdate data-updated="true">Dec 11<span>th</span>, 2012</time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/category/development/'>Development</a>, <a class='category' href='/category/symfony-2/'>Symfony 2</a>, <a class='category' href='/category/tutorials/'>Tutorials</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/" data-via="Dinduks" data-counturl="http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/java-no-main-manifest-attribute/" data-via="Dinduks" data-counturl="http://www.dinduks.com/java-no-main-manifest-attribute/" >Tweet</a>
   
   
   
@@ -232,10 +159,8 @@ $app['translator.loader'] = new Symfony\Component\Translation\Loader\YamlFileLoa
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/utiliser-le-format-exfat-sous-linux/" title="Previous Post: Utiliser le format exFat sous Linux">&laquo; Utiliser le format exFat sous Linux</a>
+        <a class="basic-alignment left" href="/simple-search-system-with-mongodb-and-scala/" title="Previous Post: Building a search system with MongoDB (and Scala)">&laquo; Building a search system with MongoDB (and Scala)</a>
       
-      
-        <a class="basic-alignment right" href="/twig-traduction-dans-du-javascript/" title="Next Post: Twig: Traduction dans du JavaScript">Twig: Traduction dans du JavaScript &raquo;</a>
       
     </p>
   </footer>
@@ -339,8 +264,8 @@ $app['translator.loader'] = new Symfony\Component\Translation\Loader\YamlFileLoa
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/';
-        var disqus_url = 'http://www.dinduks.com/silex-le-service-de-traduction-et-les-templates-twig/';
+        var disqus_identifier = 'http://www.dinduks.com/java-no-main-manifest-attribute/';
+        var disqus_url = 'http://www.dinduks.com/java-no-main-manifest-attribute/';
         var disqus_script = 'embed.js';
       
     (function () {

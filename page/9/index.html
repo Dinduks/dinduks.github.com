@@ -9,7 +9,8 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Salut, Je vais partager un bout de code pour cacher un texte ou un bloc, le mettre à jour, et le ré-afficher avec un nouveau contenu, avec jQuery. &hellip;">
+  <meta name="description" content="Je partage ces deux bouts de code tellement banals, mais que j&#8217;oublie toujours.
+(et je m&#8217;évite cette punition en même temps) Dates: $ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +75,70 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/php-addition-soustraction-des-dates-heures/">PHP: Addition/Soustraction Des Dates/heures</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-15T18:27:37+02:00" pubdate data-updated="true">Jun 15<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Je partage ces deux <a href="http://www.dinduks.com/category/bouts-de-code">bouts de code</a> tellement banals, mais que j&#8217;oublie toujours.<br/>
+(et je m&#8217;évite cette <a href="https://twitter.com/#!/Dinduks/status/80677872561422336">punition</a> en même temps)</p>
+
+<h3>Dates:</h3>
+
+<pre><code>$aujourdhui = "2011-06-15";
+$demain = date("Y-m-d", strtotime("+1 day", strtotime($aujourdhui)));
+$ilYADeuxMois = date("Y-m-d", strtotime("-2 month", strtotime($aujourdhui)));
+</code></pre>
+
+<h3>Heures:</h3>
+
+<pre><code>$maintenant = "15:00:00";
+$dansUneHeure = date("H:i:s", strtotime("+1 hour", strtotime($maintenant)));
+$ilYAUnQuartDHeure = date("H:i:s", strtotime("-15 minute", strtotime($maintenant)));
+</code></pre>
+
+<h4>Liste de mots-clé utiles:</h4>
+
+<ul>
+<li>day</li>
+<li>week</li>
+<li>month</li>
+<li>year</li>
+<li>hour</li>
+<li>minute</li>
+<li>second</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -495,46 +560,6 @@ Pour ma part, cette classe a mérité sa place dans mes dossiers <em>lib/</em>.<
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/wampee-la-version-portable-de-wampserver/">Wampee, La Version Portable De Wampserver</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-02-10T01:49:50+01:00" pubdate data-updated="true">Feb 10<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Alors qu&#8217;<em>Internet</em> regorge de versions portables de <em>WAMP</em>, telles que <a href="http://www.clubic.com/telecharger-fiche32659-mov-amp.html">Mov&#8217;Amp</a> ou encore <a href="http://www.apachefriends.org/fr/xampp.html">XAMPP</a>, Wampserver a récemment publié la deuxième bêta de la version portable de sa plate-forme <em>Open Source</em>, <em>Wampee</em>.</p>
-
-<p>L’intérêt de celui-ci, et des WAMP portables en général, réside dans sa portabilité, ce qui veut dire qu&#8217;il ne requiert pas d&#8217;installation, et peut être utilisé à partir de n&#8217;importe quel support amovible: disque-dur externe, clé USB, ou encore <a href="https://www.dropbox.com/referrals/NTY1OTQ0Nzc5?src=global9"><em>Dropbox</em></a>.</p>
-
-<p>Vous pouvez télécharger <em>Wampee</em> sur <a href="http://www.wampserver.com/download.php#bottom">Wampserver.com</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/10/">&larr; Older</a>
@@ -552,15 +577,15 @@ Pour ma part, cette classe a mérité sa place dans mes dossiers <em>lib/</em>.<
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
+      </li>
+    
+      <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
         <a href="/review-your-code-with-git/">Review your code with Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
       </li>
     
   </ul>

@@ -9,7 +9,8 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="I&#8217;ve recently had to do a git push -f which not only pushed the branch I&#8217;m on, but also all my other local branches, overriding the &hellip;">
+  <meta name="description" content="I recently migrated my blog from Wordpress to Octopress. Octopress is a framework for Jekyll, the blog aware static site generator
+powering Github &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +75,175 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/yet-another-blog-that-migrates-to-octopress/">Yet Another Blog That Migrates to Octopress</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-25T19:45:00+02:00" pubdate data-updated="true">Jul 25<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I recently migrated my blog from Wordpress to <a href="http://octopress.org/">Octopress</a>.</p>
+
+<blockquote><p>Octopress is a framework for Jekyll, the blog aware static site generator
+powering Github Pages. To start blogging with Jekyll, you have to write your own
+HTML templates, CSS, Javascripts and set up your configuration. But with Octopress
+All of that is already taken care of. Simply clone or fork Octopress,
+install dependencies and the theme, and you’re set.</p></blockquote>
+
+<h3>Here are some reasons behind this choice:</h3>
+
+<h4>Markdown</h4>
+
+<p>I&#8217;m become a fluent Markdown speaker after spending a decent amount of time at
+GitHub and Stack Overflow. Not only it&#8217;s a pleasure to write using it, but it also
+let focusing on the most important thing — writing, and not to worry about pointless
+things such as HTML formatting for example.</p>
+
+<h4>Speed</h4>
+
+<p>The blog posts being written in Markdown, there&#8217;s a HTML version of them generated
+before each deploy. You can add <code>/index.html</code> at the end of this page&#8217;s URL to
+understand what I&#8217;m talking about.<br/>
+That basically means that the blog is simply a bunch of HTML files and doesn&#8217;t
+require or have a database, which makes it fast to load and search engines friendly.</p>
+
+<h4>Portabiliy</h4>
+
+<p>Many points here:</p>
+
+<ul>
+<li>Posts are born in Markdown: I can easily version them.</li>
+<li>Posts reborn as HTML: I can server them from anywhere, and they&#8217;ll just <em>work</em>.</li>
+<li>Since the blog is static, the comments are hosted elsewhere, Disqus in my case,
+thus making them protable from a blog platform to another.</li>
+</ul>
+
+
+<h4>Other random detail</h4>
+
+<p>Octopress ships with a nice theme, which is perfect in my eyes: it&#8217;s simple,
+responsive and its font size is big enough to not screw up the reader&#8217;s eyes.</p>
+
+<h3>The migration</h3>
+
+<p>Now I&#8217;ll show you how you can migrate your own blog to Octopress.</p>
+
+<h4>Migrate your blogs comment to Disqus</h4>
+
+<p>As I mentioned above, the blog doesn&#8217;t have a database; you have to use an external
+comments <em>provider</em> for your Octopress blog.<br/>
+I personnaly went for Disqus because it&#8217;s popular and well integrated with Octopress.</p>
+
+<p>What you need to do is:</p>
+
+<ul>
+<li>Creating a <a href="http://octopress.org/docs/deploying/">Disqus</a> account</li>
+<li>Installing the Disqus Wordpress plugin</li>
+<li>Importing your Wordpress blog comments to Disqus (this feature is available in your
+user panel)</li>
+</ul>
+
+
+<h4>Create an Octopress blog</h4>
+
+<p>You don&#8217;t say?!<br/>
+Start reading the <a href="http://octopress.org/docs/setup/">Octopress Setup</a> chapter from
+Octopress&#8217; documentation. It&#8217;ll guide you through the installation steps.</p>
+
+<h4>Migrate Wordpress&#8217; posts</h4>
+
+<p>For this, use the <a href="https://github.com/thomasf/exitwp">exitwp</a> tool.<br/>
+It&#8217;s pretty easy to install and use:</p>
+
+<ul>
+<li>Clone it</li>
+<li>Export your Wordpress blog</li>
+<li>Run the tool on it</li>
+</ul>
+
+
+<p>You&#8217;ll now have a <em>_post/</em> directory that you&#8217;ll need to move to your fresh
+created blog <em>source/</em> folder.</p>
+
+<p>More in depth use explanations can be found in <em>exitwp</em>&#8217;s README.</p>
+
+<h4>Fix the generated posts syntax</h4>
+
+<p>Heh, you really believed it would be that easy?! ;)</p>
+
+<p>Although <em>exitwp</em> helps <em>a lot</em> in the migration process, it sometimes doesn&#8217;t
+convert stuff as it should do. That&#8217;s especially true if you have some fucked up
+HTML formatting, some specific tags, such as the Syntax Highlighter plugin ones.</p>
+
+<p>What you need to do now is going throught all the posts, one by one, and fix what
+should be fixed.<br/>
+Good luck.</p>
+
+<h4>Deploy it!</h4>
+
+<p>Now that the migration is complete, you want to show your blog to the internets.</p>
+
+<p>You can either host it on your own server as you would do for a classic Wordpress
+blog, for free on Heroku, or, if you&#8217;re as cool as me, as GitHub pages.</p>
+
+<p>Whatever the way you choose, the <a href="http://octopress.org/docs/deploying/">Deploying</a>
+chapter on Octopress&#8217; doc will help deploy your blog.</p>
+
+<h4>Keeping the blog on the same domain name</h4>
+
+<p>This part was straightforward for me, it is well explained in the
+<a href="http://octopress.org/docs/deploying/github/#custom_domains">docs</a>.</p>
+
+<p>There was little problem though, with Disqus: my blog was hosted at <em>www.dinduks.com</em>,
+the comments were correctly imported as coming from the <em>www</em> subdomain, except that
+new comments, on the new blog, were detected as coming from the TLD <em>dinduks.com</em>
+and not the subdomain <em>www.dinduks.com</em>.<br/>
+I made sure <em>www</em> was mentioned everywhere, but it didn&#8217;t fix the problem.</p>
+
+<p>I solved this problem by  <em>migrating</em> the old comments from the correct domain
+(<em>www.dinduks.com</em>), to the one Disqus was detecting (<em>dinduks.com</em>).<br/>
+It&#8217;s not logical, but it&#8217;s better than having no comments at all.</p>
+
+<p>The <a href="disqus.com/admin/tools/migrate/">Migrate Threads</a> feature can be found in the
+the <em>Tools</em> section of your Disqus admin panel.</p>
+
+<h3>Conclusion</h3>
+
+<p>Now that I migrated, I&#8217;m disappointed to see that the Octopress project is (almost)
+deserted by its maintainer. As I&#8217;m writing this, there&#8217;s 73 opened Pull Requests
+and 138 issues. And the commits rate is low.</p>
+
+<p>Nevertheless, I&#8217;m still convinced that Octopress suits my needs more than Wordpress
+or any <em>dynamic</em> blogging platform outta here, and I encourage you to, at least,
+give it a try.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -389,56 +559,6 @@ This can be done in <code>stylesheets/application.css</code> and <code>javascrip
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/clean-code-vs-efficiency/">Clean Code vs Efficiency</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-01-29T16:42:22+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I have recently submitted <a href="https://github.com/symfony/symfony/pull/3209">my first pull request</a> ever, to the Symfony2 project.</p>
-
-<p><a href="https://github.com/Dinduks/symfony/commit/5306457f4b1073c6544dd4235a74c4d5f612ed9d">The code I contributed with</a> is a 3 lines long method that simply checks whether a form field is hidden or not.
-I have no doubt about the usefulness of this method, especially after seeing few people using a similar one (it seems that it was removed).</p>
-
-<p>The pull request was <a href="https://github.com/symfony/symfony/pull/3209#issuecomment-3707718">refused</a> because the class in question isn&#8217;t supposed to be <em>aware of information we need</em>.
-I agree with this and approve the good practices and clean code, but in this case we penalize the end user for the sake of doing things the <em>right</em> way.</p>
-
-<p>The purpose of my post is to answer the following question: should efficiency and simplicity be sacrificed for the sake of good practices and clean code?</p>
-
-<p>In my opinion, the answer is no. Especially when we&#8217;re dealing with a big project that thousands of people use, and that claims easiness and simplicity.</p>
-
-<p>I&#8217;m looking forward to know your opinion about the subject. Feel free to leave a comment.</p>
-
-<p><img class="center" src="/images/uploads/2012/01/programming-motherfucker.jpg"  alt="Programming Motherfucker"></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/3/">&larr; Older</a>
@@ -456,15 +576,15 @@ I agree with this and approve the good practices and clean code, but in this cas
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
+      </li>
+    
+      <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
         <a href="/review-your-code-with-git/">Review your code with Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
       </li>
     
   </ul>

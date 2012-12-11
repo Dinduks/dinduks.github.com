@@ -9,8 +9,7 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="The following isn’t an exact science, however, if you didn&#8217;t --help, it will spare you a 10min research.
-This is your lifesaver: --em. Example &hellip;">
+  <meta name="description" content="Hello, I&#8217;m going to show you a simple way to cache a file. To illustrate my example, I will use a script that creates a single image from &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +74,127 @@ This is your lifesaver: --em. Example &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/implementing-a-simple-caching-system/">Implementing a Simple Caching System</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-20T11:55:05+01:00" pubdate data-updated="true">Dec 20<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hello,</p>
+
+<p>I&#8217;m going to show you a simple way to cache a file.</p>
+
+<p>To illustrate my example, I will use a script that creates a single image from multiple images.
+I have written <a href="https://github.com/Dinduks/Lastfm-Top-Albums">that script</a> a few months ago to generate a patchwork of my top albums in <a href="http://www.lastfm.com/user/Dinduks">Last.fm</a>, due to the lack of working similar scripts.</p>
+
+<p><a href="http://lastfmtopalbums.dinduks.com/">
+<img class="center" src="http://lastfmtopalbums.dinduks.com/patchwork.php?user=Dinduks&period=3month&rows=2&cols=2&imageSize=200"  alt="Dinduks\">
+</a></p>
+
+<p>First, let&#8217;s see how the script works, without the cache <em>system</em>:</p>
+
+<div><script src='https://gist.github.com/1707693.js?file='></script>
+<noscript><pre><code>&lt;?php
+
+$apiUrl = 'http://ws.audioscrobbler.com/2.0/';
+$apiKey = '61d580c50e6e5e3f14b6bd9527e5395f';
+$method = 'user.gettopalbums';
+
+$user   = $_GET['user'];
+$period = $_GET['period'];
+$rows   = $_GET['rows'];
+$cols   = $_GET['cols'];
+
+$limit  = $cols * $rows;
+
+$query = &quot;$apiUrl?method=$method&amp;user=$user&amp;period=$period&amp;limit=$limit&amp;api_key=$apiKey&quot;;
+
+// create a DOMDocument which will contain the xml document returned by Last.fm's Web service
+$topAlbums = new DOMDocument();
+$topAlbums-&gt;load($query);
+
+/*
+The code for generating the image...
+*/
+
+// display the image
+header(&quot;Content-type: image/jpg&quot;);
+imagejpeg($patchwork);</code></pre></noscript></div>
+
+
+<p>As you can see, the image is generated whenever the script is called. This isn&#8217;t only greedy on the server&#8217;s resources, but does also take a little time ; between 4 and 6 seconds for a common patchwork.</p>
+
+<p>To avoid this repetitive task, the idea is to save the generated image on a file, and, each time the script is called, check if the image doesn&#8217;t already exist before creating it again.</p>
+
+<h3>Create a signature of the source file</h3>
+
+<p>Since the image is generated from data that comes from the Last.fm Web Service, it will change according to it&#8217;s response. Let&#8217;s then create a MD5 hash of it.</p>
+
+<pre><code>$response     = file_get_contents($query);
+$responseHash = md5($response);
+</code></pre>
+
+<h3>Name the generated file</h3>
+
+<p>It&#8217;s time now to choose a name format for our file. I chose the following:</p>
+
+<pre><code>$fileName = "images/$user.$period.$rows.$cols.$imagesSize.$responseHash";
+</code></pre>
+
+<p><strong>Note</strong>: Make sure you have the write and read permissions on <code>images/</code>.</p>
+
+<h3>Save the file</h3>
+
+<p>At the end of the script, just before displaying the image, save it.</p>
+
+<pre><code>imagejpeg($patchwork, $fileName);
+</code></pre>
+
+<p>You&#8217;ll have to use <code>fwrite()</code> or a similar function depending on the type of the file you want to save.</p>
+
+<h3>Check if the file exists</h3>
+
+<p>The file is well saved now.<br/>
+The final step consists in checking, at the next request, if that file exists. If it&#8217;s the case, answer with it, if it is not, run the usual code ; which is the image creation.<br/>
+The code below should be put right before the image creation process.</p>
+
+<pre><code>if (file_exists($fileName)) {
+    header("Content-type: image/jpg");
+    echo file_get_contents($fileName);
+    exit;
+}
+</code></pre>
+
+<p>You are now ready to implement your own little cache system. Have fun. :)</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -380,55 +500,6 @@ In other terms, mappings call up an EM X when wanting to manipulate an entity Y.
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/git-rename-or-change-a-repository-url/">Git: Rename or Change a Repository URL</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-12-01T00:13:21+01:00" pubdate data-updated="true">Dec 1<span>st</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>If you’re new to Git, this tip will allow you to save some of your precious time.</p>
-
-<p>Open <em>.git/config</em> in your project’s local directory, and, in the category <em>[remote &#8220;origin&#8221;]</em>, modify the <em>url</em> parameter, using the new location or the new repository’s name.</p>
-
-<p><strong>OR</strong></p>
-
-<p>Use this command:</p>
-
-<pre><code>git remote set-url origin &lt;new url&gt;
-</code></pre>
-
-<p>Note: If you’re using <em>GitHub</em>, you must also rename the project on the platform: Go to the repository&#8217;s homepage, click the Admin button and change the name.</p>
-
-<p><em>Translated from my french post <a href="http://www.dinduks.com/git-renommer-ou-changer-l-adresse-dun-depot">Git: Renommer ou changer l’adresse d’un dépôt</a></em></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/5/">&larr; Older</a>
@@ -446,15 +517,15 @@ In other terms, mappings call up an EM X when wanting to manipulate an entity Y.
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
+      </li>
+    
+      <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
         <a href="/review-your-code-with-git/">Review your code with Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
       </li>
     
   </ul>

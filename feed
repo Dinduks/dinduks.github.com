@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2012-11-22T23:26:09+01:00</updated>
+  <updated>2012-12-11T12:13:28+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -12,6 +12,32 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Java: no main manifest attribute]]></title>
+    <link href="http://www.dinduks.com/java-no-main-manifest-attribute/"/>
+    <updated>2012-12-11T11:42:00+01:00</updated>
+    <id>http://www.dinduks.com/java-no-main-manifest-attribute</id>
+    <content type="html"><![CDATA[<p>I won&#8217;t go though explaining how to create a <em>build.xml</em> file, the
+<a href="http://ant.apache.org/manual/using.html">official manual</a>, which is really good,
+does it better than I would.</p>
+
+<p>The error in question occurs because the <em>java</em> executable, after reading the
+<a href="http://en.wikipedia.org/wiki/Manifest_file">Manifest</a> file from the inside of the
+JAR, doesn&#8217;t know what is the entry point of the program; i.e. the class that
+contains the ugly <code>public static void main(String[] args)</code> function.</p>
+
+<p>To fix the error, that class&#8217; full name needs to be specified in the <em>build.xml</em> file.<br/>
+For example:</p>
+
+<pre><code>&lt;jar destfile="${jar}" basedir="${build}"&gt;
+    &lt;manifest&gt;
+      &lt;attribute name="Main-Class" value="my.awesome.package.Main" /&gt;
+    &lt;/manifest&gt;
+&lt;/jar&gt;
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Building a search system with MongoDB (and Scala)]]></title>
@@ -1225,28 +1251,6 @@ In other terms, mappings call up an EM X when wanting to manipulate an entity Y.
 <p>I hope you’ll find this tutorial useful. :)</p>
 
 <p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-plusieurs-bases-de-donnees">Symfony2: Utiliser plusieurs bases de données</a></em></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Git: Rename or change a repository URL]]></title>
-    <link href="http://www.dinduks.com/git-rename-or-change-a-repository-url/"/>
-    <updated>2011-12-01T00:13:21+01:00</updated>
-    <id>http://www.dinduks.com/git-rename-or-change-a-repository-url</id>
-    <content type="html"><![CDATA[<p>If you’re new to Git, this tip will allow you to save some of your precious time.</p>
-
-<p>Open <em>.git/config</em> in your project’s local directory, and, in the category <em>[remote &#8220;origin&#8221;]</em>, modify the <em>url</em> parameter, using the new location or the new repository’s name.</p>
-
-<p><strong>OR</strong></p>
-
-<p>Use this command:</p>
-
-<pre><code>git remote set-url origin &lt;new url&gt;
-</code></pre>
-
-<p>Note: If you’re using <em>GitHub</em>, you must also rename the project on the platform: Go to the repository&#8217;s homepage, click the Admin button and change the name.</p>
-
-<p><em>Translated from my french post <a href="http://www.dinduks.com/git-renommer-ou-changer-l-adresse-dun-depot">Git: Renommer ou changer l’adresse d’un dépôt</a></em></p>
 ]]></content>
   </entry>
   

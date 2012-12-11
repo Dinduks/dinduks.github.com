@@ -9,8 +9,7 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Hi, I have recently built a site for a World of Warcraft server using Symfony2 framework.
-Among the features I had to implement, there was a shop &hellip;">
+  <meta name="description" content="If you’re new to Git, this tip will allow you to save some of your precious time. Open .git/config in your project’s local directory, and, in the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +74,55 @@ Among the features I had to implement, there was a shop &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/git-rename-or-change-a-repository-url/">Git: Rename or Change a Repository URL</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-01T00:13:21+01:00" pubdate data-updated="true">Dec 1<span>st</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>If you’re new to Git, this tip will allow you to save some of your precious time.</p>
+
+<p>Open <em>.git/config</em> in your project’s local directory, and, in the category <em>[remote &#8220;origin&#8221;]</em>, modify the <em>url</em> parameter, using the new location or the new repository’s name.</p>
+
+<p><strong>OR</strong></p>
+
+<p>Use this command:</p>
+
+<pre><code>git remote set-url origin &lt;new url&gt;
+</code></pre>
+
+<p>Note: If you’re using <em>GitHub</em>, you must also rename the project on the platform: Go to the repository&#8217;s homepage, click the Admin button and change the name.</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/git-renommer-ou-changer-l-adresse-dun-depot">Git: Renommer ou changer l’adresse d’un dépôt</a></em></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -373,80 +421,6 @@ Now I realized that writing in both languages isn&#8217;t worth it since develop
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/symfony-2-le-helper-render-pour-appeller-une-action-depuis-une-vue-twig/">Symfony2: Le Helper Render Pour Appeller Une Action Depuis Une Vue Twig</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-11-13T00:40:19+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Aujourd&#8217;hui j&#8217;ai découvert un helper <em>secret</em> de Symfony2. Secret parce que je ne le retrouve nulle part sur la doc.<br/>
-<em>Edit: On en parle sur la doc Symfony2: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
-
-<p><code>{% render %}</code> sert à afficher la réponse d&#8217;une action dans un template <em>Twig</em>. C&#8217;est surtout utile quand on veut afficher du contenu dynamique dans toutes les pages de notre application.</p>
-
-<h3>Exemple d&#8217;utilisation: Afficher le nombre des utilisateurs connectés.</h3>
-
-<h4>Créer une action <code>onlineUsersAction()</code></h4>
-
-<p>Cette fonction récupérera les utilisateurs et calculera leur nombre.</p>
-
-<h4>Créer un template Twig qui affiche la réponse retournée par l&#8217;action. La syntaxe est la suivante:</h4>
-
-<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" %}
-</code></pre>
-
-<p>Sachant que <code>onlineUsersAction()</code> est une action de <code>DefaultController</code> qui est lui même un contrôleur du bundle <em>Live\GeekBundle</em>.</p>
-
-<h4>Inclure ce template dans le layout de l&#8217;appli</h4>
-
-<p>Et ainsi afficher le nombre des utilisateurs connectés dans toutes mes pages.</p>
-
-<h3>Passer des arguments:</h3>
-
-<p>Vous pouvez passer des arguments à l&#8217;action de cette manière:</p>
-
-<h4>Dans le template Twig:</h4>
-
-<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
-</code></pre>
-
-<h4>Dans le contrôleur:</h4>
-
-<pre><code>helloAction($arg1, $arg2)
-</code></pre>
-
-<p>L&#8217;ordre des arguments ne compte pas.</p>
-
-<p>Enjoy. ;)</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/6/">&larr; Older</a>
@@ -464,15 +438,15 @@ Now I realized that writing in both languages isn&#8217;t worth it since develop
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
+      </li>
+    
+      <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
         <a href="/review-your-code-with-git/">Review your code with Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
       </li>
     
   </ul>

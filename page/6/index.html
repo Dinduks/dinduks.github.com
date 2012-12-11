@@ -9,7 +9,8 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Ce billet est une note pour ceux qui tomberaient un jour dans ce genre de situations. J&#8217;ai créé un contrôleur qui me renvoie la réponse &hellip;">
+  <meta name="description" content="Aujourd&#8217;hui j&#8217;ai découvert un helper secret de Symfony2. Secret parce que je ne le retrouve nulle part sur la doc.
+Edit: On en parle sur &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +75,80 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-le-helper-render-pour-appeller-une-action-depuis-une-vue-twig/">Symfony2: Le Helper Render Pour Appeller Une Action Depuis Une Vue Twig</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-13T00:40:19+01:00" pubdate data-updated="true">Nov 13<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Aujourd&#8217;hui j&#8217;ai découvert un helper <em>secret</em> de Symfony2. Secret parce que je ne le retrouve nulle part sur la doc.<br/>
+<em>Edit: On en parle sur la doc Symfony2: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
+
+<p><code>{% render %}</code> sert à afficher la réponse d&#8217;une action dans un template <em>Twig</em>. C&#8217;est surtout utile quand on veut afficher du contenu dynamique dans toutes les pages de notre application.</p>
+
+<h3>Exemple d&#8217;utilisation: Afficher le nombre des utilisateurs connectés.</h3>
+
+<h4>Créer une action <code>onlineUsersAction()</code></h4>
+
+<p>Cette fonction récupérera les utilisateurs et calculera leur nombre.</p>
+
+<h4>Créer un template Twig qui affiche la réponse retournée par l&#8217;action. La syntaxe est la suivante:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" %}
+</code></pre>
+
+<p>Sachant que <code>onlineUsersAction()</code> est une action de <code>DefaultController</code> qui est lui même un contrôleur du bundle <em>Live\GeekBundle</em>.</p>
+
+<h4>Inclure ce template dans le layout de l&#8217;appli</h4>
+
+<p>Et ainsi afficher le nombre des utilisateurs connectés dans toutes mes pages.</p>
+
+<h3>Passer des arguments:</h3>
+
+<p>Vous pouvez passer des arguments à l&#8217;action de cette manière:</p>
+
+<h4>Dans le template Twig:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
+</code></pre>
+
+<h4>Dans le contrôleur:</h4>
+
+<pre><code>helloAction($arg1, $arg2)
+</code></pre>
+
+<p>L&#8217;ordre des arguments ne compte pas.</p>
+
+<p>Enjoy. ;)</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -384,51 +459,6 @@ sudo mkdir usbdrive/
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/symfony-2-creer-un-utilisateur-depuis-un-controleur-avec-fosub/">Symfony2: Créer Un Utilisateur Depuis Un Contrôleur Avec FOSUB</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-10-09T22:09:41+02:00" pubdate data-updated="true">Oct 9<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Si vous utilisez <em>FOSUserBundle</em> et que vous voulez créer un nouvel utilisateur depuis un contrôleur, sachez que vous pouvez le faire sans vous taper une série de lignes de code. Il existe en effet une classe pour cela, <a href="https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/Util/UserManipulator.php">UserManipulator</a>, qui fera la sale besogne à votre place, <strong>et en une seule ligne</strong>!</p>
-
-<p>Pour l&#8217;utiliser, rien de plus simple:</p>
-
-<pre><code>$user = $this-&gt;get('fos_user.util.user_manipulator')-&gt;create($username, $password, $email, 1, 0);
-</code></pre>
-
-<p>Comme indiqué dans le fichier de la classe, le quatrième paramètre sert à définir si le compte sera activé ou pas et le cinquième à définir si ce compte est un super admin.</p>
-
-<p>Cette méthode vous renverra une instance de l&#8217;objet User qui vient d&#8217;être créé.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/7/">&larr; Older</a>
@@ -446,15 +476,15 @@ sudo mkdir usbdrive/
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
+      </li>
+    
+      <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
         <a href="/review-your-code-with-git/">Review your code with Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
       </li>
     
   </ul>

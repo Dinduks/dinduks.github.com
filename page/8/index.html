@@ -9,7 +9,8 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Un p&#8217;tit coup de main qui vous fera gagner du temps si vous êtes nouveau à Git. ;) Dans le répertoire local de votre projet, ouvrez le fichier &hellip;">
+  <meta name="description" content="Bonjour, Mon premier vrai projet sous Symfony 2 est un site pour un serveur World Of Warcraft.
+Ce serveur, sous MaNGOS, utilise ses propres tables, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +75,111 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-personnaliser-les-champs-table-generee-par-fosuserbundle/">Symfony2: Personnaliser Les Champs De La Table Générée Par FOSUserBundle</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-10T05:11:15+02:00" pubdate data-updated="true">Aug 10<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bonjour,</p>
+
+<p>Mon premier <em>vrai</em> projet sous <em>Symfony 2</em> est un site pour un serveur World Of Warcraft.<br/>
+Ce serveur, sous <em>MaNGOS</em>, utilise ses propres tables, avec leur propre structure. Je voulais donc, pour des raisons de stabilité et pour éviter les emmerdes, générer une table User avec les mêmes champs et propriétés que celles de MaNGOS.</p>
+
+<p>Pour comprendre la suite de cet article vous devez avoir une idée basique sur le fonctionnement de <em>FOSUserBunde</em>. Si ce n&#8217;est pas le cas, lisez la doc: <a href="https://github.com/FriendsOfSymfony/FOSUserBundle/blob/master/Resources/doc/index.md">Getting Started With FOSUserBundle</a>.</p>
+
+<p>Je vous explique le topo: pour créer une table utilisateur avec <em>FOSUB</em>, il faut créer une entité (un modèle Doctrine) <em>User</em> qui étend la classe User du fameux bundle. Cette classe contiendra, entre-autres, des variables (qui se traduisent niveau base de données par des champs) nécessaires à son fonctionnement (exemple: username, canonicalusername, etc&#8230;).<br/>
+La table générée dépendra de votre entité <em>User</em>:</p>
+
+<ul>
+<li>Si vous laissez votre entité User vide: Une table avec les champs par défaut de FOSUB sera générée.</li>
+<li>Si vous définissez des variables dans cette classe: La table générée aura les champs par défaut + les champs portant les noms des variables définies dans la classe.</li>
+<li>Si vous redéfinissez une variable de la classe User de FOSUserBundle: <em>ERROR!</em> - <em>Doctrine</em> ne supporte pas la redéfinition des variables protégées.</li>
+</ul>
+
+
+<p>Arrivés là, vous comprenez que vous êtres dans la merde.</p>
+
+<p>Je vous le dit tout de suite: il n&#8217;y a pas de solution propre et officielle pour ce problème. <a href="https://github.com/stof">Stof</a>, un des principaux contributeurs à FOSUserBundle me l&#8217;a confirmé lui même.</p>
+
+<p>La solution est de hacker le code source de Doctrine, ou de FOSUserBundle. Vous avez même le choix. :)</p>
+
+<h3>Plan A: Bidouiller Doctrine</h3>
+
+<p>Cette solution est super simple. A mon avis, sa simplicité est proportionnelle à l&#8217;importance des dégâts qu&#8217;elle <em>pourrait</em> infliger plutard.</p>
+
+<p>Rendez vous dans le fichier vendors/doctrine/lib/Doctrine/ORM/Mapping/ClassMetadataInfo.php, et commentez ces deux lignes:</p>
+
+<pre><code>throw MappingException::duplicateColumnName($this-&gt;name, $mapping['columnName']);
+</code></pre>
+
+<p>et</p>
+
+<pre><code>throw MappingException::duplicateFieldMapping($this-&gt;name, $mapping['fieldName']);
+</code></pre>
+
+<p>Là, on annule carrément les exceptions balancées lors de la tentative de redéfinition d&#8217;une variable.<br/>
+J&#8217;espère que vous comprenez maintenant pourquoi j&#8217;ai dit que ça peut vous créer des ennuis plutard.<br/>
+Je pense que si les devs de Doctrine ont mis ces exceptions, c&#8217;est pour une raison.</p>
+
+<p>N&#8217;oubliez pas que si vous mettez Doctrine à jour, il y a de fortes chances que le fichier ClassMetadataInfo.php sera écrasé. Pensez-y.</p>
+
+<h3>Plan B: bidouiller FOSUserBundle</h3>
+
+<p>Cette manip est moins suicidaire que la précédente, elle consiste à modifier le fichier <em>FOS/UserBundle/Resources/config/doctrine/User.orm.xml</em>.<br/>
+Ce fichier gère les propriétés des champs générés par le bundle.<br/>
+Je ne vais pas vous expliquer comment, sa structure est assez évidente.</p>
+
+<p>Je vous rappelle que, comme pour le hack précédent, ce fichier peut être modifié par une màj.</p>
+
+<h3>Mon choix</h3>
+
+<p>Mon choix s&#8217;est porté sur la première solution parce qu&#8217;elle me permet de vraiment personnaliser mes champs: directement, elle me donne la possibilité de jouer avec mon entité User.<br/>
+Indirectement elle me permet de:</p>
+
+<ul>
+<li>Donner des types non supportés (<a href="http://symfony2.ylly.fr/add-new-data-type-in-doctrine-2-in-symfony-2-jordscream/">par défaut</a>) par Doctrine, tels que <em>tinyint</em>, <em>timestamp</em> ou encore <em>longtext</em>.
+Référez vous à mon article <a href="http://www.dinduks.com/symfony-2-utiliser-des-types-de-donnees-non-supportes-par-doctrine"><em>Symfony 2: Utiliser des types de données non supportés par Doctrine</em></a> pour plus de détails.</li>
+<li>Donner une valeur par défaut à un champ. Seul hic, lors de l&#8217;insertion d&#8217;un utilisateur, ces champs ne sont pas remplis automatiquement par la valeur par défaut. J&#8217;en parlerai en détails prochainement.</li>
+</ul>
+
+
+<p>Pour finir, je voudrai donner mon avis à propos de FOSUserBundle: c&#8217;est un bundle utile lorsqu&#8217;on veut implémenter un gestionnaire d&#8217;utilisateurs (si on peut appeler ça comme ça) assez basique. Mais il peut vite tourner au cauchemar/mindfuck lorsqu&#8217;on veut faire un truc un peu plus poussé.<br/>
+Ce bundle est en effet assez difficile à appréhender, le style &#8220;PHP5.3 n4m3sp4c3s r so OOP LOL&#8221; et le manque de documentation n&#8217;aident pas tout.</p>
+
+<p>Bon après cet avis n&#8217;engage que moi, et est basé sur ma propre expérience. Je peux donc me tromper ou dire des bêtises.<br/>
+Veuillez me faire part de vos remarques, corrections en commentaire.</p>
+
+<p>Bonne arrachage de cheveux avec le couple FOSUserBundle/Doctrine, et à bientôt!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -274,70 +380,6 @@ cout &lt;&lt; array[1]; // retournera 8
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/php-addition-soustraction-des-dates-heures/">PHP: Addition/Soustraction Des Dates/heures</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-06-15T18:27:37+02:00" pubdate data-updated="true">Jun 15<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Je partage ces deux <a href="http://www.dinduks.com/category/bouts-de-code">bouts de code</a> tellement banals, mais que j&#8217;oublie toujours.<br/>
-(et je m&#8217;évite cette <a href="https://twitter.com/#!/Dinduks/status/80677872561422336">punition</a> en même temps)</p>
-
-<h3>Dates:</h3>
-
-<pre><code>$aujourdhui = "2011-06-15";
-$demain = date("Y-m-d", strtotime("+1 day", strtotime($aujourdhui)));
-$ilYADeuxMois = date("Y-m-d", strtotime("-2 month", strtotime($aujourdhui)));
-</code></pre>
-
-<h3>Heures:</h3>
-
-<pre><code>$maintenant = "15:00:00";
-$dansUneHeure = date("H:i:s", strtotime("+1 hour", strtotime($maintenant)));
-$ilYAUnQuartDHeure = date("H:i:s", strtotime("-15 minute", strtotime($maintenant)));
-</code></pre>
-
-<h4>Liste de mots-clé utiles:</h4>
-
-<ul>
-<li>day</li>
-<li>week</li>
-<li>month</li>
-<li>year</li>
-<li>hour</li>
-<li>minute</li>
-<li>second</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/9/">&larr; Older</a>
@@ -355,15 +397,15 @@ $ilYAUnQuartDHeure = date("H:i:s", strtotime("-15 minute", strtotime($maintenant
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
+      </li>
+    
+      <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
         <a href="/review-your-code-with-git/">Review your code with Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
       </li>
     
   </ul>

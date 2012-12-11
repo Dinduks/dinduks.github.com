@@ -9,8 +9,7 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Hello, I daily use VMware Workstation to code on Linux.
-Yesterday my dear Debian&#8217;s Gnome broke because of a bad manipulation, so I just took it &hellip;">
+  <meta name="description" content="I have recently submitted my first pull request ever, to the Symfony2 project. The code I contributed with is a 3 lines long method that simply &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +74,56 @@ Yesterday my dear Debian&#8217;s Gnome broke because of a bad manipulation, so I
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/clean-code-vs-efficiency/">Clean Code vs Efficiency</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-29T16:42:22+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have recently submitted <a href="https://github.com/symfony/symfony/pull/3209">my first pull request</a> ever, to the Symfony2 project.</p>
+
+<p><a href="https://github.com/Dinduks/symfony/commit/5306457f4b1073c6544dd4235a74c4d5f612ed9d">The code I contributed with</a> is a 3 lines long method that simply checks whether a form field is hidden or not.
+I have no doubt about the usefulness of this method, especially after seeing few people using a similar one (it seems that it was removed).</p>
+
+<p>The pull request was <a href="https://github.com/symfony/symfony/pull/3209#issuecomment-3707718">refused</a> because the class in question isn&#8217;t supposed to be <em>aware of information we need</em>.
+I agree with this and approve the good practices and clean code, but in this case we penalize the end user for the sake of doing things the <em>right</em> way.</p>
+
+<p>The purpose of my post is to answer the following question: should efficiency and simplicity be sacrificed for the sake of good practices and clean code?</p>
+
+<p>In my opinion, the answer is no. Especially when we&#8217;re dealing with a big project that thousands of people use, and that claims easiness and simplicity.</p>
+
+<p>I&#8217;m looking forward to know your opinion about the subject. Feel free to leave a comment.</p>
+
+<p><img class="center" src="/images/uploads/2012/01/programming-motherfucker.jpg"  alt="Programming Motherfucker"></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -310,127 +359,6 @@ Make sure you are logged in with the account you want the plan for, and tell the
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/implementing-a-simple-caching-system/">Implementing a Simple Caching System</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-12-20T11:55:05+01:00" pubdate data-updated="true">Dec 20<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hello,</p>
-
-<p>I&#8217;m going to show you a simple way to cache a file.</p>
-
-<p>To illustrate my example, I will use a script that creates a single image from multiple images.
-I have written <a href="https://github.com/Dinduks/Lastfm-Top-Albums">that script</a> a few months ago to generate a patchwork of my top albums in <a href="http://www.lastfm.com/user/Dinduks">Last.fm</a>, due to the lack of working similar scripts.</p>
-
-<p><a href="http://lastfmtopalbums.dinduks.com/">
-<img class="center" src="http://lastfmtopalbums.dinduks.com/patchwork.php?user=Dinduks&period=3month&rows=2&cols=2&imageSize=200"  alt="Dinduks\">
-</a></p>
-
-<p>First, let&#8217;s see how the script works, without the cache <em>system</em>:</p>
-
-<div><script src='https://gist.github.com/1707693.js?file='></script>
-<noscript><pre><code>&lt;?php
-
-$apiUrl = 'http://ws.audioscrobbler.com/2.0/';
-$apiKey = '61d580c50e6e5e3f14b6bd9527e5395f';
-$method = 'user.gettopalbums';
-
-$user   = $_GET['user'];
-$period = $_GET['period'];
-$rows   = $_GET['rows'];
-$cols   = $_GET['cols'];
-
-$limit  = $cols * $rows;
-
-$query = &quot;$apiUrl?method=$method&amp;user=$user&amp;period=$period&amp;limit=$limit&amp;api_key=$apiKey&quot;;
-
-// create a DOMDocument which will contain the xml document returned by Last.fm's Web service
-$topAlbums = new DOMDocument();
-$topAlbums-&gt;load($query);
-
-/*
-The code for generating the image...
-*/
-
-// display the image
-header(&quot;Content-type: image/jpg&quot;);
-imagejpeg($patchwork);</code></pre></noscript></div>
-
-
-<p>As you can see, the image is generated whenever the script is called. This isn&#8217;t only greedy on the server&#8217;s resources, but does also take a little time ; between 4 and 6 seconds for a common patchwork.</p>
-
-<p>To avoid this repetitive task, the idea is to save the generated image on a file, and, each time the script is called, check if the image doesn&#8217;t already exist before creating it again.</p>
-
-<h3>Create a signature of the source file</h3>
-
-<p>Since the image is generated from data that comes from the Last.fm Web Service, it will change according to it&#8217;s response. Let&#8217;s then create a MD5 hash of it.</p>
-
-<pre><code>$response     = file_get_contents($query);
-$responseHash = md5($response);
-</code></pre>
-
-<h3>Name the generated file</h3>
-
-<p>It&#8217;s time now to choose a name format for our file. I chose the following:</p>
-
-<pre><code>$fileName = "images/$user.$period.$rows.$cols.$imagesSize.$responseHash";
-</code></pre>
-
-<p><strong>Note</strong>: Make sure you have the write and read permissions on <code>images/</code>.</p>
-
-<h3>Save the file</h3>
-
-<p>At the end of the script, just before displaying the image, save it.</p>
-
-<pre><code>imagejpeg($patchwork, $fileName);
-</code></pre>
-
-<p>You&#8217;ll have to use <code>fwrite()</code> or a similar function depending on the type of the file you want to save.</p>
-
-<h3>Check if the file exists</h3>
-
-<p>The file is well saved now.<br/>
-The final step consists in checking, at the next request, if that file exists. If it&#8217;s the case, answer with it, if it is not, run the usual code ; which is the image creation.<br/>
-The code below should be put right before the image creation process.</p>
-
-<pre><code>if (file_exists($fileName)) {
-    header("Content-type: image/jpg");
-    echo file_get_contents($fileName);
-    exit;
-}
-</code></pre>
-
-<p>You are now ready to implement your own little cache system. Have fun. :)</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/4/">&larr; Older</a>
@@ -448,15 +376,15 @@ The code below should be put right before the image creation process.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
+      </li>
+    
+      <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
       <li class="post">
         <a href="/review-your-code-with-git/">Review your code with Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/why-are-trailing-whitespaces-bad/">Why are trailing whitespaces bad</a>
       </li>
     
   </ul>
