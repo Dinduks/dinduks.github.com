@@ -109,7 +109,7 @@ does it better than I would.</p>
 <p>The error in question occurs because the <em>java</em> executable, after reading the
 <a href="http://en.wikipedia.org/wiki/Manifest_file">Manifest</a> file from the inside of the
 JAR, doesn&#8217;t know what is the entry point of the program; i.e. the class that
-contains the ugly <code>public static void main(String[] args)</code> function.</p>
+contains the ugly <code>public static void main(String[] args)</code> method.</p>
 
 <p>To fix the error, that class&#8217; full name needs to be specified in the <em>build.xml</em> file.<br/>
 For example:</p>
