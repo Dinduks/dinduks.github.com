@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2013-02-18T09:44:25+01:00</updated>
+  <updated>2013-02-18T10:07:54+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[INVALID_STATE_ERR: DOM Exception 11]]></title>
-    <link href="http://www.dinduks.com/invalid-state-err-dom-exception-11/"/>
+    <title type="html"><![CDATA[WebSockets: INVALID_STATE_ERR: DOM Exception 11]]></title>
+    <link href="http://www.dinduks.com/websockets-invalid-state-err-dom-exception-11/"/>
     <updated>2013-02-18T09:34:00+01:00</updated>
-    <id>http://www.dinduks.com/invalid-state-err-dom-exception-11</id>
+    <id>http://www.dinduks.com/websockets-invalid-state-err-dom-exception-11</id>
     <content type="html"><![CDATA[<p>This error can be caused by many reasons, among them what happened to me: I tried
 sending a message via the WebSocket before the connection was completely opened.</p>
 
