@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2012-12-11T12:17:43+01:00</updated>
+  <updated>2013-02-18T09:44:25+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -12,6 +12,30 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[INVALID_STATE_ERR: DOM Exception 11]]></title>
+    <link href="http://www.dinduks.com/invalid-state-err-dom-exception-11/"/>
+    <updated>2013-02-18T09:34:00+01:00</updated>
+    <id>http://www.dinduks.com/invalid-state-err-dom-exception-11</id>
+    <content type="html"><![CDATA[<p>This error can be caused by many reasons, among them what happened to me: I tried
+sending a message via the WebSocket before the connection was completely opened.</p>
+
+<p>What you should <em>not</em> do:</p>
+
+<pre><code>ws = new WebSocket("ws://localhost/ws");
+ws.send('foo');
+</code></pre>
+
+<p>What you should do instead:</p>
+
+<pre><code>ws = new WebSocket("ws://localhost/ws");
+ws.onopen = function () {
+  ws.send('foo');
+}
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Java: no main manifest attribute]]></title>
@@ -1167,90 +1191,6 @@ In case you want to use them in a Twig template, you must set them up in <em>con
 <p>Enjoy. ;)</p>
 
 <p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Symfony2: Using multiple databases]]></title>
-    <link href="http://www.dinduks.com/symfony2-using-multiple-databases/"/>
-    <updated>2011-12-03T19:51:07+01:00</updated>
-    <id>http://www.dinduks.com/symfony2-using-multiple-databases</id>
-    <content type="html"><![CDATA[<p>In case your website, built with Symfony2, is using multiple databases, you must setup as much connections and <em>Entity Managers</em> as databases.</p>
-
-<p><em>An Entity Manager is simply an interface that speaks to the database.</em></p>
-
-<p>In order to illustrate my example, I will be using two databases: <em>site</em> and <em>forum</em>.</p>
-
-<h4>Set up the connections in <em><strong>config.yml</strong></em></h4>
-
-<pre><code>doctrine:
-  dbal:
-    default_connection: site # specify the connexion used by default
-    connections:
-      site:
-        driver:   %database_driver%
-        host:     %database_host%
-        port:     %database_port%
-        dbname:   site
-        user:     site_usr
-        password: site_pwd
-        charset:  UTF8
-      forum:
-        driver:   %database_driver%
-        host:     %database_host%
-        port:     %database_port%
-        dbname:   forum
-        user:     forum_usr
-        password: forum_pwd
-        charset:  UTF8
-</code></pre>
-
-<h4>Set up EM, in the same file</h4>
-
-<p>To begin with, disable <em>auto-mapping</em>, so you will be able to choose which EM is going to manage which <em>bundle</em>’s entities.</p>
-
-<pre><code>doctrine:
-  orm:
-    auto_mapping: false
-</code></pre>
-
-<p><em>Note: If there’s an error bounded with this line, just delete it.</em></p>
-
-<p>Then, right below, set up EM while specifying <em>mappings</em> to each bundle.</p>
-
-<pre><code>doctrine:
-  orm:
-    auto_mapping: false
-    default_entity_manager: web # specify the EM used by default (when using console commands f.e)
-
-    entity_managers:
-      web:
-        connection: web
-        mappings:
-          DinduksFooBundle : ~
-          DinduksBarBundle : ~
-          FOSUserBundle: ~
-      forum:
-        connection: forum
-        mappings:
-          DinduksForumBundle : ~
-</code></pre>
-
-<p>Simply put, mappings connect and constitute the bridge between an EM and the entities of a specific bundle.
-In other terms, mappings call up an EM X when wanting to manipulate an entity Y.</p>
-
-<p>Warning: Always make sure you map your fresh-created bundles to an EM, otherwise a &#8220;non-existent bundle&#8221; error will occur when using the <code>doctrine:generate:entities</code> command.</p>
-
-<h4>Use</h4>
-
-<p>In the same way you call your default EM, call the EM you need by passing its name to the <code>getEntityManager()</code> function.</p>
-
-<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
-</code></pre>
-
-<p>I hope you’ll find this tutorial useful. :)</p>
-
-<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-plusieurs-bases-de-donnees">Symfony2: Utiliser plusieurs bases de données</a></em></p>
 ]]></content>
   </entry>
   

@@ -9,8 +9,7 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="I recently migrated my blog from Wordpress to Octopress. Octopress is a framework for Jekyll, the blog aware static site generator
-powering Github &hellip;">
+  <meta name="description" content="Dislaimer: I&#8217;m not a pro and I&#8217;m open to your feedback and critics. Whether you&#8217;ve learned programming alone or had classes about &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +74,218 @@ powering Github &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/dont-comment-your-code/">Don&#8217;t Comment Your Code, Write Good One</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-29T17:42:00+02:00" pubdate data-updated="true">Sep 29<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>Dislaimer: I&#8217;m not a pro and I&#8217;m open to your feedback and critics.</em></p>
+
+<p>Whether you&#8217;ve learned programming alone or had classes about the subject, you&#8217;ve
+probably been taught to <em>use comments</em>.<br/>
+The more I write code and read about good practices, the more I realize that
+<em>advice</em> is exactly the one you shouldn&#8217;t give. It only encourages laziness,
+writing dirty code, and filling the cracks in by commenting every piece of code.</p>
+
+<p>I believe that most of the time you should not use comments, but instead think
+every time before you write one: why are you doing this? Is your method or function
+name not explicit enough? Fix it. Is it complex? Refactor it and move its main parts
+to new methods or functions. Is it hard to understand? You&#8217;re writing bad code.</p>
+
+<p>When I say <em>exception</em>, I mean specific cases where you really need to explain
+what you are doing: you&#8217;re hacking to get the shit done, writing some complex
+algorithm, etc.<br/>
+Also, if one needs to specify where you did copy some code from, comments might be a
+good place for this purpose.</p>
+
+<pre><code>/**
+* Source: http://stackoverflow.com/a/9261887/604041
+*/
+function getPopoverPlacement(popover, element) {
+}
+</code></pre>
+
+<p>The reason why I&#8217;m writing this post is that I&#8217;ve seen this piece of code</p>
+
+<pre><code>// The logo's copyright checksum
+const CHECKSUM = "herpderp";
+</code></pre>
+
+<p>used to justify the use of comments.</p>
+
+<p>Wrong. I didn&#8217;t need to think twice before recommending to name that constant
+<code>LOGO_COPYRIGHT_CHECKSUM</code>.<br/>
+That&#8217;s quite an easy example to counter, but one could improve almost any code out
+there as effortlessly as shown above.</p>
+
+<p>Another downside of using comments, as mentionned by my friend
+<a href="http://www.badmood.eu/">Nicolas</a>, is that comments need to be maintained, just like
+the code.<br/>
+Not only this means more things to take care of and more work to do, but in real
+life the code gets updated while comments don&#8217;t.</p>
+
+<p>Let&#8217;s see some examples of how we can avoid comments by writing better code:</p>
+
+<h3>From Jeff Atwood&#8217;s <a href="http://www.codinghorror.com/blog/2008/07/coding-without-comments.html">Coding without comments</a> blog post</h3>
+
+<p>A simple but efficient example:</p>
+
+<pre><code>// square root of n with Newton-Raphson approximation
+r = n / 2;
+while ( abs( r - (n/r) ) &gt; t ) {
+    r = 0.5 * ( r + (n/r) );
+}
+
+System.out.println( "r = " + r );
+</code></pre>
+
+<p>Could be refactored to:</p>
+
+<pre><code>private double SquareRootApproximation(n) {
+    r = n / 2;
+    while ( abs( r - (n/r) ) &gt; t ) {
+        r = 0.5 * ( r + (n/r) );
+    }
+
+    return r;
+}
+
+System.out.println( "r = " + SquareRootApproximation(r) );
+</code></pre>
+
+<p>I recommend reading his article where he too, calls to avoid comments.<br/>
+After all, Jeff Atwood&#8217;s word&#8217;s more valuable than mine, right? ;)</p>
+
+<h3>From the awesome <a href="http://www.bennadel.com/resources/uploads/2012/ObjectCalisthenics.pdf">Objects Calisthenics</a> manifesto</h3>
+
+<p>Here, it isn&#8217;t about comments, but a complex code that a lazy-ass would have used
+comments to explain:</p>
+
+<pre><code>String board() {
+    StringBuffer buf = new StringBuffer();
+    for (int i = 0; i &lt; 10; i++) {
+        for (int j = 0; j &lt; 10; j++)
+        buf.append(data[i][j]);
+        buf.append(“\n”);
+    }
+
+    return buf.toString();
+}
+</code></pre>
+
+<p>Well written, it looks like:</p>
+
+<pre><code>String board() {
+    StringBuffer buf = new StringBuffer();
+    collectRows(buf);
+    return buf.toString();
+}
+
+void collectRows(StringBuffer buf) {
+    for (int i = 0; i &lt; 10; i++)
+      collectRow(buf, i);
+}
+
+void collectRow(StringBuffer buf, int row) {
+    for (int i = 0; i &lt; 10; i++)
+        Buf.append(data[row][i]);
+    buf.append(“\n”);
+}
+</code></pre>
+
+<p>Is that a lot of code? Oh, sorry. :( I didn&#8217;t know you pay a fee for each single LoC
+you write.</p>
+
+<p>Objects Calisthenics is a wonderful book about improving the object oriented
+thinking and coding. <strong>Read it</strong>, and if you can&#8217;t follow all the rules, start with
+some and improve accordingly.</p>
+
+<h3>Some code of mine</h3>
+
+<p>Take a look at this code:</p>
+
+<pre><code>def find_user_repos(username)
+  resp = @http_client.call("/users/#{username}/repos")
+  raise UserNotFound.new(username) if resp['message'].to_s == 'Not Found' if resp.is_a? Hash
+
+  repositories_array = Array.new
+  resp.each do |repository_hash|
+    repo = RepositoryConverter.fill_object_from_hash repository_hash
+    repositories_array.push(repo)
+  end
+  repositories_array
+end
+</code></pre>
+
+<p>Starting from line 5, you have to carefully read the code to understand it. One
+might think <em>let&#8217;s just add a comment!</em>. No.<br/>
+Let&#8217;s clean that mess.</p>
+
+<pre><code>def find_user_repos(username)
+  resp = @http_client.call("/users/#{username}/repos")
+  raise UserNotFound.new(username) if resp['message'].to_s == 'Not Found' if resp.is_a? Hash
+
+  create_repos_array(resp) do |hash|
+    RepositoryConverter.fill_object_from_hash hash
+  end
+end
+
+private
+def create_repos_array(repositories)
+  repositories_array = Array.new
+  repositories.each do |repository_hash|
+    repo = yield repository_hash
+    repositories_array.push(repo)
+  end
+  repositories_array
+end
+</code></pre>
+
+<p>Here, I simply moved the code that creates a repositories array in another method,
+this has many advantages:</p>
+
+<ul>
+<li>One can read the code and understand what&#8217;s happening, without caring about the
+implementation.</li>
+<li>This method can be used elsewhere.</li>
+<li>It can be tested&#8230; If it wasn&#8217;t private.</li>
+</ul>
+
+
+<h3>Where to explain how the big parts of my app fit together?</h3>
+
+<p>Probably not in the code itself.<br/>
+I&#8217;d suggest doing this in a separate or in the <em>README</em> file.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -493,72 +704,6 @@ end</code></pre></noscript></div>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/rails-load-assets-in-a-specific-order/">Rails: Load Assets in a Specific Order</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-01-31T00:57:22+01:00" pubdate data-updated="true">Jan 31<span>st</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Let&#8217;s pretend you have many CSS/SASS stylesheets and JS/Coffee scripts in your project, and you want to load some before the rest.
-This can be done in <code>stylesheets/application.css</code> and <code>javascripts/application.js</code> by using the keyword <code>require</code>.</p>
-
-<h2>Examples:</h2>
-
-<h3>Stylesheets:</h3>
-
-<p>If you want to load Bootstrap&#8217;s stylesheet first:</p>
-
-<div><script src='https://gist.github.com/1707651.js?file='></script>
-<noscript><pre><code>/*
- *= require bootstrap.min.css
- *= require_self
- *= require_tree .
- */</code></pre></noscript></div>
-
-
-<h3>Javascripts:</h3>
-
-<p>This is how to load jQuery and Boostrap&#8217;s scripts before the others:</p>
-
-<div><script src='https://gist.github.com/1707655.js?file='></script>
-<noscript><pre><code>//= require jquery-1.7.1.min.js
-//= require bootstrap-alerts.js
-//= require bootstrap-modal.js
-//= require_tree .</code></pre></noscript></div>
-
-
-<p>You can omit the files extensions.</p>
-
-<p>I believe they call this the awesomeness of Rails.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/3/">&larr; Older</a>
@@ -576,15 +721,15 @@ This can be done in <code>stylesheets/application.css</code> and <code>javascrip
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/invalid-state-err-dom-exception-11/">INVALID_STATE_ERR: DOM Exception 11</a>
+      </li>
+    
+      <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
       <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/review-your-code-with-git/">Review your code with Git</a>
       </li>
     
   </ul>
@@ -646,7 +791,7 @@ This can be done in <code>stylesheets/application.css</code> and <code>javascrip
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Samy Dindane -
+  Copyright &copy; 2013 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

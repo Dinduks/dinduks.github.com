@@ -9,8 +9,8 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Aujourd&#8217;hui j&#8217;ai découvert un helper secret de Symfony2. Secret parce que je ne le retrouve nulle part sur la doc.
-Edit: On en parle sur &hellip;">
+  <meta name="description" content="I discovered some days ago a secret Symfony 2&#8217;s helper. I call it secret because I can&#8217;t find it anywhere on the documentation.
+Edit: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +75,82 @@ Edit: On en parle sur &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-render-helper-for-calling-an-action-from-a-view/">Symfony2: &#8220;Render&#8221; Helper for Calling an Action From a View</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-17T21:19:51+01:00" pubdate data-updated="true">Nov 17<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I discovered some days ago a <em>secret</em> Symfony 2&#8217;s helper. I call it secret because I can&#8217;t find it anywhere on the documentation.<br/>
+<em>Edit: Here it is on the Symfony2 book: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
+
+<p><code>{% render %}</code> is used to show an action&#8217;s response in a <em>Twig</em> template. It&#8217;s very useful when wanting to show a dynamic content in all the app&#8217;s pages.</p>
+
+<h3>Example: Displaying online users&#8217; counter</h3>
+
+<h4>Create a <code>onlineUsersAction()</code> function</h4>
+
+<p>That function fetches, processes the result and returns the counter of the online users.</p>
+
+<h4>Create a Twig template that displays the response returned by the action</h4>
+
+<p>The syntax is the following:</p>
+
+<pre><code>  {% render "LiveGeekBundle:Default:onlineUsers" %}
+</code></pre>
+
+<p>Knowing that <code>onlineUsersAction()</code> is an action of <code>DefaultController</code> which is a controller from the <em>Live\GeekBundle</em> bundle.</p>
+
+<h4>Include that template in our application&#8217;s default layout</h4>
+
+<p>Thus display the online users&#8217; counter in all the app&#8217;s pages.</p>
+
+<h3>Passing arguments:</h3>
+
+<p>You can pass arguments to the action this way:</p>
+
+<h4>In the Twig template:</h4>
+
+<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
+</code></pre>
+
+<h4>In the controller:</h4>
+
+<pre><code>helloAction($arg1, $arg2)
+</code></pre>
+
+<p>The arguments&#8217; order doesn&#8217;t matter.</p>
+
+<p>Enjoy. ;)</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -386,79 +462,6 @@ $app['translator.loader'] = new Symfony\Component\Translation\Loader\YamlFileLoa
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/utiliser-le-format-exfat-sous-linux/">Utiliser Le Format exFat Sous Linux</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-10-13T02:00:03+02:00" pubdate data-updated="true">Oct 13<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Bonjour,</p>
-
-<p>Si comme moi vos disques durs externes sont formatés en exFat (pour gérer les fichiers de plus de 4Go par exemple), et que vous utilisez souvent Linux, vous savez sûrement que le système de fichiers de Microsoft n&#8217;est pas géré nativement par Linux.<br/>
-Il y a par contre une solution, facile mais difficilement trouvable sur le net, et c&#8217;est celle que je partagerai avec vous.</p>
-
-<p>Pour cela, il faut installer FUSE:</p>
-
-<pre><code>sudo apt-add-repository ppa:relan/exfat
-sudo apt-get install fuse-exfat
-</code></pre>
-
-<p>Ensuite, branchez votre disque dur si ce n&#8217;est déjà fait, et vérifiez le nom de votre lecteur avec la commande suivante:</p>
-
-<pre><code>more /proc/partitions
-</code></pre>
-
-<p>Une liste de tous les périphériques de stockage sera alors affichée, votre disque dur externe sera sûrement dans la fin de la liste, vous le reconnaîtrez grâce à sa taille.
-Notez son nom, on va utiliser <em>/dev/sdc1</em> dans cet exemple.</p>
-
-<p>Maintenant créer un répertoire vide pour y monter votre DD:</p>
-
-<pre><code>cd /mnt
-sudo mkdir usbdrive/
-</code></pre>
-
-<p>Et montez le disque dur:</p>
-
-<pre><code>sudo mount -t exfat /dev/sdc1 usbdrive
-</code></pre>
-
-<p>Et voilà, votre lecteur devra s&#8217;afficher sur le bureau. Si ce n&#8217;est pas le cas, accédez à /mnt/usbdrive avec votre explorateur de fichier.</p>
-
-<p>Si vous avez terminé d&#8217;utiliser votre disque dur et que vous voulez le démonter, un simple <code>umount</code> suffit:</p>
-
-<pre><code>umount /mnt/usbdrive
-</code></pre>
-
-<p>Tutoriel basé sur: <a href="http://apcmag.com/how-to-enable-exfat-in-ubuntu.htm">http://apcmag.com/how-to-enable-exfat-in-ubuntu.htm</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/7/">&larr; Older</a>
@@ -476,15 +479,15 @@ sudo mkdir usbdrive/
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/invalid-state-err-dom-exception-11/">INVALID_STATE_ERR: DOM Exception 11</a>
+      </li>
+    
+      <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
       <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/review-your-code-with-git/">Review your code with Git</a>
       </li>
     
   </ul>
@@ -546,7 +549,7 @@ sudo mkdir usbdrive/
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Samy Dindane -
+  Copyright &copy; 2013 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

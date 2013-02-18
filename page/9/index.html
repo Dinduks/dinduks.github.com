@@ -9,8 +9,7 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Je partage ces deux bouts de code tellement banals, mais que j&#8217;oublie toujours.
-(et je m&#8217;évite cette punition en même temps) Dates: $ &hellip;">
+  <meta name="description" content="Si vous avez cette erreur, essayez: Dans le cas d&#8217;un dossier: svn resolved -R chemin/ Dans le cas d&#8217;un fichier svn resolved chemin/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +74,52 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/svn-arret-de-la-propagation/">SVN: Arrêt De La Propagation : &#8216;/chemin&#8217; Demeure en Conflit</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-22T23:20:45+02:00" pubdate data-updated="true">Jun 22<span>nd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Si vous avez cette erreur, essayez:</p>
+
+<h4>Dans le cas d&#8217;un dossier:</h4>
+
+<pre><code>svn resolved -R chemin/
+</code></pre>
+
+<h4>Dans le cas d&#8217;un fichier</h4>
+
+<pre><code>svn resolved chemin/fichier
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -421,145 +466,6 @@ Je ne sais pas combien de temps ça prend vu que je viens d&#8217;envoyer le for
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/krumo-une-alternative-a-print_r-et-var_dump/">PHP: Krumo, Une Alternative à Print_r() Et Var_dump()</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-02-15T22:44:07+01:00" pubdate data-updated="true">Feb 15<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>Edit du 24/08/2012: <code>var_dump()</code> couplée à Xdebug s&#8217;avère plus pratique</em></p>
-
-<p>En cherchant un moyen pour afficher <code>print_r()</code> avec une mise en page, je suis tombé sur <em>Krumo</em>, une classe <em>PHP</em> qu&#8217;on peut utiliser à la place, et qui offre une mise en page bien plus compréhensible par les humains que nous sommes.</p>
-
-<h3>Présentation</h3>
-
-<p><em>Krumo</em> est un remplacement pour <code>print()</code> et <code>var_dump()</code>. Autrement dit, <em>Krumo</em> est un outil de débogage (initialement pour <em>PHP4</em>/<em>PHP5</em>, maintenant pour <em>PHP5</em> seulement), qui affiche les informations d&#8217;une variable <em>PHP</em> de manière structurée.</p>
-
-<p>Beaucoup de développeurs utilisent <code>print_r()</code> et <code>var_dump()</code> pour débugger. Bien que ces classes ont été crées pour présenter une varible de façon lisible par l&#8217;humain, ce n&#8217;est malheureusement pas le cas. <em>Krumo</em> est une alternative: elle fait le même travail, mais elle présent l&#8217;information plus esthétiquement en utilisant du <em>CSS</em> et du <em>Javascript</em>.</p>
-
-<p><em>Krumo</em> offre non seulement une présentation plus propre, mais aussi des fonctionnalités intéressantes qu&#8217;on verra plutard.</p>
-
-<h3>Téléchargement</h3>
-
-<p>Rendez vous sur le site officiel: <a href="http://kaloyan.info/krumo/index.php#download">Krumo on SourceForge.net</a>.<br/>
-Ou cliquez sur ce lien pour télécharger la dernière version (15/02/2011): <a href="http://sourceforge.net/projects/krumo/files/krumo/Krumo%200.2.1a%20%28*PHP*5%20Only%29/krumo_0.2.1a_*PHP*5-Only.zip/download">krumo_0.2.1a_<em>PHP</em>5-Only.zip</a>.</p>
-
-<h3>Installation</h3>
-
-<p>L&#8217;installation est simple et classique, il suffit d&#8217;extraire le dossier de <em>Krumo</em> sur votre serveur et de l&#8217;inclure dans votre script (ou <em>bootstrap</em>).<br/>
-Exemple:</p>
-
-<pre><code>require_once(dirname(__FILE__) . '/krumo/class.krumo.php');
-</code></pre>
-
-<p>Notez que vous n&#8217;êtes pas obligés de mettre tous les fichiers dans le répertoire <em>krumo/</em>, seuls <em>class.krumo.php</em>, <em>krumo.ini</em>, <em>krumo.js</em> et le dossier <em>skins/</em> sont nécessaires.</p>
-
-<h3>Paramétrage (facultatif)</h3>
-
-<p>Vous pouvez jeter un coup d&#8217;œil sur <em>krumo.ini</em>, pour:</p>
-
-<h4>Changer de skin</h4>
-
-<pre><code>[ skin ]
-    selected = "green"
-</code></pre>
-
-<p>La valeur de <em>selected</em> doit être le nom d&#8217;un sous-dossier du dossier <em>skins/</em>.</p>
-
-<h4>Indiquer le chemin du dossier où Krumo est installé.</h4>
-
-<pre><code>url = "http://www.dinduks.com/Krumo/"
-</code></pre>
-
-<p>Et cela pour rendre les images des skins accessibles sur le Web.</p>
-
-<h3>Utilisation</h3>
-
-<p>Voici un exemple basique:</p>
-
-<pre><code>krumo(array('a1'=&gt; 'A1', 3, 'rouge'));
-</code></pre>
-
-<p>Comme vous le remarquez, <em>Krumo</em> marche de la même manière que les classes qu&#8217;elle est censée remplacer.</p>
-
-<p>Elle peut aussi afficher plusieurs <em>variables</em>:</p>
-
-<pre><code>krumo($_SERVER, $_ENV);
-</code></pre>
-
-<p>Et possède plusieurs méthodes statiques, par exemple:</p>
-
-<pre><code>// Équivalent à print_r(debug_backtrace());
-krumo::backtrace();
-
-// Affiche tous les fichiers inclus (ou requis)
-krumo::includes();
-
-// Affiche toutes les fonctions incluses
-krumo::functions();
-
-// Affiche toutes les classes déclarées
-krumo::classes();
-
-// Affiche toutes les constantes définies
-krumo::defines();
-</code></pre>
-
-<p>Vous pouvez activer ou désactiver <em>Krumo</em> grâce aux méthodes suivantes:</p>
-
-<pre><code>krumo::enable();
-krumo::disable();
-</code></pre>
-
-<h3>Exemples</h3>
-
-<p>Vous pouvez voir des exemples d&#8217;utilisation sur le <a href="http://krumo.kaloyan.info/#example">site officiel de Krumo</a>.</p>
-
-<h3>Conclusion</h3>
-
-<p><em>Krumo</em> permet non seulement de mieux présenter les tableaux <em>PHP</em>, mais aussi d&#8217;accéder à d&#8217;autres informations plus facilement, parfois méconnues par les développeurs.<br/>
-Pour ma part, cette classe a mérité sa place dans mes dossiers <em>lib/</em>.</p>
-
-<p>Je vous invite à le tester et vous faire une idée. ;)</p>
-
-<h3>Liens</h3>
-
-<p>Apprenez en plus sur le site et la doc officiels:</p>
-
-<ul>
-<li>Le site officiel: <a href="http://krumo.sourceforge.net/">http://krumo.sourceforge.net/</a>.</li>
-<li>La documentation de <em>Krumo</em>: <a href="http://kaloyan.info/krumo/docs/">http://kaloyan.info/krumo/docs/</a>.</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/10/">&larr; Older</a>
@@ -577,15 +483,15 @@ Pour ma part, cette classe a mérité sa place dans mes dossiers <em>lib/</em>.<
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/invalid-state-err-dom-exception-11/">INVALID_STATE_ERR: DOM Exception 11</a>
+      </li>
+    
+      <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
       <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/review-your-code-with-git/">Review your code with Git</a>
       </li>
     
   </ul>
@@ -647,7 +553,7 @@ Pour ma part, cette classe a mérité sa place dans mes dossiers <em>lib/</em>.<
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Samy Dindane -
+  Copyright &copy; 2013 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

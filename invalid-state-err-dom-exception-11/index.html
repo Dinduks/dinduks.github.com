@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Implementing a simple caching system - Live geek or die tryin'</title>
+  <title>INVALID_STATE_ERR: DOM Exception 11 - Live geek or die tryin'</title>
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Hello, I&#8217;m going to show you a simple way to cache a file. To illustrate my example, I will use a script that creates a single image from &hellip;">
+  <meta name="description" content="This error can be caused by many reasons, among them what happened to me: I tried
+sending a message via the WebSocket before the connection was &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.dinduks.com/implementing-a-simple-caching-system/">
+  <link rel="canonical" href="http://www.dinduks.com/invalid-state-err-dom-exception-11/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -77,7 +78,7 @@
   
   <header>
     
-      <h1 class="entry-title">Implementing a Simple Caching System</h1>
+      <h1 class="entry-title">INVALID_STATE_ERR: DOM Exception 11</h1>
     
     
       <p class="meta">
@@ -93,99 +94,29 @@
   
 
 
-<time datetime="2011-12-20T11:55:05+01:00" pubdate data-updated="true">Dec 20<span>th</span>, 2011</time>
+<time datetime="2013-02-18T09:34:00+01:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Hello,</p>
+<div class="entry-content"><p>This error can be caused by many reasons, among them what happened to me: I tried
+sending a message via the WebSocket before the connection was completely opened.</p>
 
-<p>I&#8217;m going to show you a simple way to cache a file.</p>
+<p>What you should <em>not</em> do:</p>
 
-<p>To illustrate my example, I will use a script that creates a single image from multiple images.
-I have written <a href="https://github.com/Dinduks/Lastfm-Top-Albums">that script</a> a few months ago to generate a patchwork of my top albums in <a href="http://www.lastfm.com/user/Dinduks">Last.fm</a>, due to the lack of working similar scripts.</p>
-
-<p><a href="http://lastfmtopalbums.dinduks.com/">
-<img class="center" src="http://lastfmtopalbums.dinduks.com/patchwork.php?user=Dinduks&period=3month&rows=2&cols=2&imageSize=200"  alt="Dinduks\">
-</a></p>
-
-<p>First, let&#8217;s see how the script works, without the cache <em>system</em>:</p>
-
-<div><script src='https://gist.github.com/1707693.js?file='></script>
-<noscript><pre><code>&lt;?php
-
-$apiUrl = 'http://ws.audioscrobbler.com/2.0/';
-$apiKey = '61d580c50e6e5e3f14b6bd9527e5395f';
-$method = 'user.gettopalbums';
-
-$user   = $_GET['user'];
-$period = $_GET['period'];
-$rows   = $_GET['rows'];
-$cols   = $_GET['cols'];
-
-$limit  = $cols * $rows;
-
-$query = &quot;$apiUrl?method=$method&amp;user=$user&amp;period=$period&amp;limit=$limit&amp;api_key=$apiKey&quot;;
-
-// create a DOMDocument which will contain the xml document returned by Last.fm's Web service
-$topAlbums = new DOMDocument();
-$topAlbums-&gt;load($query);
-
-/*
-The code for generating the image...
-*/
-
-// display the image
-header(&quot;Content-type: image/jpg&quot;);
-imagejpeg($patchwork);</code></pre></noscript></div>
-
-
-<p>As you can see, the image is generated whenever the script is called. This isn&#8217;t only greedy on the server&#8217;s resources, but does also take a little time ; between 4 and 6 seconds for a common patchwork.</p>
-
-<p>To avoid this repetitive task, the idea is to save the generated image on a file, and, each time the script is called, check if the image doesn&#8217;t already exist before creating it again.</p>
-
-<h3>Create a signature of the source file</h3>
-
-<p>Since the image is generated from data that comes from the Last.fm Web Service, it will change according to it&#8217;s response. Let&#8217;s then create a MD5 hash of it.</p>
-
-<pre><code>$response     = file_get_contents($query);
-$responseHash = md5($response);
+<pre><code>ws = new WebSocket("ws://localhost/ws");
+ws.send('foo');
 </code></pre>
 
-<h3>Name the generated file</h3>
+<p>What you should do instead:</p>
 
-<p>It&#8217;s time now to choose a name format for our file. I chose the following:</p>
-
-<pre><code>$fileName = "images/$user.$period.$rows.$cols.$imagesSize.$responseHash";
-</code></pre>
-
-<p><strong>Note</strong>: Make sure you have the write and read permissions on <code>images/</code>.</p>
-
-<h3>Save the file</h3>
-
-<p>At the end of the script, just before displaying the image, save it.</p>
-
-<pre><code>imagejpeg($patchwork, $fileName);
-</code></pre>
-
-<p>You&#8217;ll have to use <code>fwrite()</code> or a similar function depending on the type of the file you want to save.</p>
-
-<h3>Check if the file exists</h3>
-
-<p>The file is well saved now.<br/>
-The final step consists in checking, at the next request, if that file exists. If it&#8217;s the case, answer with it, if it is not, run the usual code ; which is the image creation.<br/>
-The code below should be put right before the image creation process.</p>
-
-<pre><code>if (file_exists($fileName)) {
-    header("Content-type: image/jpg");
-    echo file_get_contents($fileName);
-    exit;
+<pre><code>ws = new WebSocket("ws://localhost/ws");
+ws.onopen = function () {
+  ws.send('foo');
 }
 </code></pre>
-
-<p>You are now ready to implement your own little cache system. Have fun. :)</p>
 </div>
 
 
@@ -208,21 +139,15 @@ The code below should be put right before the image creation process.</p>
   
 
 
-<time datetime="2011-12-20T11:55:05+01:00" pubdate data-updated="true">Dec 20<span>th</span>, 2011</time>
+<time datetime="2013-02-18T09:34:00+01:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/category/development/'>Development</a>, <a class='category' href='/category/tutorials/'>Tutorials</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/implementing-a-simple-caching-system/" data-via="Dinduks" data-counturl="http://www.dinduks.com/implementing-a-simple-caching-system/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/invalid-state-err-dom-exception-11/" data-via="Dinduks" data-counturl="http://www.dinduks.com/invalid-state-err-dom-exception-11/" >Tweet</a>
   
   
   
@@ -231,10 +156,8 @@ The code below should be put right before the image creation process.</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/symfony-2-execute-console-commands-on-a-specific-entity-manager/" title="Previous Post: Symfony 2: Execute console commands on a specific entity manager">&laquo; Symfony 2: Execute console commands on a specific entity manager</a>
+        <a class="basic-alignment left" href="/java-no-main-manifest-attribute/" title="Previous Post: Java: no main manifest attribute">&laquo; Java: no main manifest attribute</a>
       
-      
-        <a class="basic-alignment right" href="/github-free-plans-for-students-and-teachers/" title="Next Post: GitHub: Free plans for students and teachers">GitHub: Free plans for students and teachers &raquo;</a>
       
     </p>
   </footer>
@@ -338,8 +261,8 @@ The code below should be put right before the image creation process.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.dinduks.com/implementing-a-simple-caching-system/';
-        var disqus_url = 'http://www.dinduks.com/implementing-a-simple-caching-system/';
+        var disqus_identifier = 'http://www.dinduks.com/invalid-state-err-dom-exception-11/';
+        var disqus_url = 'http://www.dinduks.com/invalid-state-err-dom-exception-11/';
         var disqus_script = 'embed.js';
       
     (function () {

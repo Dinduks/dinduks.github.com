@@ -9,8 +9,8 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="Bonjour, Mon premier vrai projet sous Symfony 2 est un site pour un serveur World Of Warcraft.
-Ce serveur, sous MaNGOS, utilise ses propres tables, &hellip;">
+  <meta name="description" content="Ce qui suit n&#8217;est pas une science exacte mais ça peut vous éviter 10 minutes de recherche.
+C&#8217;est cet argument qui vous sauvera la vie: -- &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -75,6 +75,50 @@ Ce serveur, sous MaNGOS, utilise ses propres tables, &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique/">Symfony2: Executer Les Commandes Console Sur Un Entity Manager Spécifique</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-14T00:19:19+02:00" pubdate data-updated="true">Aug 14<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Ce qui suit n&#8217;est pas une science exacte mais ça peut vous éviter 10 minutes de recherche.<br/>
+C&#8217;est cet argument qui vous sauvera la vie: <code>--em</code>.</p>
+
+<h4>Exemple:</h4>
+
+<p>Dans le cas où vous voudrez générer les informations sur le mapping à partir de l&#8217;Entity Manager &#8220;client&#8221;:</p>
+
+<pre><code>php app/console doctrine:mapping:convert yml /src/Acme/ClientBundle/Resources/config/doctrine/metadata/orm --from-database --force --em="client
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -334,52 +378,6 @@ cout &lt;&lt; array[1]; // retournera 8
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/svn-arret-de-la-propagation/">SVN: Arrêt De La Propagation : &#8216;/chemin&#8217; Demeure en Conflit</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-06-22T23:20:45+02:00" pubdate data-updated="true">Jun 22<span>nd</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Si vous avez cette erreur, essayez:</p>
-
-<h4>Dans le cas d&#8217;un dossier:</h4>
-
-<pre><code>svn resolved -R chemin/
-</code></pre>
-
-<h4>Dans le cas d&#8217;un fichier</h4>
-
-<pre><code>svn resolved chemin/fichier
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/9/">&larr; Older</a>
@@ -397,15 +395,15 @@ cout &lt;&lt; array[1]; // retournera 8
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/invalid-state-err-dom-exception-11/">INVALID_STATE_ERR: DOM Exception 11</a>
+      </li>
+    
+      <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
       <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/review-your-code-with-git/">Review your code with Git</a>
       </li>
     
   </ul>
@@ -467,7 +465,7 @@ cout &lt;&lt; array[1]; // retournera 8
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Samy Dindane -
+  Copyright &copy; 2013 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

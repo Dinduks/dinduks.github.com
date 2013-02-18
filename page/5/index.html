@@ -9,7 +9,7 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="If you’re new to Git, this tip will allow you to save some of your precious time. Open .git/config in your project’s local directory, and, in the &hellip;">
+  <meta name="description" content="In case your website, built with Symfony2, is using multiple databases, you must setup as much connections and Entity Managers as databases. An &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +74,117 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony2-using-multiple-databases/">Symfony2: Using Multiple Databases</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-03T19:51:07+01:00" pubdate data-updated="true">Dec 3<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In case your website, built with Symfony2, is using multiple databases, you must setup as much connections and <em>Entity Managers</em> as databases.</p>
+
+<p><em>An Entity Manager is simply an interface that speaks to the database.</em></p>
+
+<p>In order to illustrate my example, I will be using two databases: <em>site</em> and <em>forum</em>.</p>
+
+<h4>Set up the connections in <em><strong>config.yml</strong></em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # specify the connexion used by default
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Set up EM, in the same file</h4>
+
+<p>To begin with, disable <em>auto-mapping</em>, so you will be able to choose which EM is going to manage which <em>bundle</em>’s entities.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: If there’s an error bounded with this line, just delete it.</em></p>
+
+<p>Then, right below, set up EM while specifying <em>mappings</em> to each bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # specify the EM used by default (when using console commands f.e)
+
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksFooBundle : ~
+          DinduksBarBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Simply put, mappings connect and constitute the bridge between an EM and the entities of a specific bundle.
+In other terms, mappings call up an EM X when wanting to manipulate an entity Y.</p>
+
+<p>Warning: Always make sure you map your fresh-created bundles to an EM, otherwise a &#8220;non-existent bundle&#8221; error will occur when using the <code>doctrine:generate:entities</code> command.</p>
+
+<h4>Use</h4>
+
+<p>In the same way you call your default EM, call the EM you need by passing its name to the <code>getEntityManager()</code> function.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>I hope you’ll find this tutorial useful. :)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-plusieurs-bases-de-donnees">Symfony2: Utiliser plusieurs bases de données</a></em></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -345,82 +456,6 @@ Now I realized that writing in both languages isn&#8217;t worth it since develop
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/symfony-2-render-helper-for-calling-an-action-from-a-view/">Symfony2: &#8220;Render&#8221; Helper for Calling an Action From a View</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-11-17T21:19:51+01:00" pubdate data-updated="true">Nov 17<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I discovered some days ago a <em>secret</em> Symfony 2&#8217;s helper. I call it secret because I can&#8217;t find it anywhere on the documentation.<br/>
-<em>Edit: Here it is on the Symfony2 book: <a href="http://symfony.com/doc/2.0/book/templating.html#embedding-controllers">Embedding Controllers</a></em></p>
-
-<p><code>{% render %}</code> is used to show an action&#8217;s response in a <em>Twig</em> template. It&#8217;s very useful when wanting to show a dynamic content in all the app&#8217;s pages.</p>
-
-<h3>Example: Displaying online users&#8217; counter</h3>
-
-<h4>Create a <code>onlineUsersAction()</code> function</h4>
-
-<p>That function fetches, processes the result and returns the counter of the online users.</p>
-
-<h4>Create a Twig template that displays the response returned by the action</h4>
-
-<p>The syntax is the following:</p>
-
-<pre><code>  {% render "LiveGeekBundle:Default:onlineUsers" %}
-</code></pre>
-
-<p>Knowing that <code>onlineUsersAction()</code> is an action of <code>DefaultController</code> which is a controller from the <em>Live\GeekBundle</em> bundle.</p>
-
-<h4>Include that template in our application&#8217;s default layout</h4>
-
-<p>Thus display the online users&#8217; counter in all the app&#8217;s pages.</p>
-
-<h3>Passing arguments:</h3>
-
-<p>You can pass arguments to the action this way:</p>
-
-<h4>In the Twig template:</h4>
-
-<pre><code>{% render "LiveGeekBundle:Default:onlineUsers" with { 'arg1' : 'value1', 'arg2' : 'value2' } %}
-</code></pre>
-
-<h4>In the controller:</h4>
-
-<pre><code>helloAction($arg1, $arg2)
-</code></pre>
-
-<p>The arguments&#8217; order doesn&#8217;t matter.</p>
-
-<p>Enjoy. ;)</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/6/">&larr; Older</a>
@@ -438,15 +473,15 @@ Now I realized that writing in both languages isn&#8217;t worth it since develop
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/invalid-state-err-dom-exception-11/">INVALID_STATE_ERR: DOM Exception 11</a>
+      </li>
+    
+      <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
       <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/review-your-code-with-git/">Review your code with Git</a>
       </li>
     
   </ul>
@@ -508,7 +543,7 @@ Now I realized that writing in both languages isn&#8217;t worth it since develop
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Samy Dindane -
+  Copyright &copy; 2013 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

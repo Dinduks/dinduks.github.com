@@ -9,7 +9,8 @@
   <meta name="author" content="Samy Dindane">
 
   
-  <meta name="description" content="I have recently submitted my first pull request ever, to the Symfony2 project. The code I contributed with is a 3 lines long method that simply &hellip;">
+  <meta name="description" content="Let&#8217;s pretend you have many CSS/SASS stylesheets and JS/Coffee scripts in your project, and you want to load some before the rest.
+This can be &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,6 +75,72 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/rails-load-assets-in-a-specific-order/">Rails: Load Assets in a Specific Order</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-31T00:57:22+01:00" pubdate data-updated="true">Jan 31<span>st</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Let&#8217;s pretend you have many CSS/SASS stylesheets and JS/Coffee scripts in your project, and you want to load some before the rest.
+This can be done in <code>stylesheets/application.css</code> and <code>javascripts/application.js</code> by using the keyword <code>require</code>.</p>
+
+<h2>Examples:</h2>
+
+<h3>Stylesheets:</h3>
+
+<p>If you want to load Bootstrap&#8217;s stylesheet first:</p>
+
+<div><script src='https://gist.github.com/1707651.js?file='></script>
+<noscript><pre><code>/*
+ *= require bootstrap.min.css
+ *= require_self
+ *= require_tree .
+ */</code></pre></noscript></div>
+
+
+<h3>Javascripts:</h3>
+
+<p>This is how to load jQuery and Boostrap&#8217;s scripts before the others:</p>
+
+<div><script src='https://gist.github.com/1707655.js?file='></script>
+<noscript><pre><code>//= require jquery-1.7.1.min.js
+//= require bootstrap-alerts.js
+//= require bootstrap-modal.js
+//= require_tree .</code></pre></noscript></div>
+
+
+<p>You can omit the files extensions.</p>
+
+<p>I believe they call this the awesomeness of Rails.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -307,58 +374,6 @@ This one was occurring when trying to launch a WEBrick server:</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/github-free-plans-for-students-and-teachers/">GitHub: Free Plans for Students and Teachers</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-01-05T10:00:24+01:00" pubdate data-updated="true">Jan 5<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&#8217;ll be soon working on a school project, which led me to look for a place where to version my code.</p>
-
-<p>Since I use GitHub daily, I checked its plans first. The cheapest one, called <em>micro</em>, gives 5 private repos for $7/month. I unfortunately only need a single private repo, and I don&#8217;t want to pay for 4 ones that I probably won&#8217;t be using.</p>
-
-<p>Although I knew about Bitbucket&#8217;s free private repos, the ideas of leaving GitHub and having my repos here and there didn&#8217;t please me that much.</p>
-
-<p>Luckily, I stumbled upon <a href="https://github.com/edu">GitHub&#8217;s Educational offers</a>, that are available to both teachers and students.<br/>
-The teachers&#8217; offer concerns organization accounts. And the students&#8217; one on the other hand is simply a micro plan, and lasts 2 years, enough to get your ass a job and pay a subscription.</p>
-
-<p><img class="center" src="/images/uploads/2012/01/github-edu-micro-plan.png"  alt="GitHub"></p>
-
-<p>To benefit from this offer, just contact GitHub from the <a href="https://github.com/edu">Request an educational account</a> page.<br/>
-Make sure you are logged in with the account you want the plan for, and tell them why you need it.</p>
-
-<p>Thank you GitHub!</p>
-
-<p><img class="center" src="/images/uploads/2012/01/sucks-to-be-a-student.jpg"  alt="Programming Motherfucker"></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/4/">&larr; Older</a>
@@ -376,15 +391,15 @@ Make sure you are logged in with the account you want the plan for, and tell the
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/invalid-state-err-dom-exception-11/">INVALID_STATE_ERR: DOM Exception 11</a>
+      </li>
+    
+      <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
       <li class="post">
         <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/review-your-code-with-git/">Review your code with Git</a>
       </li>
     
   </ul>
@@ -446,7 +461,7 @@ Make sure you are logged in with the account you want the plan for, and tell the
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Samy Dindane -
+  Copyright &copy; 2013 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
