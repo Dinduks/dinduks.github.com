@@ -7,17 +7,7 @@
   <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
   <meta name="author" content="{{ site.author }}">
 
-  {% capture description %}
-    {% if page.title %}
-      {% if page.description %}
-        {{ page.description }}
-      {% else %}
-        {{ content | raw_content | strip_html | condense_spaces | truncate:150 }}
-      {% endif %}
-    {% else %}
-      {{ site.description }}
-    {% endif %}
-  {% endcapture %}
+  {% capture description %}{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}{% endcapture %}
   <meta name="description" content="{{ description }}">
 
   {% capture keywords %}{% if page.keywords %}{{ page.keywords }}{% elsif site.keywords %}{{ site.keywords }}{% endif %}{% endcapture %}
