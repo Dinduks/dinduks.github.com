@@ -82,6 +82,153 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/php-generate-documentation-with-docblox/">PHP: Generate Documentation With DocBlox</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-08T01:00:17+01:00" pubdate data-updated="true">Dec 8<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I recently have had to generate a PHP project&#8217;s documentation and I&#8217;ve chosen the popular <a href="http://phpdoc.org/">PhpDocumentor</a> for this purpose.<br/>
+This tool is unfortunately outdated, hasn&#8217;t been updated since 2007, and thus throws a lot of PHP warnings and cannot do what I was asking it.</p>
+
+<p>My friend <a href="http://testonsteroid.tumblr.com/">Ludo</a> has suggested using <a href="http://www.docblox-project.org/">DocBlox</a> which is, compared to PhpDocumentor, more modern - supports PHP 5.3, faster, and consumes less memory.</p>
+
+<p>After trying it, I can say that it&#8217;s indeed a great tool, inasmuch as I could generate documentation for my project 5 seconds after installing it.</p>
+
+<h3>How to use it:</h3>
+
+<h4>Installation</h4>
+
+<p>Make PEAR know about DocBlox&#8217;s channel</p>
+
+<pre><code>pear channel-discover pear.docblox-project.org
+</code></pre>
+
+<p>Then install DocBlox(-beta)</p>
+
+<pre><code>pear install docblox/DocBlox-beta
+</code></pre>
+
+<p>The command line <em>docblox</em> should be available for use now.</p>
+
+<h4>Use</h4>
+
+<pre><code>docblox -d /path/folder1,/path/folder1/folder2 -t /path/to/target/directory
+</code></pre>
+
+<p>Easy, ha? :)</p>
+
+<p>Make sure you separate the source directories by commas only, no spaces.<br/>
+You can also use some of the basic PhpDocumentor commands.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony-2-using-global-variables/">Symfony 2: Using Global Variables</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-05T23:50:06+01:00" pubdate data-updated="true">Dec 5<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In order to use variables in a <strong>Symfony2</strong> controller, you’ll have to set them up in <em>parameters.ini</em>, or in any other ini file on condition that you’ll import it into <em>config.yml</em>.<br/>
+In case you want to use them in a Twig template, you must set them up in <em>config.yml</em>.</p>
+
+<p>Once done, you’ll be able to whether call them using <code>getParameter()</code> from a controller or with the syntax &#8220; from a Twig template.</p>
+
+<h4>Set up your variable</h4>
+
+<p>In an ini file:</p>
+
+<pre><code>[parameters]
+    myVariable = 2
+</code></pre>
+
+<p>In <em>config.yml</em>:</p>
+
+<pre><code>twig:
+  globals:
+    myTwigVariable: %myVariable%
+</code></pre>
+
+<h4>Import your ini file into config.yml</h4>
+
+<p>You can skip this step if you already set up the variables in <em>parameters.ini</em>.</p>
+
+<pre><code>imports:
+    - { resource: myFile.ini }
+</code></pre>
+
+<h4>Use the global variable</h4>
+
+<p>In a controller:</p>
+
+<pre><code>$myVariable = $this-&gt;container-&gt;getParameter('myVariable');
+</code></pre>
+
+<p>In a Twig template</p>
+
+<pre><code>&lt;p&gt;
+    My variable: 
+&lt;/p&gt;
+</code></pre>
+
+<p>Enjoy. ;)</p>
+
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/symfony2-using-multiple-databases/">Symfony2: Using Multiple Databases</a></h1>
     
     
@@ -341,123 +488,6 @@ You can grab the script on Github: <a href="https://github.com/Dinduks/GM-Comman
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/protect-email-addresses-from-spam-crawlers/">Protect Email Addresses From Spam Crawlers</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-11-19T20:23:35+01:00" pubdate data-updated="true">Nov 19<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hi,</p>
-
-<p>When displaying a raw email address on a Web page, this address is vulnerable and can be used by <em>spam crawlers</em>, <em>email harvester</em>, or whatever you want to call them to send you spam and such crap.
-That&#8217;s why people write their email address this way &#8220;samy at dindane dot com&#8221;, or &#8220;samy[@]dindane[.]com&#8221;.
-This writing is simple and efficient, but not <em>pretty</em>.</p>
-
-<p>There are many ways to show an email address in its original format and still make it bots-proof. One of these ways is using JavaScript to obfuscate and then show the address.
-But I think that using JS is overdoing things, since it can be done using basic HTML, simply by printing the email address as ASCII and not raw characters.</p>
-
-<h3>These are the steps to follow using PHP:</h3>
-
-<h4>Split the email address into an array of characters</h4>
-
-<pre><code>$aEmail = str_split($email);
-</code></pre>
-
-<h4>Convert each character into an ASCII one:</h4>
-
-<pre><code>$strEmail = '';
-foreach ($aEmail as $char) {
-    $strEmail .= ord($char);
-}
-</code></pre>
-
-<h4>Display it (O RLY?):</h4>
-
-<pre><code>echo "&lt;a href='$strEmail'&gt;$strEmail&lt;/a&gt;";
-</code></pre>
-
-<p>The result is a beautiful and clickable email address. :)</p>
-
-<p><strong>Note:</strong> If you are using <em>Twig</em> as a template engine, you have to use the <code>raw()</code> filter in order to tell Twig to interpret the string and not to display raw ASCII characters: <code>strEmail|raw</code></p>
-
-<p>I hope this tutorial has been helpful.<br/>
-Bye!</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/english-motherfucker-do-you-speak-it/">English Motherfucker, Do You Speak It?!</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-11-19T13:41:22+01:00" pubdate data-updated="true">Nov 19<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hi there!</p>
-
-<p>It has been a while since I started thinking about writing in English, but I neither had the time nor had I the strength to do it, especially that I wanted to write not only in English but also in French.<br/>
-Now I realized that writing in both languages isn&#8217;t worth it since developers understand English. Besides it will take me less time to write in one language rather than two.</p>
-
-<p>I made this decision mainly to reach more people: more people -> more interaction/feedback -> more knowledge.</p>
-
-<p>So from now on, all my technical posts will be written in English.</p>
-
-<p><img class="center" src="http://gfishoutofwater.files.wordpress.com/2009/06/english-do-you-speak-it-demotivational-poster.jpg"  alt="Engligh Motherfucker, do you speak it?"></p>
-
-<p>Happy reading. :)</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/6/">&larr; Older</a>
@@ -475,15 +505,15 @@ Now I realized that writing in both languages isn&#8217;t worth it since develop
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/use-java-7-for-intellij-sbt-plugin/">Run IntelliJ&#8217;s SBT plugin on Java 7</a>
+      </li>
+    
+      <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
       </li>
     
       <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
-      </li>
-    
-      <li class="post">
-        <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
   </ul>

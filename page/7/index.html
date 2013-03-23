@@ -82,6 +82,198 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/twig-traduction-dans-du-javascript/">Twig: Traduction Dans Du JavaScript</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-23T13:18:32+02:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hello,</p>
+
+<p>Lors du développement d&#8217;une application <em>Silex</em>, je devais générer du code à la volée à l&#8217;aide de <em>JavaScript</em>.
+Le code généré ne pouvait évidemment pas être traduit. Pour palier à cela, le principe est de mettre les traductions dans un objet javascript, et de l&#8217;utiliser dans votre code <em>JS</em>.</p>
+
+<p>Ce qui suit est une manière de procéder.</p>
+
+<p>Je pars du principe que votre traduction est déjà mise en place et qu&#8217;elle marche correctement dans vos templates <em>Twig</em>.</p>
+
+<h4>Créer un fichier translations.html.twig</h4>
+
+<p>Je l&#8217;ai personnellement mis avec les autres vues.
+Mettez y un script JS avec les expressions que vous voulez traduire.</p>
+
+<pre><code>&lt;script type="text/javascript"&gt;
+    var translations = {
+        'hello_world': '{% trans %}hello_world{% endtrans}',
+        'foobar': '{% trans %}foobar{% endtrans}'
+    }
+&lt;/script&gt;
+</code></pre>
+
+<h4>Inclure ce template dans votre layout</h4>
+
+<p>Avant la déclaration des autre scripts bien sûr.</p>
+
+<pre><code>{% include './translations.html.twig' %}
+</code></pre>
+
+<p>Et voilà, vous pouvez maintenant accéder à l&#8217;objet <em>translations</em> depuis vos scripts JS.</p>
+
+<h4>Exemple:</h4>
+
+<pre><code>console.log(translations.hello_world);
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/silex-le-service-de-traduction-et-les-templates-twig/">Silex: Le Service De Traduction Et Les Templates Twig</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-10-19T00:12:43+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://silex.sensiolabs.org/"><em>Silex</em></a> est un micro-framework basé sur les composants de Symfony 2 grâce auquel je suis entrain de développer une sorte de <a href="https://github.com/Dinduks/ChaoticCard">vCard ou page d&#8217;accueil</a> (faute de meilleur terme).</p>
+
+<p>Parmi ses nombreuses fonctionnalités: La traduction. Bien qu&#8217;elle soit très facile à implémenter, la méthode n&#8217;est décrite nulle part sur la doc.<br/>
+Heureusement, sinon je n&#8217;aurais rien à poster sur ce blog.</p>
+
+<p>Trêve de plaisanteries, voici sans attendre comment implémenter la traduction avec Silex.</p>
+
+<h3>Déclarer les traductions</h3>
+
+<p>Dans un répertoire <em>src/locales/</em> créez autant de fichiers <em>yml</em> que de langues désirées.</p>
+
+<h4>Exemple de fichiers:</h4>
+
+<p><em>en.yml</em>:</p>
+
+<pre><code>  hello:      Hello
+  about_me:   About me
+  contact_me: Contact me
+</code></pre>
+
+<p><em>fr.yml</em>:</p>
+
+<pre><code>hello:      Bonjour
+about_me:   A propos de moi
+contact_me: Contactez-moi
+</code></pre>
+
+<h3>Déclarer le service <em>TranslationServiceProvider</em> dans votre <em>app.php</em></h3>
+
+<pre><code>$app-&gt;register(new Silex\Provider\TranslationServiceProvider(), array(
+    'locale'                    =&gt; LiveGeekUtil::getClientLanguage(),
+    'locale_fallback'           =&gt; 'en',
+    'translation.class_path'    =&gt; __DIR__.'/vendor/Symfony/Component',
+));
+</code></pre>
+
+<p><code>locale</code> indique la langue utilisée.<br/>
+<code>locale_fallback</code> indique la langue utilisée si notre application ne supporte pas la langue donnée dans locale.</p>
+
+<p>Notez que j&#8217;ai utilisé une méthode statique pour récupérer la langue du navigateur du visiteur. La voici:</p>
+
+<pre><code>public static function getClientLanguage() {
+    $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    return substr($langs[0], 0, 2);
+}
+</code></pre>
+
+<h3>Indiquer à l&#8217;application où se trouvent vos fichiers de langue:</h3>
+
+<pre><code>$app['translator.messages'] = array(
+    'fr' =&gt; __DIR__.'/../src/locales/fr.yml',
+    'en' =&gt; __DIR__.'/../src/locales/en.yml'
+);
+</code></pre>
+
+<h3>Charger le composant qui lit les fichiers <em>yml</em></h3>
+
+<p>PHP ne comprennant pas les fichiers <em>YAML</em>, on utilise le composant <em>YAML</em> de Symfony;</p>
+
+<pre><code>$app['autoloader']-&gt;registerNamespace('Symfony', __DIR__.'/../vendor/Symfony/src');
+$app['translator.loader'] = new Symfony\Component\Translation\Loader\YamlFileLoader();
+</code></pre>
+
+<h3>Déclarer <code>SymfonyBridgesServiceProvider</code></h3>
+
+<p>Ce service fait la liaison entre la traduction et les templates <em>Twig</em>.</p>
+
+<pre><code>$app-&gt;register(new Silex\Provider\SymfonyBridgesServiceProvider(), array(
+    'symfony_bridges.class_path' =&gt; __DIR__.'/vendor/Symfony/Component',
+));
+</code></pre>
+
+<p>Et voilà.</p>
+
+<p>A partir de maintenant, affichez le texte dans vos templates grâce aux balises <em>Twig</em> <code>{% trans %}</code>, ceux-ci seront automatiquement traduits dans la langue du navigateur de votre utilisateur, du moment qu&#8217;elle soit supportée.</p>
+
+<pre><code>{% trans %}contact_me{% endtrans %}
+</code></pre>
+
+<h3>Liens utiles:</h3>
+
+<ul>
+<li>La documentation de Silex: <a href="http://silex.sensiolabs.org/documentation">http://silex.sensiolabs.org/documentation</a>.</li>
+</ul>
+
+
+<p>Bon courage et amusez-vous bien avec Silex! :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/utiliser-le-format-exfat-sous-linux/">Utiliser Le Format exFat Sous Linux</a></h1>
     
     
@@ -273,164 +465,6 @@ Au cas où vous voudrez les utiliser dans un template Twig, il faut les déclare
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/symfony2-utiliser-plusieurs-bases-de-donnees/">Symfony2: Utiliser Plusieurs Bases De Données</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-08-24T18:26:15+02:00" pubdate data-updated="true">Aug 24<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Dans le cas où votre site développé avec <em>Symfony2</em> utiliserait plusieurs bases de données, il faudra <em>déclarer</em> autant de connexions et d&#8217;<em>Entity Managers</em> que de bases de données.</p>
-
-<p><em>Un Entity Manager est tout simplement une interface qui inter-réagi avec une base de donnée</em>.</p>
-
-<p>Pour illustrer mon exemple, je vais utiliser une bdd <em>site</em> et une autre <em>forum</em>.</p>
-
-<h4>Déclarer les connexions dans <em>config.yml</em></h4>
-
-<pre><code>doctrine:
-  dbal:
-    default_connection: site # précise la connexion utilisée par défaut
-    connections:
-      site:
-        driver:   %database_driver%
-        host:     %database_host%
-        port:     %database_port%
-        dbname:   site
-        user:     site_usr
-        password: site_pwd
-        charset:  UTF8
-      forum:
-        driver:   %database_driver%
-        host:     %database_host%
-        port:     %database_port%
-        dbname:   forum
-        user:     forum_usr
-        password: forum_pwd
-        charset:  UTF8
-</code></pre>
-
-<h4>Déclarer les EM, dans le même fichier</h4>
-
-<p>Tout d&#8217;abord désactivez l&#8217;<em>auto-mapping</em>, comme ça vous pourrez choisir quel EM va gérer les entités de quel <em>bundle</em>.</p>
-
-<pre><code>doctrine:
-  orm:
-    auto_mapping: false
-</code></pre>
-
-<p><em>Note: Si vous avez une erreur relative à cette ligne, supprimez-la carrément.</em></p>
-
-<p>Ensuite, juste en bas, déclarez les EM en précisant les <em>mappings</em> avec chaque bundle.</p>
-
-<pre><code>doctrine:
-  orm:
-    auto_mapping: false
-    default_entity_manager: web # précise l'em utilisé par défaut (lors de l'utilisation de la ligne de commande par exemple)
-    entity_managers:
-      web:
-        connection: web
-        mappings:
-          DinduksMachinBundle : ~
-          DinduksTrucBundle : ~
-          FOSUserBundle: ~
-      forum:
-        connection: forum
-        mappings:
-          DinduksForumBundle : ~
-</code></pre>
-
-<p>Pour faire simple, les mappings font le lien entre un EM et les entités d&#8217;un bundle spéficique. C&#8217;est eux qui appellent, si j&#8217;ose dire, l&#8217;EM X quand on veut manipuler l&#8217;entité Y.</p>
-
-<p>Attention: N&#8217;oubliez pas de toujours mapper vos bundles fraîchement créés avec un EM, sinon vous aurez un erreur de bundle inexistant lors de l&#8217;utilisation de la commande <code>doctrine:generate:entities</code>.</p>
-
-<h4>Utilisation</h4>
-
-<p>De la même manière que vous appelez votre EM par défaut, appelez l&#8217;EM dont vous avez besoin en prenant soin de passer son nom en paramètres à la fonction <code>getEntityManager()</code>.</p>
-
-<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
-</code></pre>
-
-<p>J&#8217;espère que ce tutoriel vous sera utile. A bientôt. :)</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/symfony-2-utiliser-des-types-de-donnees-non-supportes-par-doctrine/">Symfony2: Utiliser Des Types De Données Non Supportés Par Doctrine</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-08-18T17:03:43+02:00" pubdate data-updated="true">Aug 18<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>Doctrine2</em>, en tant qu&#8217;ORM, doit assurer la compatibilité des types de données (<em>varchar</em>, <em>integer</em>, <em>datetime</em>, etc&#8230;) entre différents SGBD, et ne supporte donc pas certains types propres à <em>MySQL</em> (dans mon cas).<br/>
-Il est cependant possible de lui ajouter des types manuellement, mais la procédure est assez longue et n&#8217;en vaut pas la peine à mon avis.</p>
-
-<p>Si vous êtes sûr que votre site n&#8217;utilisera qu&#8217;un seul SGBD et que ça ne va pas changer plutard, vous pouvez spécifier, dans vos <em>annotations</em>, <em>une partie</em> du code <em>SQL</em> qui servira à générer le champ.</p>
-
-<h3>Exemple</h3>
-
-<p>Pour générer un champ <em>tinyint</em> qui est <em>NOT NULL</em> et qui a une valeur par défaut de 10, voici le code nécessaire:</p>
-
-<pre><code>/**
-* @ORM\Column(columnDefinition="tinyint(4) NOT NULL DEFAULT '10'", name="foo")
-*/
-protected $foo;
-</code></pre>
-
-<p>A vous d&#8217;adapter ce code pour votre cas. ;)</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/8/">&larr; Older</a>
@@ -448,15 +482,15 @@ protected $foo;
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/use-java-7-for-intellij-sbt-plugin/">Run IntelliJ&#8217;s SBT plugin on Java 7</a>
+      </li>
+    
+      <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
       </li>
     
       <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
-      </li>
-    
-      <li class="post">
-        <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
   </ul>

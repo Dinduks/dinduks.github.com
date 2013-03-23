@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>GitHub: Free plans for students and teachers - Live geek or die tryin'</title>
+  <title>One week doing Scala with Play framework - Live geek or die tryin'</title>
   <meta name="author" content="Samy Dindane">
 
   
@@ -20,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.dinduks.com/github-free-plans-for-students-and-teachers/">
+  <link rel="canonical" href="http://www.dinduks.com/one-week-doing-scala-with-play-framework/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -79,7 +79,7 @@
   
   <header>
     
-      <h1 class="entry-title">GitHub: Free Plans for Students and Teachers</h1>
+      <h1 class="entry-title">One Week Doing Scala With Play Framework</h1>
     
     
       <p class="meta">
@@ -95,30 +95,97 @@
   
 
 
-<time datetime="2012-01-05T10:00:24+01:00" pubdate data-updated="true">Jan 5<span>th</span>, 2012</time>
+<time datetime="2012-09-19T21:24:00+02:00" pubdate data-updated="true">Sep 19<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>I&#8217;ll be soon working on a school project, which led me to look for a place where to version my code.</p>
+<div class="entry-content"><p>I have recently joined the company behind the
+<a href="http://playframework.org/">Play framework</a>,
+<a href="http://zenexity.com/">Zenexity</a>, in which I&#8217;ll be working along with my
+computer science studies, and spent my first week learning Scala and the framework
+mentioned above.</p>
 
-<p>Since I use GitHub daily, I checked its plans first. The cheapest one, called <em>micro</em>, gives 5 private repos for $7/month. I unfortunately only need a single private repo, and I don&#8217;t want to pay for 4 ones that I probably won&#8217;t be using.</p>
+<p>Besides the benefits of having (almost) free coffee, a free MacBook Pro (I&#8217;m not
+materialistic, just glad to save 1500€), working with skilled developers and getting
+a discount for doing sport (although I&#8217;m not going to do it #FatAssForLife),
+this job will be the opportunity for me to learn a language completely different
+than what I&#8217;ve been used to, new programming techniques (asynchronous and
+non-blocking stuff) which Play is all about, all of that while pursuing my studies.</p>
 
-<p>Although I knew about Bitbucket&#8217;s free private repos, the ideas of leaving GitHub and having my repos here and there didn&#8217;t please me that much.</p>
+<p>During that week, I managed to build a small application which doesn&#8217;t do much,
+it just displays the contributors of a specific GitHub projet, but helped me
+learning Scala, getting familiar with its syntax, learning some of its subtleties,
+and getting familiar with the Scala/SBT/Play ecosystem.</p>
 
-<p>Luckily, I stumbled upon <a href="https://github.com/edu">GitHub&#8217;s Educational offers</a>, that are available to both teachers and students.<br/>
-The teachers&#8217; offer concerns organization accounts. And the students&#8217; one on the other hand is simply a micro plan, and lasts 2 years, enough to get your ass a job and pay a subscription.</p>
+<p>This first week has been exciting and interesting so far, I have enjoyed using Scala
+and been surprised many times by what it can do.</p>
 
-<p><img class="center" src="/images/uploads/2012/01/github-edu-micro-plan.png"  alt="GitHub"></p>
+<p>Below are random thoughts about this experience.</p>
 
-<p>To benefit from this offer, just contact GitHub from the <a href="https://github.com/edu">Request an educational account</a> page.<br/>
-Make sure you are logged in with the account you want the plan for, and tell them why you need it.</p>
+<h3>It&#8217;s compiled!</h3>
 
-<p>Thank you GitHub!</p>
+<p>As an ex-PHP guy and rubyist, my experience with compiled languages came down to
+writing code in an IDE, pressing F6 and waiting for stuff to compile and getting
+executed.<br/>
+It was quite different this time, using VIM and and the console allowed me to be
+closer to the code I write, and aware of what&#8217;s happening behind the scene.</p>
 
-<p><img class="center" src="/images/uploads/2012/01/sucks-to-be-a-student.jpg"  alt="Programming Motherfucker"></p>
+<p>An awesome feature of SBT (Scala Build Tool) that is worth mentionning is the
+ability of compiling, running tests, or doing any other task every time the
+source code changes. An editor in full screen and a little (say 5 lines) console
+at the bottom of the screen makes coding faster since the compilation errors are
+shown as the code is being updated.</p>
+
+<p>Beside the nifty <em>cool</em> features, having a compiler that warns of shit that
+might happen is a big plus. You know when your app is broken, and that might save
+writing few extra functional tests.</p>
+
+<h3>Explicit parameters and return types</h3>
+
+<p>No more duck typing for me, in Scala, as in many <em>serious</em> languages, you <strong>have</strong>
+to explicitely tell the type of the arguments a function or method may take.<br/>
+Example: <code>def add(a: Int, b: Int) = a + b</code>.</p>
+
+<p>On the other hand, the return type isn&#8217;t mandatory, it is implicitily detected.<br/>
+The same function as above with the return type specified:
+<code>def add(a: Int, b: Int): Int = a + b</code>.<br/>
+I personally specify it for all my methods, I believe it&#8217;s a good practice and helps
+readability (you know what a function returns just by reading its signature).</p>
+
+<p>These constraints may be annoying at some point, for example when wanting to
+return some dumb result, or using a <code>println</code> in the last line of a function:
+<code>println</code> returns a Unit type (you can see it as Java&#8217;s <code>void</code>) while your function
+expects an <code>Int</code> result for instance.<br/>
+The annoyance is just temporary anyway, and it&#8217;s only a matter of time before
+one gets used to it; I actually did by the end of the week.</p>
+
+<h3>I can use VIM</h3>
+
+<p>I love VIM, and just the thought of switching to some IDE to do <em>real</em> made me sad,
+but my sadness vanished quickly when I noticed that most of the guys at Zenexity use
+text editors (TextMate, Sublime Text).<br/>
+<a href="https://github.com/derekwyatt/vim-scala">VIM&#8217;s Scala plugin</a> works pretty well,
+but may need some polishing. In fact, I&#8217;m planning to learn some VimL so I can
+improve it a bit.</p>
+
+<h3>Tuples</h3>
+
+<p>I have never used a language that has tuples before, and I have to admit that
+they&#8217;re really awesome. A tuple is basically a collection with a constraint on the
+number of elements, their type, and their order.<br/>
+One of its  most useful use case is the ability of returning more than one value
+from a function. Example:</p>
+
+<pre><code>def nameAndAge: (String, Int) = ("Samy", 20)
+val (name, age) = nameAndAge
+</code></pre>
+
+<p>In this case, a method that returns a tuple (notice the parenthesis, they&#8217;re tuples
+delimiters) is defined. Below, we define <strong>two values</strong>, not a tuple, that contain
+the first and second tuple elements respectively.</p>
 </div>
 
 
@@ -141,21 +208,15 @@ Make sure you are logged in with the account you want the plan for, and tell the
   
 
 
-<time datetime="2012-01-05T10:00:24+01:00" pubdate data-updated="true">Jan 5<span>th</span>, 2012</time>
+<time datetime="2012-09-19T21:24:00+02:00" pubdate data-updated="true">Sep 19<span>th</span>, 2012</time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/category/development/'>Development</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/github-free-plans-for-students-and-teachers/" data-via="Dinduks" data-counturl="http://www.dinduks.com/github-free-plans-for-students-and-teachers/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/one-week-doing-scala-with-play-framework/" data-via="Dinduks" data-counturl="http://www.dinduks.com/one-week-doing-scala-with-play-framework/" >Tweet</a>
   
   
   
@@ -164,10 +225,10 @@ Make sure you are logged in with the account you want the plan for, and tell the
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/implementing-a-simple-caching-system/" title="Previous Post: Implementing a simple caching system">&laquo; Implementing a simple caching system</a>
+        <a class="basic-alignment left" href="/yet-another-blog-that-migrates-to-octopress/" title="Previous Post: Yet another blog that migrates to Octopress">&laquo; Yet another blog that migrates to Octopress</a>
       
       
-        <a class="basic-alignment right" href="/rails-cannot-load-such-file-openssl/" title="Next Post: Rails: cannot load such file -- openssl">Rails: cannot load such file -- openssl &raquo;</a>
+        <a class="basic-alignment right" href="/dont-comment-your-code/" title="Next Post: Don't comment your code, write good one">Don't comment your code, write good one &raquo;</a>
       
     </p>
   </footer>
@@ -271,8 +332,8 @@ Make sure you are logged in with the account you want the plan for, and tell the
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.dinduks.com/github-free-plans-for-students-and-teachers/';
-        var disqus_url = 'http://www.dinduks.com/github-free-plans-for-students-and-teachers/';
+        var disqus_identifier = 'http://www.dinduks.com/one-week-doing-scala-with-play-framework/';
+        var disqus_url = 'http://www.dinduks.com/one-week-doing-scala-with-play-framework/';
         var disqus_script = 'embed.js';
       
     (function () {

@@ -82,6 +82,209 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/php-tutoriel-pagination-avec-symfony/">PHP: Pagination Avec Symfony</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-19T23:35:27+02:00" pubdate data-updated="true">Apr 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Bienvenue,</p>
+
+<p>Dans ce tutoriel je vais vous expliquer comment réaliser une pagination, avec <em>Symfony</em> 1.4 et <em>Doctrine</em>.</p>
+
+<p>Tout d’abord, supposons qu’on a un module <em>user</em> dans l&#8217;application <em>admin</em>.</p>
+
+<h3>Avant la pagination, côté <em>action.class.php</em></h3>
+
+<p>Pour récupérer la liste des utilisateur, il faut exécuter une requête <code>$qUsers</code> dans <em>action.class.php</em>:</p>
+
+<pre><code>$qUsers = Doctrine_Query::create()-&gt;from("User u");
+$this-&gt;aUsers = $qUsers-&gt;fetchArray();
+</code></pre>
+
+<p>Du côté du <em>template</em> ça sera ça:</p>
+
+<pre><code>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;?= __("Nom") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("Prénom") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("Pseudo") ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= __("E-mail") ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+&lt;?
+foreach($aUsers as $user) {
+?&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;?= $user["last_name"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["first_name"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["pseudo"] ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?= $user["email"] ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;?
+}
+?&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+
+<h3>Mise en place de la pagination</h3>
+
+<p>Dans <em>actions.class.php</em>, juste après notre requête, on doit:</p>
+
+<h4>Instancier un objet <em>sfDoctrinePager</em></h4>
+
+<pre><code>$this-&gt;pager = new sfDoctrinePager('user', 3);
+</code></pre>
+
+<p>Et lui donner deux paramètres: un nom, et le nombre de résultats à afficher par page.</p>
+
+<h4>Lui préciser la requête pour récupérer les résultats</h4>
+
+<p>Oui, l&#8217;objet sfDoctrinePager ne devinera pas ce dont on a besoin, on va donc lui donner notre requête, $qUsers dans notre cas:</p>
+
+<pre><code>$this-&gt;pager-&gt;setQuery($qUsers);
+</code></pre>
+
+<h4>Lui demander d&#8217;afficher la première page par défaut:</h4>
+
+<pre><code>$this-&gt;pager-&gt;setPage($this-&gt;getRequestParameter('page', 1));
+</code></pre>
+
+<h4>Initialiser!</h4>
+
+<pre><code>$this-&gt;pager-&gt;init();
+</code></pre>
+
+<h4>Du côté du template</h4>
+
+<p>On commence par vérifier si on a besoin de la mise en page, au cas où le nombre des résultats est inférieur au nombre maximum d&#8217;éléments par page, 3 dans notre exemple.</p>
+
+<pre><code>if( $pager-&gt;haveToPaginate() ){
+}
+</code></pre>
+
+<p>Ensuite, on crée un conteneur pour les numéros de pages, et on fait un lien pour aller à la première page, et un autre à la dernière.</p>
+
+<pre><code>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      &lt;a href="&lt;? url_for('user/index?page='.$pager-&gt;getFirstPage()) ?&gt;"&gt;&lt;/a&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+      &lt;a href="&lt;? url_for('user/index?page='.$pager-&gt;getLastPage()) ?&gt;"&gt;&lt;/a&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</code></pre>
+
+<p>Ouais, les <code>&lt;table&gt;</code> c&#8217;est le mal, mais ce n&#8217;est qu&#8217;un exemple, et ça m&#8217;évite de faire du <em>CSS</em>. #jailaflemme</p>
+
+<p>Maintenant, entre les deux liens, on fait un <code>foreach</code> pour parser les liens vers les autres pages.</p>
+
+<p>Vous pouvez aussi mettre des liens pour la page précédente, et la page suivante, en utilisant respectivement les méthodes <code>getPreviousPage()</code> et <code>getNextPage()</code>. ;)</p>
+
+<pre><code>&lt;? foreach ($pager-&gt;getLinks as $page) : ?&gt;
+&lt;td&gt;
+  &lt;?php echo ($page == $pager-&gt;getPage()) ? $page : "&lt;a href='" . url_for('user/index?page='.$page); "'&gt;". $page ."&lt;/a&gt;" ?&gt;
+&lt;/td&gt;
+&lt;? endforeach; ?&gt;
+</code></pre>
+
+<p>Explications:</p>
+
+<ul>
+<li>On récupére la liste des liens avec le <code>foreach</code></li>
+<li>Ensuite on commence à parser les liens</li>
+<li>A quoi sert la vérification? Tout simplement à ne pas donner de lien au numéro de page sur laquelle on est!</li>
+</ul>
+
+
+<p>Et voilà, c&#8217;est fini.</p>
+
+<p>J&#8217;espère que cet article vous a été utile, n&#8217;hésitez pas à laisser des commentaire au cas où vous avez des remarques, suggestions, ou corrections. :)</p>
+
+<p>Vous pouvez me suivre sur <a href="www.dinduks.com/twitter"><strong>Twitter</strong></a>, des tutoriels comme celui ci y en aura encore tant que j&#8217;utilise <em>Symfony</em>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/les-images-hebergees-sur-imageshack-ne-saffichent-plus/">Les Images Hébergées Sur Imageshack Ne S&#8217;affichent Plus</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-23T12:57:59+01:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>En visitant mon blog ce matin, j&#8217;ai remarqué que les images de celui ci ne s&#8217;affichaient pas, on voyait à la place une affreuse grenouille bloquée dans une glace.</p>
+
+<p>Après une recherche, on dirait que <em>Imageshack.us</em> a changé sa politique, et oblige les utilisateurs a s&#8217;enregistrer et se logger, ou les propriétaires des sites à <em>enregistrer</em> leur domaine, pour voir les images.</p>
+
+<p>Ce changement de politique soudain survient sans avertissement, et donc beaucoup de sites se transforment du jour au lendemain en une mare de grenouilles.</p>
+
+<p>Pour enregistrer un domaine, il faut se rendre sur la page <a href="http://stream.imageshack.us/content.php?page=register_domain">Register Domain</a>, page qui est d&#8217;ailleurs très mal placée et difficile à trouver.<br/>
+Il faut ensuite remplir le formulaire et attendre que le site soit validé par l&#8217;équipe de l&#8217;hébergeur.<br/>
+Je ne sais pas combien de temps ça prend vu que je viens d&#8217;envoyer le formulaire, mais je vous tiendrais au courant.<br/>
+<em>[Edit: Mon domaine a été validé et les images apparaissent, ça a donc pris moins de 9 heures.]</em></p>
+
+<p>Ce n&#8217;est pourtant pas la première fois que <em>Imageshack</em> me surprend, j&#8217;ai déjà été choqué de voir que toutes mes photos étaient publiques par défaut.</p>
+
+<p>Je pense qu&#8217;il est temps de changer d&#8217;hébergeur ou d&#8217;héberger mes photos sur le même serveur que le blog.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/krumo-une-alternative-a-print_r-et-var_dump/">PHP: Krumo, Une Alternative à Print_r() Et Var_dump()</a></h1>
     
     
@@ -436,95 +639,6 @@ Je vous dis à bientôt.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/convertisseur-de-notes-de-musique/">Convertisseur De Notes De Musique</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-12-27T00:38:28+01:00" pubdate data-updated="true">Dec 27<span>th</span>, 2010</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>Convertisseur de notes</em>&#8230; Qu&#8217;est ce que cela peut bien être?</p>
-
-<p>C&#8217;est un simple formulaire qui converti les notes de musique <em>latines</em> (Do, Ré, Mi, Fa, Sol, La, Si) en notes <em>anglo-saxonnes</em> (A, B, C, D, E, F, G). Le contraire est possible aussi. Je l&#8217;ai réalisé plusieurs mois plutôt parce que j&#8217;avais parfois du mal à assimiler la notation anglo-saxonne.</p>
-
-<p><img class="center" src="/images/uploads/2010/12/notes-converter-janne-wirman.jpg" title="'Janne Wirman'" ></p>
-
-<p>Mes connaissances techniques étaient assez limitées à l&#8217;époque, le convertisseur est assez simple.<br/>
-Je compte l&#8217;améliorer, avec un rafraîchissement automatique par exemple.</p>
-
-<p>Sans plus attendre, voici l&#8217;application en question: <a href="http://www.dinduks.com/notes-converter/">Notes Converter</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/dhtmlx-touch-nouveau-framework-pour-les-appareils-mobiles/">DHTMLX Touch: Nouveau Framework Pour Les Appareils Mobiles</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-12-20T13:29:31+01:00" pubdate data-updated="true">Dec 20<span>th</span>, 2010</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>DHTMLX</em> a publié la version alpha de <em>DHTMLX Touch</em>, un framework open source <em>Javascript</em> et <em>HTML5</em> qui permet la création d&#8217;applications web pour des interfaces intuitives et tactiles.</p>
-
-<p>Il a été développé spécialement pour les appareils mobiles tels que l&#8217;<em>iPad</em>, l&#8217;<em>iPhone</em> et les dispositifs tournant sous <em>Android OS</em>.</p>
-
-<p>Cette version alpha offre une documentation complète ainsi qu&#8217;un outil <em>WYSIWYG</em> qui permet aux développeurs de créer des applications par le biais de simples glisser-déposer.</p>
-
-<p><em>DHTMLX Touch</em> rejoint <em>Sencha Touch</em> et <em>jQuery Mobile</em> pour enrichir le marché des applications mobiles, marché est en pleine expansion mais qui manque encore d&#8217;acteurs.</p>
-
-<p>Le site officiel de <em>DHTMLX Touch</em>: <a href="http://www.dhtmlx.com/touch">http://www.dhtmlx.com/touch</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/11/">&larr; Older</a>
@@ -542,15 +656,15 @@ Je compte l&#8217;améliorer, avec un rafraîchissement automatique par exemple.
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/use-java-7-for-intellij-sbt-plugin/">Run IntelliJ&#8217;s SBT plugin on Java 7</a>
+      </li>
+    
+      <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
       </li>
     
       <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
-      </li>
-    
-      <li class="post">
-        <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
   </ul>

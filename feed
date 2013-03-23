@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2013-02-22T14:05:28+01:00</updated>
+  <updated>2013-03-23T19:24:02+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -12,6 +12,32 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Run IntelliJ's SBT plugin on Java 7]]></title>
+    <link href="http://www.dinduks.com/use-java-7-for-intellij-sbt-plugin/"/>
+    <updated>2013-03-23T18:51:00+01:00</updated>
+    <id>http://www.dinduks.com/use-java-7-for-intellij-sbt-plugin</id>
+    <content type="html"><![CDATA[<p>IntelliJ IDEA runs on JRE 6, and so does its SBT plugin.</p>
+
+<p>If you need to use a more recent version of Java (and you should):</p>
+
+<ul>
+<li>Open the <em>Preferences</em> panel</li>
+<li>Go to the SBT section</li>
+<li>Tick the <em>Use alternative JRE</em> option</li>
+<li>Click the arrow on the right of the field to check if the IDE suggests the desired JRE
+
+<ul>
+<li>If so, you&#8217;re done.</li>
+<li>Otherwise, look for the path by yourself.<br/>
+<code>/Library/Java/JavaVirtualMachines/jdk1.7.0_09.jdk/Contents/Home</code> on my Mac.</li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[WebSockets: INVALID_STATE_ERR: DOM Exception 11]]></title>
@@ -488,6 +514,98 @@ implementation.</li>
 
 <p>Probably not in the code itself.<br/>
 I&#8217;d suggest doing this in a separate or in the <em>README</em> file.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[One week doing Scala with Play framework]]></title>
+    <link href="http://www.dinduks.com/one-week-doing-scala-with-play-framework/"/>
+    <updated>2012-09-19T21:24:00+02:00</updated>
+    <id>http://www.dinduks.com/one-week-doing-scala-with-play-framework</id>
+    <content type="html"><![CDATA[<p>I have recently joined the company behind the
+<a href="http://playframework.org/">Play framework</a>,
+<a href="http://zenexity.com/">Zenexity</a>, in which I&#8217;ll be working along with my
+computer science studies, and spent my first week learning Scala and the framework
+mentioned above.</p>
+
+<p>Besides the benefits of having (almost) free coffee, a free MacBook Pro (I&#8217;m not
+materialistic, just glad to save 1500€), working with skilled developers and getting
+a discount for doing sport (although I&#8217;m not going to do it #FatAssForLife),
+this job will be the opportunity for me to learn a language completely different
+than what I&#8217;ve been used to, new programming techniques (asynchronous and
+non-blocking stuff) which Play is all about, all of that while pursuing my studies.</p>
+
+<p>During that week, I managed to build a small application which doesn&#8217;t do much,
+it just displays the contributors of a specific GitHub projet, but helped me
+learning Scala, getting familiar with its syntax, learning some of its subtleties,
+and getting familiar with the Scala/SBT/Play ecosystem.</p>
+
+<p>This first week has been exciting and interesting so far, I have enjoyed using Scala
+and been surprised many times by what it can do.</p>
+
+<p>Below are random thoughts about this experience.</p>
+
+<h3>It&#8217;s compiled!</h3>
+
+<p>As an ex-PHP guy and rubyist, my experience with compiled languages came down to
+writing code in an IDE, pressing F6 and waiting for stuff to compile and getting
+executed.<br/>
+It was quite different this time, using VIM and and the console allowed me to be
+closer to the code I write, and aware of what&#8217;s happening behind the scene.</p>
+
+<p>An awesome feature of SBT (Scala Build Tool) that is worth mentionning is the
+ability of compiling, running tests, or doing any other task every time the
+source code changes. An editor in full screen and a little (say 5 lines) console
+at the bottom of the screen makes coding faster since the compilation errors are
+shown as the code is being updated.</p>
+
+<p>Beside the nifty <em>cool</em> features, having a compiler that warns of shit that
+might happen is a big plus. You know when your app is broken, and that might save
+writing few extra functional tests.</p>
+
+<h3>Explicit parameters and return types</h3>
+
+<p>No more duck typing for me, in Scala, as in many <em>serious</em> languages, you <strong>have</strong>
+to explicitely tell the type of the arguments a function or method may take.<br/>
+Example: <code>def add(a: Int, b: Int) = a + b</code>.</p>
+
+<p>On the other hand, the return type isn&#8217;t mandatory, it is implicitily detected.<br/>
+The same function as above with the return type specified:
+<code>def add(a: Int, b: Int): Int = a + b</code>.<br/>
+I personally specify it for all my methods, I believe it&#8217;s a good practice and helps
+readability (you know what a function returns just by reading its signature).</p>
+
+<p>These constraints may be annoying at some point, for example when wanting to
+return some dumb result, or using a <code>println</code> in the last line of a function:
+<code>println</code> returns a Unit type (you can see it as Java&#8217;s <code>void</code>) while your function
+expects an <code>Int</code> result for instance.<br/>
+The annoyance is just temporary anyway, and it&#8217;s only a matter of time before
+one gets used to it; I actually did by the end of the week.</p>
+
+<h3>I can use VIM</h3>
+
+<p>I love VIM, and just the thought of switching to some IDE to do <em>real</em> made me sad,
+but my sadness vanished quickly when I noticed that most of the guys at Zenexity use
+text editors (TextMate, Sublime Text).<br/>
+<a href="https://github.com/derekwyatt/vim-scala">VIM&#8217;s Scala plugin</a> works pretty well,
+but may need some polishing. In fact, I&#8217;m planning to learn some VimL so I can
+improve it a bit.</p>
+
+<h3>Tuples</h3>
+
+<p>I have never used a language that has tuples before, and I have to admit that
+they&#8217;re really awesome. A tuple is basically a collection with a constraint on the
+number of elements, their type, and their order.<br/>
+One of its  most useful use case is the ability of returning more than one value
+from a function. Example:</p>
+
+<pre><code>def nameAndAge: (String, Int) = ("Samy", 20)
+val (name, age) = nameAndAge
+</code></pre>
+
+<p>In this case, a method that returns a tuple (notice the parenthesis, they&#8217;re tuples
+delimiters) is defined. Below, we define <strong>two values</strong>, not a tuple, that contain
+the first and second tuple elements respectively.</p>
 ]]></content>
   </entry>
   
@@ -1098,99 +1216,6 @@ This is your lifesaver: <code>--em</code>.</p>
 </code></pre>
 
 <p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique">Symfony2: Executer les commandes console sur un Entity Manager spécifique</a></em></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[PHP: Generate documentation with DocBlox]]></title>
-    <link href="http://www.dinduks.com/php-generate-documentation-with-docblox/"/>
-    <updated>2011-12-08T01:00:17+01:00</updated>
-    <id>http://www.dinduks.com/php-generate-documentation-with-docblox</id>
-    <content type="html"><![CDATA[<p>I recently have had to generate a PHP project&#8217;s documentation and I&#8217;ve chosen the popular <a href="http://phpdoc.org/">PhpDocumentor</a> for this purpose.<br/>
-This tool is unfortunately outdated, hasn&#8217;t been updated since 2007, and thus throws a lot of PHP warnings and cannot do what I was asking it.</p>
-
-<p>My friend <a href="http://testonsteroid.tumblr.com/">Ludo</a> has suggested using <a href="http://www.docblox-project.org/">DocBlox</a> which is, compared to PhpDocumentor, more modern - supports PHP 5.3, faster, and consumes less memory.</p>
-
-<p>After trying it, I can say that it&#8217;s indeed a great tool, inasmuch as I could generate documentation for my project 5 seconds after installing it.</p>
-
-<h3>How to use it:</h3>
-
-<h4>Installation</h4>
-
-<p>Make PEAR know about DocBlox&#8217;s channel</p>
-
-<pre><code>pear channel-discover pear.docblox-project.org
-</code></pre>
-
-<p>Then install DocBlox(-beta)</p>
-
-<pre><code>pear install docblox/DocBlox-beta
-</code></pre>
-
-<p>The command line <em>docblox</em> should be available for use now.</p>
-
-<h4>Use</h4>
-
-<pre><code>docblox -d /path/folder1,/path/folder1/folder2 -t /path/to/target/directory
-</code></pre>
-
-<p>Easy, ha? :)</p>
-
-<p>Make sure you separate the source directories by commas only, no spaces.<br/>
-You can also use some of the basic PhpDocumentor commands.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Symfony 2: Using global variables]]></title>
-    <link href="http://www.dinduks.com/symfony-2-using-global-variables/"/>
-    <updated>2011-12-05T23:50:06+01:00</updated>
-    <id>http://www.dinduks.com/symfony-2-using-global-variables</id>
-    <content type="html"><![CDATA[<p>In order to use variables in a <strong>Symfony2</strong> controller, you’ll have to set them up in <em>parameters.ini</em>, or in any other ini file on condition that you’ll import it into <em>config.yml</em>.<br/>
-In case you want to use them in a Twig template, you must set them up in <em>config.yml</em>.</p>
-
-<p>Once done, you’ll be able to whether call them using <code>getParameter()</code> from a controller or with the syntax &#8220; from a Twig template.</p>
-
-<h4>Set up your variable</h4>
-
-<p>In an ini file:</p>
-
-<pre><code>[parameters]
-    myVariable = 2
-</code></pre>
-
-<p>In <em>config.yml</em>:</p>
-
-<pre><code>twig:
-  globals:
-    myTwigVariable: %myVariable%
-</code></pre>
-
-<h4>Import your ini file into config.yml</h4>
-
-<p>You can skip this step if you already set up the variables in <em>parameters.ini</em>.</p>
-
-<pre><code>imports:
-    - { resource: myFile.ini }
-</code></pre>
-
-<h4>Use the global variable</h4>
-
-<p>In a controller:</p>
-
-<pre><code>$myVariable = $this-&gt;container-&gt;getParameter('myVariable');
-</code></pre>
-
-<p>In a Twig template</p>
-
-<pre><code>&lt;p&gt;
-    My variable: 
-&lt;/p&gt;
-</code></pre>
-
-<p>Enjoy. ;)</p>
-
-<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
 ]]></content>
   </entry>
   

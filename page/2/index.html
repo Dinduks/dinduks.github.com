@@ -82,6 +82,135 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/why-are-trailing-whitespaces-bad/">Why Are Trailing Whitespaces Bad</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-07T13:12:00+02:00" pubdate data-updated="true">Oct 7<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Whenever I see a trailing whitespace, my teeth gnash and I realize that <em>some
+people just want to see the world burn</em>.</p>
+
+<p>Trailing whitespaces suck, please, don&#8217;t use them and ask your code editor to
+highlight them. Below are some reasons why.</p>
+
+<h2>Revision control systems and diff tools</h2>
+
+<p>This is the most important point.<br/>
+For a diff tool, basically the <em>thing</em> used by CVS to detect code changes, this
+code:</p>
+
+<pre><code>function updateRepositoriesList($scope, Repository) {
+</code></pre>
+
+<p>Is not the same as:</p>
+
+<pre><code>function updateRepositoriesList($scope, Repository) {..
+</code></pre>
+
+<p>This, along with wrong indentation or using tabs instead of spaces, leads to
+unnecessary conflicts and is annoying when merging commits.</p>
+
+<h2>Moving inside the code</h2>
+
+<p>When I tell my editor to go to the end of the line, I obviously mean the end of
+the meaningful code, not some spaces after it.</p>
+
+<h2>Code display inside editors</h2>
+
+<p>On editors that wrap long lines, such as VIM, few spaces at the end of the line may
+lead to a useless line wrap.</p>
+
+<pre><code>function updateRepositoriesList($scope, Repository) {..|
+...                                                    |
+    loadingAnimation('show');                          |
+</code></pre>
+
+<h2>Other reasons</h2>
+
+<h3>Additional spaces increase the file size</h3>
+
+<p>That&#8217;s a very important point&#8230; If you store your code on floppy disks.</p>
+
+<h3>The parser will have to skip an extra character when compiling</h3>
+
+<p>Yet another important point. When coding on a
+<a href="http://en.wikipedia.org/wiki/Intel_8086">Intel 8086 processor</a>.</p>
+
+<h1>How to fight trailing whitespaces</h1>
+
+<h2>By correctly configuring your editor</h2>
+
+<h3>Highlighting them</h3>
+
+<p>If you don&#8217;t use VIM, skip this part.</p>
+
+<p>If you do, add <code>set list</code> to your <em>.vimrc</em>, this will display unprintable characters
+such as our lovely trailing whitespaces and non-breaking spaces.<br/>
+You can customise the characters used for that purpose thanks to the <code>listchars</code>
+command:</p>
+
+<pre><code>set listchars=trail:◃,nbsp:•
+</code></pre>
+
+<h3>Wiping them</h3>
+
+<p>By searching and replacing them: <code>%s/\s\+$//g</code>.</p>
+
+<p>I personally created a function that does the dirty work for me:</p>
+
+<pre><code>function! FutureShock()
+  silent! %retab        " Replace tabs by spaces
+  silent! %s/\%u00a0/ / " Replace nbsp by spaces
+  silent! %s/\s\+$//    " Replace twsp by spaces
+endfunction
+</code></pre>
+
+<p>And mapped it to <em>&lt;LEADER>f</em>:</p>
+
+<pre><code>map &lt;LEADER&gt;f :call FutureShock()&lt;CR&gt;
+</code></pre>
+
+<p><em><a href="http://youtu.be/aDEX1XO9uW0">Future Shock</a> is a Stratovarius song.</em></p>
+
+<p>Check <a href="https://github.com/Dinduks/dotfiles/blob/master/.vimrc">my VIM configuration</a>
+for more awesome commands.</p>
+
+<h2>By looking for them before you commit</h2>
+
+<p>You review your code before committing it, don&#8217;t you? ;)<br/>
+Thanks to the Git diff tool, you can clearly see trailing whitespaces highlighted in red when using <code>git diff</code>; <code>git show</code>, or <code>git add -p</code> (among others).</p>
+
+<p>You now have no excuse for having these abominations in your code.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/dont-comment-your-code/">Don&#8217;t Comment Your Code, Write Good One</a></h1>
     
     
@@ -282,6 +411,125 @@ implementation.</li>
 
 <p>Probably not in the code itself.<br/>
 I&#8217;d suggest doing this in a separate or in the <em>README</em> file.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/one-week-doing-scala-with-play-framework/">One Week Doing Scala With Play Framework</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-19T21:24:00+02:00" pubdate data-updated="true">Sep 19<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have recently joined the company behind the
+<a href="http://playframework.org/">Play framework</a>,
+<a href="http://zenexity.com/">Zenexity</a>, in which I&#8217;ll be working along with my
+computer science studies, and spent my first week learning Scala and the framework
+mentioned above.</p>
+
+<p>Besides the benefits of having (almost) free coffee, a free MacBook Pro (I&#8217;m not
+materialistic, just glad to save 1500€), working with skilled developers and getting
+a discount for doing sport (although I&#8217;m not going to do it #FatAssForLife),
+this job will be the opportunity for me to learn a language completely different
+than what I&#8217;ve been used to, new programming techniques (asynchronous and
+non-blocking stuff) which Play is all about, all of that while pursuing my studies.</p>
+
+<p>During that week, I managed to build a small application which doesn&#8217;t do much,
+it just displays the contributors of a specific GitHub projet, but helped me
+learning Scala, getting familiar with its syntax, learning some of its subtleties,
+and getting familiar with the Scala/SBT/Play ecosystem.</p>
+
+<p>This first week has been exciting and interesting so far, I have enjoyed using Scala
+and been surprised many times by what it can do.</p>
+
+<p>Below are random thoughts about this experience.</p>
+
+<h3>It&#8217;s compiled!</h3>
+
+<p>As an ex-PHP guy and rubyist, my experience with compiled languages came down to
+writing code in an IDE, pressing F6 and waiting for stuff to compile and getting
+executed.<br/>
+It was quite different this time, using VIM and and the console allowed me to be
+closer to the code I write, and aware of what&#8217;s happening behind the scene.</p>
+
+<p>An awesome feature of SBT (Scala Build Tool) that is worth mentionning is the
+ability of compiling, running tests, or doing any other task every time the
+source code changes. An editor in full screen and a little (say 5 lines) console
+at the bottom of the screen makes coding faster since the compilation errors are
+shown as the code is being updated.</p>
+
+<p>Beside the nifty <em>cool</em> features, having a compiler that warns of shit that
+might happen is a big plus. You know when your app is broken, and that might save
+writing few extra functional tests.</p>
+
+<h3>Explicit parameters and return types</h3>
+
+<p>No more duck typing for me, in Scala, as in many <em>serious</em> languages, you <strong>have</strong>
+to explicitely tell the type of the arguments a function or method may take.<br/>
+Example: <code>def add(a: Int, b: Int) = a + b</code>.</p>
+
+<p>On the other hand, the return type isn&#8217;t mandatory, it is implicitily detected.<br/>
+The same function as above with the return type specified:
+<code>def add(a: Int, b: Int): Int = a + b</code>.<br/>
+I personally specify it for all my methods, I believe it&#8217;s a good practice and helps
+readability (you know what a function returns just by reading its signature).</p>
+
+<p>These constraints may be annoying at some point, for example when wanting to
+return some dumb result, or using a <code>println</code> in the last line of a function:
+<code>println</code> returns a Unit type (you can see it as Java&#8217;s <code>void</code>) while your function
+expects an <code>Int</code> result for instance.<br/>
+The annoyance is just temporary anyway, and it&#8217;s only a matter of time before
+one gets used to it; I actually did by the end of the week.</p>
+
+<h3>I can use VIM</h3>
+
+<p>I love VIM, and just the thought of switching to some IDE to do <em>real</em> made me sad,
+but my sadness vanished quickly when I noticed that most of the guys at Zenexity use
+text editors (TextMate, Sublime Text).<br/>
+<a href="https://github.com/derekwyatt/vim-scala">VIM&#8217;s Scala plugin</a> works pretty well,
+but may need some polishing. In fact, I&#8217;m planning to learn some VimL so I can
+improve it a bit.</p>
+
+<h3>Tuples</h3>
+
+<p>I have never used a language that has tuples before, and I have to admit that
+they&#8217;re really awesome. A tuple is basically a collection with a constraint on the
+number of elements, their type, and their order.<br/>
+One of its  most useful use case is the ability of returning more than one value
+from a function. Example:</p>
+
+<pre><code>def nameAndAge: (String, Int) = ("Samy", 20)
+val (name, age) = nameAndAge
+</code></pre>
+
+<p>In this case, a method that returns a tuple (notice the parenthesis, they&#8217;re tuples
+delimiters) is defined. Below, we define <strong>two values</strong>, not a tuple, that contain
+the first and second tuple elements respectively.</p>
 </div>
   
   
@@ -511,201 +759,6 @@ Fortunately for my teammates and I, the other branches were not crucial.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/apache-enable-https-locally/">Apache: Enable HTTPS Locally</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-24T15:37:11+02:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Sometime you&#8217;d like to use SSL on a local website, for development purposes. This is possible to do in few minutes.</p>
-
-<h4>Enable Apache&#8217;s SSL mod</h4>
-
-<p>If you&#8217;re on some Debian based distro, and installed Apache with <em>aptitude</em> or <em>apt-get</em>, executing the <code>a2enmod ssl</code> command will do the trick.
-This means <em>Apache2 Enable MOD</em>, and will simply create a symbolic link to <em>/etc/apache2/mods-available/ssl.** in </em>/etc/apache2/mods-enabled/*.</p>
-
-<p>If you installed Apache in some other way, enable the SSL mod manually.</p>
-
-<h4>Ask Apache to listen on the port 443</h4>
-
-<p>443 is the default SSL port. Ask Apache to listen on it by adding <code>Listen 443</code> in your config file (<em>httpd.conf</em> for example).
-You don&#8217;t need to do that if you installed Apache with <em>aptitude</em> or <em>apt-get</em>. Apache automatically listens on this port when the <em>SSL mod</em> in enabled.</p>
-
-<h4>Create an SSL certificate</h4>
-
-<pre><code>mkdir /etc/apache2/ssl/
-make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
-</code></pre>
-
-<p>This will generate a SSL certificate, based on the <em>ssleay.cnf</em> template.</p>
-
-<h4>Setup your application&#8217;s virtual host</h4>
-
-<p>Setting up SSL is over. Now it&#8217;s time to create a virtual host for our application.</p>
-
-<pre><code>&lt;VirtualHost *:443&gt; # listen on the 443 port
-  ServerName myawesomeapp.dev
-
-  SSLEngine On # enabled SSL
-  SSLCertificateFile /etc/apache2/ssl/apache.pem # specify the certificate file
-
-  DocumentRoot /var/www/dev/myawesomeapp/
-&lt;/VirtualHost&gt;
-</code></pre>
-
-<p>We&#8217;re done, happy coding!</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/sinatra-rspec-and-datamapper-configuring-and-using-a-database-for-tests/">Sinatra, RSpec and DataMapper: Configuring and Using a Database for Tests</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-30T18:30:49+02:00" pubdate data-updated="true">Apr 30<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hi there,</p>
-
-<p>When testing your Sinatra application, you may need to check if some data was stored, removed, or changed in the database.</p>
-
-<p>Your application would look like this:</p>
-
-<div><script src='https://gist.github.com/2559103.js?file='></script>
-<noscript><pre><code>require 'sinatra'
-
-configure do
-  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog.db&quot;)
-  DataMapper.finalize
-  Post.auto_upgrade!
-  Tag.auto_upgrade!
-end
-
-get '/' do
-  &quot;Hello world!&quot;
-end</code></pre></noscript></div>
-
-
-
-
-<div><script src='https://gist.github.com/2559118.js?file='></script>
-<noscript><pre><code>require File.join(File.dirname(__FILE__), '..', 'blog.rb')
-require 'rack/test'
-
-RSpec.configure do |config|
-  config.include Rack::Test::Methods
-end
-
-def app
-  Sinatra::Application
-end
-
-describe &quot;get /&quot; do
-  it &quot;should display the homepage&quot; do
-    get &quot;/&quot;
-    last_response.should be_ok
-  end
-end</code></pre></noscript></div>
-
-
-<p>Okay. First of all, let&#8217;s tell RSpec to use a <code>blog_test.db</code> database:</p>
-
-<div><script src='https://gist.github.com/2559162.js?file='></script>
-<noscript><pre><code>RSpec.configure do |config|
-  config.include Rack::Test::Methods
-  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog_test.db&quot;)
-  DataMapper.finalize
-  Post.auto_migrate!
-  Tag.auto_migrate!
-end</code></pre></noscript></div>
-
-
-<p><strong>Explanations:</strong></p>
-
-<ul>
-<li><code>DataMapper::setup()</code>: Tells DataMapper which database to use ; it will create it if it doesn&#8217;t exist.</li>
-<li><code>DataMapper.finalize</code>: <em>Finalize</em>  the models. More information in <a href="http://datamapper.org/getting-started.html">DataMapper&#8217;s documentation</a>.</li>
-<li><code>auto_migrate!</code> drops and recreate the tables, which is a good thing since we want to have a clean database before each test.</li>
-</ul>
-
-
-<p>If it doesn&#8217;t already exist, a database will be created in the application&#8217;s root path the next time RSpec will be called (from the cli for example).</p>
-
-<p>All what is left now is to write the test:</p>
-
-<div><script src='https://gist.github.com/2559503.js?file='></script>
-<noscript><pre><code>describe &quot;post /new&quot; do
-  it &quot;should insert the post and its tags in the database&quot; do
-    lambda do
-      post &quot;/new&quot;, params = {
-        :title =&gt; 'title',
-        :body  =&gt; 'body',
-        :tags  =&gt; 'hello, world',
-      }
-    end.should {
-      change(Post, :count).by(1)
-      change(Tag, :count).by(2)
-    }
-  end
-end</code></pre></noscript></div>
-
-
-<p>I hope this quick how-to was helpful.</p>
-
-<p>Happy testing! :)</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/3/">&larr; Older</a>
@@ -723,15 +776,15 @@ end</code></pre></noscript></div>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/use-java-7-for-intellij-sbt-plugin/">Run IntelliJ&#8217;s SBT plugin on Java 7</a>
+      </li>
+    
+      <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
       </li>
     
       <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
-      </li>
-    
-      <li class="post">
-        <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
   </ul>

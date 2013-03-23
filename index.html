@@ -82,6 +82,59 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/use-java-7-for-intellij-sbt-plugin/">Run IntelliJ&#8217;s SBT Plugin on Java 7</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-23T18:51:00+01:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>IntelliJ IDEA runs on JRE 6, and so does its SBT plugin.</p>
+
+<p>If you need to use a more recent version of Java (and you should):</p>
+
+<ul>
+<li>Open the <em>Preferences</em> panel</li>
+<li>Go to the SBT section</li>
+<li>Tick the <em>Use alternative JRE</em> option</li>
+<li>Click the arrow on the right of the field to check if the IDE suggests the desired JRE
+
+<ul>
+<li>If so, you&#8217;re done.</li>
+<li>Otherwise, look for the path by yourself.<br/>
+<code>/Library/Java/JavaVirtualMachines/jdk1.7.0_09.jdk/Contents/Home</code> on my Mac.</li>
+</ul>
+</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a></h1>
     
     
@@ -376,135 +429,6 @@ Make the most of it!</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/why-are-trailing-whitespaces-bad/">Why Are Trailing Whitespaces Bad</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-07T13:12:00+02:00" pubdate data-updated="true">Oct 7<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Whenever I see a trailing whitespace, my teeth gnash and I realize that <em>some
-people just want to see the world burn</em>.</p>
-
-<p>Trailing whitespaces suck, please, don&#8217;t use them and ask your code editor to
-highlight them. Below are some reasons why.</p>
-
-<h2>Revision control systems and diff tools</h2>
-
-<p>This is the most important point.<br/>
-For a diff tool, basically the <em>thing</em> used by CVS to detect code changes, this
-code:</p>
-
-<pre><code>function updateRepositoriesList($scope, Repository) {
-</code></pre>
-
-<p>Is not the same as:</p>
-
-<pre><code>function updateRepositoriesList($scope, Repository) {..
-</code></pre>
-
-<p>This, along with wrong indentation or using tabs instead of spaces, leads to
-unnecessary conflicts and is annoying when merging commits.</p>
-
-<h2>Moving inside the code</h2>
-
-<p>When I tell my editor to go to the end of the line, I obviously mean the end of
-the meaningful code, not some spaces after it.</p>
-
-<h2>Code display inside editors</h2>
-
-<p>On editors that wrap long lines, such as VIM, few spaces at the end of the line may
-lead to a useless line wrap.</p>
-
-<pre><code>function updateRepositoriesList($scope, Repository) {..|
-...                                                    |
-    loadingAnimation('show');                          |
-</code></pre>
-
-<h2>Other reasons</h2>
-
-<h3>Additional spaces increase the file size</h3>
-
-<p>That&#8217;s a very important point&#8230; If you store your code on floppy disks.</p>
-
-<h3>The parser will have to skip an extra character when compiling</h3>
-
-<p>Yet another important point. When coding on a
-<a href="http://en.wikipedia.org/wiki/Intel_8086">Intel 8086 processor</a>.</p>
-
-<h1>How to fight trailing whitespaces</h1>
-
-<h2>By correctly configuring your editor</h2>
-
-<h3>Highlighting them</h3>
-
-<p>If you don&#8217;t use VIM, skip this part.</p>
-
-<p>If you do, add <code>set list</code> to your <em>.vimrc</em>, this will display unprintable characters
-such as our lovely trailing whitespaces and non-breaking spaces.<br/>
-You can customise the characters used for that purpose thanks to the <code>listchars</code>
-command:</p>
-
-<pre><code>set listchars=trail:◃,nbsp:•
-</code></pre>
-
-<h3>Wiping them</h3>
-
-<p>By searching and replacing them: <code>%s/\s\+$//g</code>.</p>
-
-<p>I personally created a function that does the dirty work for me:</p>
-
-<pre><code>function! FutureShock()
-  silent! %retab        " Replace tabs by spaces
-  silent! %s/\%u00a0/ / " Replace nbsp by spaces
-  silent! %s/\s\+$//    " Replace twsp by spaces
-endfunction
-</code></pre>
-
-<p>And mapped it to <em>&lt;LEADER>f</em>:</p>
-
-<pre><code>map &lt;LEADER&gt;f :call FutureShock()&lt;CR&gt;
-</code></pre>
-
-<p><em><a href="http://youtu.be/aDEX1XO9uW0">Future Shock</a> is a Stratovarius song.</em></p>
-
-<p>Check <a href="https://github.com/Dinduks/dotfiles/blob/master/.vimrc">my VIM configuration</a>
-for more awesome commands.</p>
-
-<h2>By looking for them before you commit</h2>
-
-<p>You review your code before committing it, don&#8217;t you? ;)<br/>
-Thanks to the Git diff tool, you can clearly see trailing whitespaces highlighted in red when using <code>git diff</code>; <code>git show</code>, or <code>git add -p</code> (among others).</p>
-
-<p>You now have no excuse for having these abominations in your code.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/2/">&larr; Older</a>
@@ -520,15 +444,15 @@ Thanks to the Git diff tool, you can clearly see trailing whitespaces highlighte
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/use-java-7-for-intellij-sbt-plugin/">Run IntelliJ&#8217;s SBT plugin on Java 7</a>
+      </li>
+    
+      <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
       </li>
     
       <li class="post">
         <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
-      </li>
-    
-      <li class="post">
-        <a href="/simple-search-system-with-mongodb-and-scala/">Building a search system with MongoDB (and Scala)</a>
       </li>
     
   </ul>
