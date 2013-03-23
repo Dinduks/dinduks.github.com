@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/category/ruby/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2013-03-23T19:24:18+01:00</updated>
+  <updated>2013-03-23T19:28:50+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -24,12 +24,51 @@
 
 <p>Your application would look like this:</p>
 
-<p>{% gist 2559103 %}
-{% gist 2559118 %}</p>
+<p><div><script src='https://gist.github.com/2559103.js?file='></script>
+<noscript><pre><code>require 'sinatra'
+
+configure do
+  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog.db&quot;)
+  DataMapper.finalize
+  Post.auto_upgrade!
+  Tag.auto_upgrade!
+end
+
+get '/' do
+  &quot;Hello world!&quot;
+end</code></pre></noscript></div>
+
+<div><script src='https://gist.github.com/2559118.js?file='></script>
+<noscript><pre><code>require File.join(File.dirname(__FILE__), '..', 'blog.rb')
+require 'rack/test'
+
+RSpec.configure do |config|
+  config.include Rack::Test::Methods
+end
+
+def app
+  Sinatra::Application
+end
+
+describe &quot;get /&quot; do
+  it &quot;should display the homepage&quot; do
+    get &quot;/&quot;
+    last_response.should be_ok
+  end
+end</code></pre></noscript></div>
+</p>
 
 <p>Okay. First of all, let's tell RSpec to use a <code>blog_test.db</code> database:</p>
 
-<p>{% gist 2559162 %}</p>
+<p><div><script src='https://gist.github.com/2559162.js?file='></script>
+<noscript><pre><code>RSpec.configure do |config|
+  config.include Rack::Test::Methods
+  DataMapper::setup(:default, &quot;sqlite3://#{Dir.pwd}/blog_test.db&quot;)
+  DataMapper.finalize
+  Post.auto_migrate!
+  Tag.auto_migrate!
+end</code></pre></noscript></div>
+</p>
 
 <p><strong>Explanations:</strong></p>
 
@@ -44,7 +83,22 @@
 
 <p>All what is left now is to write the test:</p>
 
-<p>{% gist 2559503 %}</p>
+<p><div><script src='https://gist.github.com/2559503.js?file='></script>
+<noscript><pre><code>describe &quot;post /new&quot; do
+  it &quot;should insert the post and its tags in the database&quot; do
+    lambda do
+      post &quot;/new&quot;, params = {
+        :title =&gt; 'title',
+        :body  =&gt; 'body',
+        :tags  =&gt; 'hello, world',
+      }
+    end.should {
+      change(Post, :count).by(1)
+      change(Tag, :count).by(2)
+    }
+  end
+end</code></pre></noscript></div>
+</p>
 
 <p>I hope this quick how-to was helpful.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Development | Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/category/development/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2013-03-23T19:24:18+01:00</updated>
+  <updated>2013-03-23T19:28:50+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -53,12 +53,23 @@ This can be done in <code>stylesheets/application.css</code> and <code>javascrip
 
 <p>If you want to load Bootstrap's stylesheet first:</p>
 
-<p>{% gist 1707651 %}</p>
+<p><div><script src='https://gist.github.com/1707651.js?file='></script>
+<noscript><pre><code>/*
+ *= require bootstrap.min.css
+ *= require_self
+ *= require_tree .
+ */</code></pre></noscript></div>
+</p>
 
 <h3>Javascripts:</h3>
 
 <p>This is how to load jQuery and Boostrap's scripts before the others:
-{% gist 1707655 %}</p>
+<div><script src='https://gist.github.com/1707655.js?file='></script>
+<noscript><pre><code>//= require jquery-1.7.1.min.js
+//= require bootstrap-alerts.js
+//= require bootstrap-modal.js
+//= require_tree .</code></pre></noscript></div>
+</p>
 
 <p>You can omit the files extensions.</p>
 
@@ -85,7 +96,7 @@ I agree with this and approve the good practices and clean code, but in this cas
 
 <p>I'm looking forward to know your opinion about the subject. Feel free to leave a comment.</p>
 
-<p>{% img center /images/uploads/2012/01/programming-motherfucker.jpg '' 'Programming Motherfucker' %}</p>
+<p><img class="center" src="/images/uploads/2012/01/programming-motherfucker.jpg"  alt="Programming Motherfucker"></p>
 ]]></content>
   </entry>
   

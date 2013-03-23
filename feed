@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2013-03-23T19:24:02+01:00</updated>
+  <updated>2013-03-23T19:28:50+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Run IntelliJ's SBT plugin on Java 7]]></title>
+    <title type="html"><![CDATA[Use Java 7 for IntelliJ's SBT plugin]]></title>
     <link href="http://www.dinduks.com/use-java-7-for-intellij-sbt-plugin/"/>
     <updated>2013-03-23T18:51:00+01:00</updated>
     <id>http://www.dinduks.com/use-java-7-for-intellij-sbt-plugin</id>
@@ -29,9 +29,9 @@
 <li>Click the arrow on the right of the field to check if the IDE suggests the desired JRE
 
 <ul>
-<li>If so, you&#8217;re done.</li>
+<li>If so, choose it.</li>
 <li>Otherwise, look for the path by yourself.<br/>
-<code>/Library/Java/JavaVirtualMachines/jdk1.7.0_09.jdk/Contents/Home</code> on my Mac.</li>
+It&#8217;s <code>/Library/Java/JavaVirtualMachines/jdk1.7.0_09.jdk/Contents/Home</code> on my Mac.</li>
 </ul>
 </li>
 </ul>
