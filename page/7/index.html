@@ -82,76 +82,6 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/twig-traduction-dans-du-javascript/">Twig: Traduction Dans Du JavaScript</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-10-23T13:18:32+02:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hello,</p>
-
-<p>Lors du développement d&#8217;une application <em>Silex</em>, je devais générer du code à la volée à l&#8217;aide de <em>JavaScript</em>.
-Le code généré ne pouvait évidemment pas être traduit. Pour palier à cela, le principe est de mettre les traductions dans un objet javascript, et de l&#8217;utiliser dans votre code <em>JS</em>.</p>
-
-<p>Ce qui suit est une manière de procéder.</p>
-
-<p>Je pars du principe que votre traduction est déjà mise en place et qu&#8217;elle marche correctement dans vos templates <em>Twig</em>.</p>
-
-<h4>Créer un fichier translations.html.twig</h4>
-
-<p>Je l&#8217;ai personnellement mis avec les autres vues.
-Mettez y un script JS avec les expressions que vous voulez traduire.</p>
-
-<pre><code>&lt;script type="text/javascript"&gt;
-    var translations = {
-        'hello_world': '{% trans %}hello_world{% endtrans}',
-        'foobar': '{% trans %}foobar{% endtrans}'
-    }
-&lt;/script&gt;
-</code></pre>
-
-<h4>Inclure ce template dans votre layout</h4>
-
-<p>Avant la déclaration des autre scripts bien sûr.</p>
-
-<pre><code>{% include './translations.html.twig' %}
-</code></pre>
-
-<p>Et voilà, vous pouvez maintenant accéder à l&#8217;objet <em>translations</em> depuis vos scripts JS.</p>
-
-<h4>Exemple:</h4>
-
-<pre><code>console.log(translations.hello_world);
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
       <h1 class="entry-title"><a href="/silex-le-service-de-traduction-et-les-templates-twig/">Silex: Le Service De Traduction Et Les Templates Twig</a></h1>
     
     
@@ -458,6 +388,113 @@ Au cas où vous voudrez les utiliser dans un template Twig, il faut les déclare
 </code></pre>
 
 <p>Enjoy. ;)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/symfony2-utiliser-plusieurs-bases-de-donnees/">Symfony2: Utiliser Plusieurs Bases De Données</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-24T18:26:15+02:00" pubdate data-updated="true">Aug 24<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Dans le cas où votre site développé avec <em>Symfony2</em> utiliserait plusieurs bases de données, il faudra <em>déclarer</em> autant de connexions et d&#8217;<em>Entity Managers</em> que de bases de données.</p>
+
+<p><em>Un Entity Manager est tout simplement une interface qui inter-réagi avec une base de donnée</em>.</p>
+
+<p>Pour illustrer mon exemple, je vais utiliser une bdd <em>site</em> et une autre <em>forum</em>.</p>
+
+<h4>Déclarer les connexions dans <em>config.yml</em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # précise la connexion utilisée par défaut
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Déclarer les EM, dans le même fichier</h4>
+
+<p>Tout d&#8217;abord désactivez l&#8217;<em>auto-mapping</em>, comme ça vous pourrez choisir quel EM va gérer les entités de quel <em>bundle</em>.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: Si vous avez une erreur relative à cette ligne, supprimez-la carrément.</em></p>
+
+<p>Ensuite, juste en bas, déclarez les EM en précisant les <em>mappings</em> avec chaque bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # précise l'em utilisé par défaut (lors de l'utilisation de la ligne de commande par exemple)
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksMachinBundle : ~
+          DinduksTrucBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Pour faire simple, les mappings font le lien entre un EM et les entités d&#8217;un bundle spéficique. C&#8217;est eux qui appellent, si j&#8217;ose dire, l&#8217;EM X quand on veut manipuler l&#8217;entité Y.</p>
+
+<p>Attention: N&#8217;oubliez pas de toujours mapper vos bundles fraîchement créés avec un EM, sinon vous aurez un erreur de bundle inexistant lors de l&#8217;utilisation de la commande <code>doctrine:generate:entities</code>.</p>
+
+<h4>Utilisation</h4>
+
+<p>De la même manière que vous appelez votre EM par défaut, appelez l&#8217;EM dont vous avez besoin en prenant soin de passer son nom en paramètres à la fonction <code>getEntityManager()</code>.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>J&#8217;espère que ce tutoriel vous sera utile. A bientôt. :)</p>
 </div>
   
   
