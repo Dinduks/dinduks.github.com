@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Symfony 2 | Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/category/symfony-2/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2013-04-20T00:49:05+02:00</updated>
+  <updated>2013-04-29T14:29:55+02:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -81,7 +81,7 @@ In case you want to use them in a Twig template, you must set them up in <em>con
 
 <p>Enjoy. ;)</p>
 
-<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
+<p><em>Translated from my french post <a href="http://www.dinduks.com/symfony2-utiliser-des-variables-globales">Symfony2: Utiliser des variables globales</a></em></p>
 ]]></content>
   </entry>
   
