@@ -32,8 +32,8 @@ Mettez y un script JS avec les expressions que vous voulez traduire.
 
     <script type="text/javascript">
         var translations = {
-            'hello_world': '{% trans %}hello_world{% endtrans}',
-            'foobar': '{% trans %}foobar{% endtrans}'
+            'hello_world': '{% trans %}hello_world{% endtrans %}',
+            'foobar': '{% trans %}foobar{% endtrans %}'
         }
     </script>
 

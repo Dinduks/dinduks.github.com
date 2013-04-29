@@ -54,4 +54,4 @@ In a Twig template
 
 Enjoy. ;)
 
-*Translated from my french post [Symfony2: Utiliser des variables globales](http://www.dinduks.com/symfony-2-utiliser-des-variables-globales)*
+*Translated from my french post [Symfony2: Utiliser des variables globales](http://www.dinduks.com/symfony2-utiliser-des-variables-globales)*
