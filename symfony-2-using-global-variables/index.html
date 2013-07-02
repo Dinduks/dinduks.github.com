@@ -140,7 +140,7 @@ In case you want to use them in a Twig template, you must set them up in <em>con
 <p>In a Twig template</p>
 
 <pre><code>&lt;p&gt;
-    My variable: {{ myVariable }}
+    My variable: 
 &lt;/p&gt;
 </code></pre>
 
@@ -258,26 +258,6 @@ In case you want to use them in a Twig template, you must set them up in <em>con
   </script>
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
-
-
-<section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("Dinduks", 4, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/Dinduks" class="twitter-follow-button" data-show-count="false">Follow @Dinduks</a>
-  
-</section>
-
-
-
 
 
   
