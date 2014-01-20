@@ -82,6 +82,52 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/a-fix-for-select2-not-displaying-results/">A Fix for Select2 Not Displaying Results on IE</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-20T17:47:00+01:00" pubdate data-updated="true">Jan 20<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When using Select2, filling a select box, and not seeing any result, chances are
+that you&#8217;re querying a different server, which requires CORS, which in turn
+isn&#8217;t supported by Internet Explorer (9.0 and below).</p>
+
+<p>Using the <a href="https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest">jQuery-ajaxTransport-XDomainRequest</a> plugin fixes
+the problem.<br/>
+Explanations are in the README.</p>
+
+<p>(this problem is of course not specific to Select2, but given the layers of
+code/libs between the developer and the creation oFJthe XHR object inside
+jQuery&#8217;s <code>ajax()</code> function, one might forget this detail like I did)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/use-java-7-for-intellij-sbt-plugin/">Use Java 7 for IntelliJ&#8217;s SBT Plugin</a></h1>
     
     
@@ -360,75 +406,6 @@ This can be done in one single command:</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/review-your-code-with-git/">Review Your Code With Git</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-13T14:47:00+02:00" pubdate data-updated="true">Oct 13<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Whether you want to commit a part of your changes only or simply check your work
-before you commit it, one of the Git commands you probably use the most, <code>add</code>, can
-help you doing it throught its option <code>-p</code> (<em>patch</em>).</p>
-
-<p>This option allows to choose the changes you want to stage.<br/>
-Or word for word, from Git&#8217;s man:</p>
-
-<blockquote><p>Interactively choose hunks of patch between the index and
-  the work tree and add them to the index. This gives the
-  user a chance to review the difference before adding
-  modified contents to the index.</p></blockquote>
-
-<p>This is how it works, or rather how I use it:</p>
-
-<p>After executing <code>git add -p .</code>, git enters an interactive mode, from where many
-actions can be taken. Below are the ones I use the most.</p>
-
-<ul>
-<li>If the diff is too long, you can try splitting it with <code>s</code>. That will split it into
-the smallest possible parts.</li>
-<li>If you want to stage the diff, simply choose <code>y</code>es.</li>
-<li>Otherwise, say <code>n</code>o.</li>
-<li>When the whole diff has been viewed, the interactive mode will quit automatically.
-You can do it yourself tough, through the classic <code>^C</code>, or by selecting <code>q</code>.<br/>
-Note that this will simply quit the interactive mode and won&#8217;t undo your actions.</li>
-</ul>
-
-
-<p>Feel free to ask <code>?</code> about the other commands meaning, they might be useful in some
-cases.</p>
-
-<p><code>git add -p</code> your best friend to review your code and not to commit stuff like
-<code>console.log()</code>.<br/>
-Make the most of it!</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/2/">&larr; Older</a>
@@ -444,15 +421,15 @@ Make the most of it!</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/a-fix-for-select2-not-displaying-results/">A fix for Select2 not displaying results on IE</a>
+      </li>
+    
+      <li class="post">
         <a href="/use-java-7-for-intellij-sbt-plugin/">Use Java 7 for IntelliJ&#8217;s SBT plugin</a>
       </li>
     
       <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
-      </li>
-    
-      <li class="post">
-        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
   </ul>
@@ -494,7 +471,7 @@ Make the most of it!</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Samy Dindane -
+  Copyright &copy; 2014 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

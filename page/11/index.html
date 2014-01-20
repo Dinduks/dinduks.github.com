@@ -82,6 +82,51 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/convertisseur-de-notes-de-musique/">Convertisseur De Notes De Musique</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-27T00:38:28+01:00" pubdate data-updated="true">Dec 27<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>Convertisseur de notes</em>&#8230; Qu&#8217;est ce que cela peut bien être?</p>
+
+<p>C&#8217;est un simple formulaire qui converti les notes de musique <em>latines</em> (Do, Ré, Mi, Fa, Sol, La, Si) en notes <em>anglo-saxonnes</em> (A, B, C, D, E, F, G). Le contraire est possible aussi. Je l&#8217;ai réalisé plusieurs mois plutôt parce que j&#8217;avais parfois du mal à assimiler la notation anglo-saxonne.</p>
+
+<p><img class="center" src="/images/uploads/2010/12/notes-converter-janne-wirman.jpg" title="'Janne Wirman'" ></p>
+
+<p>Mes connaissances techniques étaient assez limitées à l&#8217;époque, le convertisseur est assez simple.<br/>
+Je compte l&#8217;améliorer, avec un rafraîchissement automatique par exemple.</p>
+
+<p>Sans plus attendre, voici l&#8217;application en question: <a href="http://www.dinduks.com/notes-converter/">Notes Converter</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/dhtmlx-touch-nouveau-framework-pour-les-appareils-mobiles/">DHTMLX Touch: Nouveau Framework Pour Les Appareils Mobiles</a></h1>
     
     
@@ -304,72 +349,6 @@ fn main() {
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/lire-et-ecrire-des-fichiers-avec-java/">Java: Lire Et écrire Des Fichiers</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-11-18T18:56:51+01:00" pubdate data-updated="true">Nov 18<span>th</span>, 2010</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Bonjour,</p>
-
-<p>Lors de la résolution d&#8217;un problème en <em>Java</em>, j&#8217;ai dû récupérer une <em>chaîne de caractères</em> à partir d&#8217;un fichier, et la parser dans un autre après l&#8217;avoir modifié.</p>
-
-<p>Il y a plusieurs techniques pour le faire, je vais vous présenter la mienne que j&#8217;ai assimilé après avoir lu pas mal de forums et de documentations.</p>
-
-<h3>Lecture:</h3>
-
-<pre><code>try {
-    File fileIn = new File("file.in"); //ouverture du fichier
-    FileInputStream fis = new FileInputStream(fileIn);
-    byte[] buffer = new byte[fis.available()]; //Récupération du contenu du fichier dans une variable de type byte
-    fis.read(buffer); //Lecture du contenu de la variable buffer
-    stringIn = new String(buffer); //On parse le contenu de buffer dans notre chaîne
-    fis.close(); //Fermeture du fichier
-} catch(Exception e) {
-    e.printStackTrace();
-}
-</code></pre>
-
-<h3>Écriture:</h3>
-
-<pre><code>try {
-    File fileOut= new File("file.out"); //Overture du fichier
-    FileOutputStream fos = new FileOutputStream(fileOut);
-    fos.write( stringOut.getBytes() ); //On parse le contenu de la chaîne qu'on converti d'abord en variable de type byte
-    fos.close(); //Fermeture du fichier
-} catch(Exception e) {
-    e.printStackTrace();
-}
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/12/">&larr; Older</a>
@@ -387,15 +366,15 @@ fn main() {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/a-fix-for-select2-not-displaying-results/">A fix for Select2 not displaying results on IE</a>
+      </li>
+    
+      <li class="post">
         <a href="/use-java-7-for-intellij-sbt-plugin/">Use Java 7 for IntelliJ&#8217;s SBT plugin</a>
       </li>
     
       <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
-      </li>
-    
-      <li class="post">
-        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
   </ul>
@@ -437,7 +416,7 @@ fn main() {
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Samy Dindane -
+  Copyright &copy; 2014 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

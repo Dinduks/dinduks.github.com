@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2013-07-02T10:38:13+02:00</updated>
+  <updated>2014-01-20T18:03:10+01:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A fix for Select2 not displaying results on IE]]></title>
+    <link href="http://www.dinduks.com/a-fix-for-select2-not-displaying-results/"/>
+    <updated>2014-01-20T17:47:00+01:00</updated>
+    <id>http://www.dinduks.com/a-fix-for-select2-not-displaying-results</id>
+    <content type="html"><![CDATA[<p>When using Select2, filling a select box, and not seeing any result, chances are
+that you&#8217;re querying a different server, which requires CORS, which in turn
+isn&#8217;t supported by Internet Explorer (9.0 and below).</p>
+
+<p>Using the <a href="https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest">jQuery-ajaxTransport-XDomainRequest</a> plugin fixes
+the problem.<br/>
+Explanations are in the README.</p>
+
+<p>(this problem is of course not specific to Select2, but given the layers of
+code/libs between the developer and the creation oFJthe XHR object inside
+jQuery&#8217;s <code>ajax()</code> function, one might forget this detail like I did)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Use Java 7 for IntelliJ's SBT plugin]]></title>
@@ -1124,46 +1143,6 @@ This is your lifesaver: <code>--em</code>.</p>
 </code></pre>
 
 <p><em>Translated from my french post <a href="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique">Symfony2: Executer les commandes console sur un Entity Manager spécifique</a></em></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[PHP: Generate documentation with DocBlox]]></title>
-    <link href="http://www.dinduks.com/php-generate-documentation-with-docblox/"/>
-    <updated>2011-12-08T01:00:17+01:00</updated>
-    <id>http://www.dinduks.com/php-generate-documentation-with-docblox</id>
-    <content type="html"><![CDATA[<p>I recently have had to generate a PHP project&#8217;s documentation and I&#8217;ve chosen the popular <a href="http://phpdoc.org/">PhpDocumentor</a> for this purpose.<br/>
-This tool is unfortunately outdated, hasn&#8217;t been updated since 2007, and thus throws a lot of PHP warnings and cannot do what I was asking it.</p>
-
-<p>My friend <a href="http://testonsteroid.tumblr.com/">Ludo</a> has suggested using <a href="http://www.docblox-project.org/">DocBlox</a> which is, compared to PhpDocumentor, more modern - supports PHP 5.3, faster, and consumes less memory.</p>
-
-<p>After trying it, I can say that it&#8217;s indeed a great tool, inasmuch as I could generate documentation for my project 5 seconds after installing it.</p>
-
-<h3>How to use it:</h3>
-
-<h4>Installation</h4>
-
-<p>Make PEAR know about DocBlox&#8217;s channel</p>
-
-<pre><code>pear channel-discover pear.docblox-project.org
-</code></pre>
-
-<p>Then install DocBlox(-beta)</p>
-
-<pre><code>pear install docblox/DocBlox-beta
-</code></pre>
-
-<p>The command line <em>docblox</em> should be available for use now.</p>
-
-<h4>Use</h4>
-
-<pre><code>docblox -d /path/folder1,/path/folder1/folder2 -t /path/to/target/directory
-</code></pre>
-
-<p>Easy, ha? :)</p>
-
-<p>Make sure you separate the source directories by commas only, no spaces.<br/>
-You can also use some of the basic PhpDocumentor commands.</p>
 ]]></content>
   </entry>
   

@@ -261,12 +261,16 @@
         <lastmod>2013-03-23T19:27:55+01:00</lastmod>
     </url>
     <url>
+        <loc>http://www.dinduks.com/a-fix-for-select2-not-displaying-results/</loc>
+        <lastmod>2014-01-20T18:03:10+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://www.dinduks.com/about/</loc>
         <lastmod>2013-02-20T15:33:37+01:00</lastmod>
     </url>
     <url>
         <loc>http://www.dinduks.com/blog/archives/</loc>
-        <lastmod>2013-04-29T14:29:26+02:00</lastmod>
+        <lastmod>2014-01-20T18:03:10+01:00</lastmod>
     </url>
     <url>
         <loc>http://www.dinduks.com/feed</loc>
@@ -274,6 +278,6 @@
     </url>
     <url>
         <loc>http://www.dinduks.com/</loc>
-        <lastmod>2013-04-29T14:29:26+02:00</lastmod>
+        <lastmod>2014-01-20T18:03:10+01:00</lastmod>
     </url>
 </urlset>

@@ -82,6 +82,75 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/review-your-code-with-git/">Review Your Code With Git</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-13T14:47:00+02:00" pubdate data-updated="true">Oct 13<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Whether you want to commit a part of your changes only or simply check your work
+before you commit it, one of the Git commands you probably use the most, <code>add</code>, can
+help you doing it throught its option <code>-p</code> (<em>patch</em>).</p>
+
+<p>This option allows to choose the changes you want to stage.<br/>
+Or word for word, from Git&#8217;s man:</p>
+
+<blockquote><p>Interactively choose hunks of patch between the index and
+  the work tree and add them to the index. This gives the
+  user a chance to review the difference before adding
+  modified contents to the index.</p></blockquote>
+
+<p>This is how it works, or rather how I use it:</p>
+
+<p>After executing <code>git add -p .</code>, git enters an interactive mode, from where many
+actions can be taken. Below are the ones I use the most.</p>
+
+<ul>
+<li>If the diff is too long, you can try splitting it with <code>s</code>. That will split it into
+the smallest possible parts.</li>
+<li>If you want to stage the diff, simply choose <code>y</code>es.</li>
+<li>Otherwise, say <code>n</code>o.</li>
+<li>When the whole diff has been viewed, the interactive mode will quit automatically.
+You can do it yourself tough, through the classic <code>^C</code>, or by selecting <code>q</code>.<br/>
+Note that this will simply quit the interactive mode and won&#8217;t undo your actions.</li>
+</ul>
+
+
+<p>Feel free to ask <code>?</code> about the other commands meaning, they might be useful in some
+cases.</p>
+
+<p><code>git add -p</code> your best friend to review your code and not to commit stuff like
+<code>console.log()</code>.<br/>
+Make the most of it!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/why-are-trailing-whitespaces-bad/">Why Are Trailing Whitespaces Bad</a></h1>
     
     
@@ -640,78 +709,6 @@ Fortunately for my teammates and I, the other branches were not crucial.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/apache-enable-https-locally/">Apache: Enable HTTPS Locally</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-24T15:37:11+02:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Sometime you&#8217;d like to use SSL on a local website, for development purposes. This is possible to do in few minutes.</p>
-
-<h4>Enable Apache&#8217;s SSL mod</h4>
-
-<p>If you&#8217;re on some Debian based distro, and installed Apache with <em>aptitude</em> or <em>apt-get</em>, executing the <code>a2enmod ssl</code> command will do the trick.
-This means <em>Apache2 Enable MOD</em>, and will simply create a symbolic link to <em>/etc/apache2/mods-available/ssl.** in </em>/etc/apache2/mods-enabled/*.</p>
-
-<p>If you installed Apache in some other way, enable the SSL mod manually.</p>
-
-<h4>Ask Apache to listen on the port 443</h4>
-
-<p>443 is the default SSL port. Ask Apache to listen on it by adding <code>Listen 443</code> in your config file (<em>httpd.conf</em> for example).
-You don&#8217;t need to do that if you installed Apache with <em>aptitude</em> or <em>apt-get</em>. Apache automatically listens on this port when the <em>SSL mod</em> in enabled.</p>
-
-<h4>Create an SSL certificate</h4>
-
-<pre><code>mkdir /etc/apache2/ssl/
-make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
-</code></pre>
-
-<p>This will generate a SSL certificate, based on the <em>ssleay.cnf</em> template.</p>
-
-<h4>Setup your application&#8217;s virtual host</h4>
-
-<p>Setting up SSL is over. Now it&#8217;s time to create a virtual host for our application.</p>
-
-<pre><code>&lt;VirtualHost *:443&gt; # listen on the 443 port
-  ServerName myawesomeapp.dev
-
-  SSLEngine On # enabled SSL
-  SSLCertificateFile /etc/apache2/ssl/apache.pem # specify the certificate file
-
-  DocumentRoot /var/www/dev/myawesomeapp/
-&lt;/VirtualHost&gt;
-</code></pre>
-
-<p>We&#8217;re done, happy coding!</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/3/">&larr; Older</a>
@@ -729,15 +726,15 @@ make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/a-fix-for-select2-not-displaying-results/">A fix for Select2 not displaying results on IE</a>
+      </li>
+    
+      <li class="post">
         <a href="/use-java-7-for-intellij-sbt-plugin/">Use Java 7 for IntelliJ&#8217;s SBT plugin</a>
       </li>
     
       <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
-      </li>
-    
-      <li class="post">
-        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
   </ul>
@@ -779,7 +776,7 @@ make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Samy Dindane -
+  Copyright &copy; 2014 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

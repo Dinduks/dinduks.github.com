@@ -82,6 +82,113 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/symfony2-utiliser-plusieurs-bases-de-donnees/">Symfony2: Utiliser Plusieurs Bases De Données</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-24T18:26:15+02:00" pubdate data-updated="true">Aug 24<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Dans le cas où votre site développé avec <em>Symfony2</em> utiliserait plusieurs bases de données, il faudra <em>déclarer</em> autant de connexions et d&#8217;<em>Entity Managers</em> que de bases de données.</p>
+
+<p><em>Un Entity Manager est tout simplement une interface qui inter-réagi avec une base de donnée</em>.</p>
+
+<p>Pour illustrer mon exemple, je vais utiliser une bdd <em>site</em> et une autre <em>forum</em>.</p>
+
+<h4>Déclarer les connexions dans <em>config.yml</em></h4>
+
+<pre><code>doctrine:
+  dbal:
+    default_connection: site # précise la connexion utilisée par défaut
+    connections:
+      site:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   site
+        user:     site_usr
+        password: site_pwd
+        charset:  UTF8
+      forum:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   forum
+        user:     forum_usr
+        password: forum_pwd
+        charset:  UTF8
+</code></pre>
+
+<h4>Déclarer les EM, dans le même fichier</h4>
+
+<p>Tout d&#8217;abord désactivez l&#8217;<em>auto-mapping</em>, comme ça vous pourrez choisir quel EM va gérer les entités de quel <em>bundle</em>.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+</code></pre>
+
+<p><em>Note: Si vous avez une erreur relative à cette ligne, supprimez-la carrément.</em></p>
+
+<p>Ensuite, juste en bas, déclarez les EM en précisant les <em>mappings</em> avec chaque bundle.</p>
+
+<pre><code>doctrine:
+  orm:
+    auto_mapping: false
+    default_entity_manager: web # précise l'em utilisé par défaut (lors de l'utilisation de la ligne de commande par exemple)
+    entity_managers:
+      web:
+        connection: web
+        mappings:
+          DinduksMachinBundle : ~
+          DinduksTrucBundle : ~
+          FOSUserBundle: ~
+      forum:
+        connection: forum
+        mappings:
+          DinduksForumBundle : ~
+</code></pre>
+
+<p>Pour faire simple, les mappings font le lien entre un EM et les entités d&#8217;un bundle spéficique. C&#8217;est eux qui appellent, si j&#8217;ose dire, l&#8217;EM X quand on veut manipuler l&#8217;entité Y.</p>
+
+<p>Attention: N&#8217;oubliez pas de toujours mapper vos bundles fraîchement créés avec un EM, sinon vous aurez un erreur de bundle inexistant lors de l&#8217;utilisation de la commande <code>doctrine:generate:entities</code>.</p>
+
+<h4>Utilisation</h4>
+
+<p>De la même manière que vous appelez votre EM par défaut, appelez l&#8217;EM dont vous avez besoin en prenant soin de passer son nom en paramètres à la fonction <code>getEntityManager()</code>.</p>
+
+<pre><code>$forumEm = $this-&gt;get('doctrine')-&gt;getEntityManager('forum');
+</code></pre>
+
+<p>J&#8217;espère que ce tutoriel vous sera utile. A bientôt. :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/symfony-2-utiliser-des-types-de-donnees-non-supportes-par-doctrine/">Symfony2: Utiliser Des Types De Données Non Supportés Par Doctrine</a></h1>
     
     
@@ -324,58 +431,6 @@ Veuillez me faire part de vos remarques, corrections en commentaire.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/cpp-retourner-un-tableau-dans-une-fonction-ou-methode/">C++: Retourner Un Tableau (Dans Une Fonction Ou Méthode)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-07-25T14:22:55+02:00" pubdate data-updated="true">Jul 25<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Il faudra retourner un pointeur qui pointe sur ce tableau, et ensuite récupérer le tableau ailleurs grâce au pointeur:</p>
-
-<h3>La fonction en question</h3>
-
-<pre><code>int *multiplierParDeux(int a, int b){
-    int *array= new int[2];
-    array[0] = a*2;
-    array[1] = b*2;
-    return array;
-}
-</code></pre>
-
-<h3>Récupérer ce tableau</h3>
-
-<pre><code>int *array = multiplierParDeux(2, 4);
-cout &lt;&lt; array[1]; // retournera 8
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/9/">&larr; Older</a>
@@ -393,15 +448,15 @@ cout &lt;&lt; array[1]; // retournera 8
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/a-fix-for-select2-not-displaying-results/">A fix for Select2 not displaying results on IE</a>
+      </li>
+    
+      <li class="post">
         <a href="/use-java-7-for-intellij-sbt-plugin/">Use Java 7 for IntelliJ&#8217;s SBT plugin</a>
       </li>
     
       <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
-      </li>
-    
-      <li class="post">
-        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
   </ul>
@@ -443,7 +498,7 @@ cout &lt;&lt; array[1]; // retournera 8
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Samy Dindane -
+  Copyright &copy; 2014 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

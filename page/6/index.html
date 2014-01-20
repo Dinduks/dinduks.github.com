@@ -82,6 +82,76 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/protect-email-addresses-from-spam-crawlers/">Protect Email Addresses From Spam Crawlers</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-19T20:23:35+01:00" pubdate data-updated="true">Nov 19<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Hi,</p>
+
+<p>When displaying a raw email address on a Web page, this address is vulnerable and can be used by <em>spam crawlers</em>, <em>email harvester</em>, or whatever you want to call them to send you spam and such crap.
+That&#8217;s why people write their email address this way &#8220;samy at dindane dot com&#8221;, or &#8220;samy[@]dindane[.]com&#8221;.
+This writing is simple and efficient, but not <em>pretty</em>.</p>
+
+<p>There are many ways to show an email address in its original format and still make it bots-proof. One of these ways is using JavaScript to obfuscate and then show the address.
+But I think that using JS is overdoing things, since it can be done using basic HTML, simply by printing the email address as ASCII and not raw characters.</p>
+
+<h3>These are the steps to follow using PHP:</h3>
+
+<h4>Split the email address into an array of characters</h4>
+
+<pre><code>$aEmail = str_split($email);
+</code></pre>
+
+<h4>Convert each character into an ASCII one:</h4>
+
+<pre><code>$strEmail = '';
+foreach ($aEmail as $char) {
+    $strEmail .= ord($char);
+}
+</code></pre>
+
+<h4>Display it (O RLY?):</h4>
+
+<pre><code>echo "&lt;a href='$strEmail'&gt;$strEmail&lt;/a&gt;";
+</code></pre>
+
+<p>The result is a beautiful and clickable email address. :)</p>
+
+<p><strong>Note:</strong> If you are using <em>Twig</em> as a template engine, you have to use the <code>raw()</code> filter in order to tell Twig to interpret the string and not to display raw ASCII characters: <code>strEmail|raw</code></p>
+
+<p>I hope this tutorial has been helpful.<br/>
+Bye!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/english-motherfucker-do-you-speak-it/">English Motherfucker, Do You Speak It?!</a></h1>
     
     
@@ -318,76 +388,6 @@ Celle-ci n&#8217;est évidemment pas l&#8217;unique raison possible, mais nous m
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/twig-traduction-dans-du-javascript/">Twig: Traduction Dans Du JavaScript</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-10-23T13:18:32+02:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Hello,</p>
-
-<p>Lors du développement d&#8217;une application <em>Silex</em>, je devais générer du code à la volée à l&#8217;aide de <em>JavaScript</em>.
-Le code généré ne pouvait évidemment pas être traduit. Pour palier à cela, le principe est de mettre les traductions dans un objet javascript, et de l&#8217;utiliser dans votre code <em>JS</em>.</p>
-
-<p>Ce qui suit est une manière de procéder.</p>
-
-<p>Je pars du principe que votre traduction est déjà mise en place et qu&#8217;elle marche correctement dans vos templates <em>Twig</em>.</p>
-
-<h4>Créer un fichier translations.html.twig</h4>
-
-<p>Je l&#8217;ai personnellement mis avec les autres vues.
-Mettez y un script JS avec les expressions que vous voulez traduire.</p>
-
-<pre><code>&lt;script type="text/javascript"&gt;
-    var translations = {
-        'hello_world': '{% trans %}hello_world{% endtrans %}',
-        'foobar': '{% trans %}foobar{% endtrans %}'
-    }
-&lt;/script&gt;
-</code></pre>
-
-<h4>Inclure ce template dans votre layout</h4>
-
-<p>Avant la déclaration des autre scripts bien sûr.</p>
-
-<pre><code>{% include './translations.html.twig' %}
-</code></pre>
-
-<p>Et voilà, vous pouvez maintenant accéder à l&#8217;objet <em>translations</em> depuis vos scripts JS.</p>
-
-<h4>Exemple:</h4>
-
-<pre><code>console.log(translations.hello_world);
-</code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/7/">&larr; Older</a>
@@ -405,15 +405,15 @@ Mettez y un script JS avec les expressions que vous voulez traduire.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/a-fix-for-select2-not-displaying-results/">A fix for Select2 not displaying results on IE</a>
+      </li>
+    
+      <li class="post">
         <a href="/use-java-7-for-intellij-sbt-plugin/">Use Java 7 for IntelliJ&#8217;s SBT plugin</a>
       </li>
     
       <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
-      </li>
-    
-      <li class="post">
-        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
   </ul>
@@ -455,7 +455,7 @@ Mettez y un script JS avec les expressions que vous voulez traduire.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Samy Dindane -
+  Copyright &copy; 2014 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

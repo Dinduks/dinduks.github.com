@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Symfony2: Executer les commandes console sur un Entity Manager spécifique - Live geek or die tryin'</title>
+  <title>A fix for Select2 not displaying results on IE - Live geek or die tryin'</title>
   <meta name="author" content="Samy Dindane">
 
   
@@ -20,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique/">
+  <link rel="canonical" href="http://www.dinduks.com/a-fix-for-select2-not-displaying-results/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -79,7 +79,7 @@
   
   <header>
     
-      <h1 class="entry-title">Symfony2: Executer Les Commandes Console Sur Un Entity Manager Spécifique</h1>
+      <h1 class="entry-title">A Fix for Select2 Not Displaying Results on IE</h1>
     
     
       <p class="meta">
@@ -95,22 +95,24 @@
   
 
 
-<time datetime="2011-08-14T00:19:19+02:00" pubdate data-updated="true">Aug 14<span>th</span>, 2011</time>
+<time datetime="2014-01-20T17:47:00+01:00" pubdate data-updated="true">Jan 20<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Ce qui suit n&#8217;est pas une science exacte mais ça peut vous éviter 10 minutes de recherche.<br/>
-C&#8217;est cet argument qui vous sauvera la vie: <code>--em</code>.</p>
+<div class="entry-content"><p>When using Select2, filling a select box, and not seeing any result, chances are
+that you&#8217;re querying a different server, which requires CORS, which in turn
+isn&#8217;t supported by Internet Explorer (9.0 and below).</p>
 
-<h4>Exemple:</h4>
+<p>Using the <a href="https://github.com/MoonScript/jQuery-ajaxTransport-XDomainRequest">jQuery-ajaxTransport-XDomainRequest</a> plugin fixes
+the problem.<br/>
+Explanations are in the README.</p>
 
-<p>Dans le cas où vous voudrez générer les informations sur le mapping à partir de l&#8217;Entity Manager &#8220;client&#8221;:</p>
-
-<pre><code>php app/console doctrine:mapping:convert yml /src/Acme/ClientBundle/Resources/config/doctrine/metadata/orm --from-database --force --em="client
-</code></pre>
+<p>(this problem is of course not specific to Select2, but given the layers of
+code/libs between the developer and the creation oFJthe XHR object inside
+jQuery&#8217;s <code>ajax()</code> function, one might forget this detail like I did)</p>
 </div>
 
 
@@ -133,21 +135,15 @@ C&#8217;est cet argument qui vous sauvera la vie: <code>--em</code>.</p>
   
 
 
-<time datetime="2011-08-14T00:19:19+02:00" pubdate data-updated="true">Aug 14<span>th</span>, 2011</time>
+<time datetime="2014-01-20T17:47:00+01:00" pubdate data-updated="true">Jan 20<span>th</span>, 2014</time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/category/development/'>Development</a>, <a class='category' href='/category/pieces-of-code/'>Pieces of code</a>, <a class='category' href='/category/symfony-2/'>Symfony 2</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique/" data-via="Dinduks" data-counturl="http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.dinduks.com/a-fix-for-select2-not-displaying-results/" data-via="Dinduks" data-counturl="http://www.dinduks.com/a-fix-for-select2-not-displaying-results/" >Tweet</a>
   
   
   
@@ -156,10 +152,8 @@ C&#8217;est cet argument qui vous sauvera la vie: <code>--em</code>.</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/symfony-2-personnaliser-les-champs-table-generee-par-fosuserbundle/" title="Previous Post: Symfony2: Personnaliser les champs de la table générée par FOSUserBundle">&laquo; Symfony2: Personnaliser les champs de la table générée par FOSUserBundle</a>
+        <a class="basic-alignment left" href="/use-java-7-for-intellij-sbt-plugin/" title="Previous Post: Use Java 7 for IntelliJ's SBT plugin">&laquo; Use Java 7 for IntelliJ's SBT plugin</a>
       
-      
-        <a class="basic-alignment right" href="/symfony-2-utiliser-des-types-de-donnees-non-supportes-par-doctrine/" title="Next Post: Symfony2: Utiliser des types de données non supportés par Doctrine">Symfony2: Utiliser des types de données non supportés par Doctrine &raquo;</a>
       
     </p>
   </footer>
@@ -243,8 +237,8 @@ C&#8217;est cet argument qui vous sauvera la vie: <code>--em</code>.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique/';
-        var disqus_url = 'http://www.dinduks.com/symfony-2-executer-les-commandes-console-sur-un-entity-manager-specifique/';
+        var disqus_identifier = 'http://www.dinduks.com/a-fix-for-select2-not-displaying-results/';
+        var disqus_url = 'http://www.dinduks.com/a-fix-for-select2-not-displaying-results/';
         var disqus_script = 'embed.js';
       
     (function () {

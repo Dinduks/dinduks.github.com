@@ -82,6 +82,58 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/cpp-retourner-un-tableau-dans-une-fonction-ou-methode/">C++: Retourner Un Tableau (Dans Une Fonction Ou Méthode)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-25T14:22:55+02:00" pubdate data-updated="true">Jul 25<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Il faudra retourner un pointeur qui pointe sur ce tableau, et ensuite récupérer le tableau ailleurs grâce au pointeur:</p>
+
+<h3>La fonction en question</h3>
+
+<pre><code>int *multiplierParDeux(int a, int b){
+    int *array= new int[2];
+    array[0] = a*2;
+    array[1] = b*2;
+    return array;
+}
+</code></pre>
+
+<h3>Récupérer ce tableau</h3>
+
+<pre><code>int *array = multiplierParDeux(2, 4);
+cout &lt;&lt; array[1]; // retournera 8
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/php-extraire-une-chaine-de-caracteres-a-partir-d-une-autre-chaine/">PHP: Extraire Une Chaîne De Caractères à Partir D&#8217;une Autre Chaîne</a></h1>
     
     
@@ -319,160 +371,6 @@ Mais en pratique ce n&#8217;est pas aussi simple que ça, car il faut faire une 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/php-tutoriel-pagination-avec-symfony/">PHP: Pagination Avec Symfony</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-04-19T23:35:27+02:00" pubdate data-updated="true">Apr 19<span>th</span>, 2011</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Bienvenue,</p>
-
-<p>Dans ce tutoriel je vais vous expliquer comment réaliser une pagination, avec <em>Symfony</em> 1.4 et <em>Doctrine</em>.</p>
-
-<p>Tout d’abord, supposons qu’on a un module <em>user</em> dans l&#8217;application <em>admin</em>.</p>
-
-<h3>Avant la pagination, côté <em>action.class.php</em></h3>
-
-<p>Pour récupérer la liste des utilisateur, il faut exécuter une requête <code>$qUsers</code> dans <em>action.class.php</em>:</p>
-
-<pre><code>$qUsers = Doctrine_Query::create()-&gt;from("User u");
-$this-&gt;aUsers = $qUsers-&gt;fetchArray();
-</code></pre>
-
-<p>Du côté du <em>template</em> ça sera ça:</p>
-
-<pre><code>&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;?= __("Nom") ?&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;?= __("Prénom") ?&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;?= __("Pseudo") ?&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;?= __("E-mail") ?&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-&lt;?
-foreach($aUsers as $user) {
-?&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;?= $user["last_name"] ?&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;?= $user["first_name"] ?&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;?= $user["pseudo"] ?&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;?= $user["email"] ?&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-&lt;?
-}
-?&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-</code></pre>
-
-<h3>Mise en place de la pagination</h3>
-
-<p>Dans <em>actions.class.php</em>, juste après notre requête, on doit:</p>
-
-<h4>Instancier un objet <em>sfDoctrinePager</em></h4>
-
-<pre><code>$this-&gt;pager = new sfDoctrinePager('user', 3);
-</code></pre>
-
-<p>Et lui donner deux paramètres: un nom, et le nombre de résultats à afficher par page.</p>
-
-<h4>Lui préciser la requête pour récupérer les résultats</h4>
-
-<p>Oui, l&#8217;objet sfDoctrinePager ne devinera pas ce dont on a besoin, on va donc lui donner notre requête, $qUsers dans notre cas:</p>
-
-<pre><code>$this-&gt;pager-&gt;setQuery($qUsers);
-</code></pre>
-
-<h4>Lui demander d&#8217;afficher la première page par défaut:</h4>
-
-<pre><code>$this-&gt;pager-&gt;setPage($this-&gt;getRequestParameter('page', 1));
-</code></pre>
-
-<h4>Initialiser!</h4>
-
-<pre><code>$this-&gt;pager-&gt;init();
-</code></pre>
-
-<h4>Du côté du template</h4>
-
-<p>On commence par vérifier si on a besoin de la mise en page, au cas où le nombre des résultats est inférieur au nombre maximum d&#8217;éléments par page, 3 dans notre exemple.</p>
-
-<pre><code>if( $pager-&gt;haveToPaginate() ){
-}
-</code></pre>
-
-<p>Ensuite, on crée un conteneur pour les numéros de pages, et on fait un lien pour aller à la première page, et un autre à la dernière.</p>
-
-<pre><code>&lt;table&gt;
-  &lt;tr&gt;
-    &lt;td&gt;
-      &lt;a href="&lt;? url_for('user/index?page='.$pager-&gt;getFirstPage()) ?&gt;"&gt;&lt;/a&gt;
-    &lt;/td&gt;
-    &lt;td&gt;
-      &lt;a href="&lt;? url_for('user/index?page='.$pager-&gt;getLastPage()) ?&gt;"&gt;&lt;/a&gt;
-    &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/table&gt;
-</code></pre>
-
-<p>Ouais, les <code>&lt;table&gt;</code> c&#8217;est le mal, mais ce n&#8217;est qu&#8217;un exemple, et ça m&#8217;évite de faire du <em>CSS</em>. #jailaflemme</p>
-
-<p>Maintenant, entre les deux liens, on fait un <code>foreach</code> pour parser les liens vers les autres pages.</p>
-
-<p>Vous pouvez aussi mettre des liens pour la page précédente, et la page suivante, en utilisant respectivement les méthodes <code>getPreviousPage()</code> et <code>getNextPage()</code>. ;)</p>
-
-<pre><code>&lt;? foreach ($pager-&gt;getLinks as $page) : ?&gt;
-&lt;td&gt;
-  &lt;?php echo ($page == $pager-&gt;getPage()) ? $page : "&lt;a href='" . url_for('user/index?page='.$page); "'&gt;". $page ."&lt;/a&gt;" ?&gt;
-&lt;/td&gt;
-&lt;? endforeach; ?&gt;
-</code></pre>
-
-<p>Explications:</p>
-
-<ul>
-<li>On récupére la liste des liens avec le <code>foreach</code></li>
-<li>Ensuite on commence à parser les liens</li>
-<li>A quoi sert la vérification? Tout simplement à ne pas donner de lien au numéro de page sur laquelle on est!</li>
-</ul>
-
-
-<p>Et voilà, c&#8217;est fini.</p>
-
-<p>J&#8217;espère que cet article vous a été utile, n&#8217;hésitez pas à laisser des commentaire au cas où vous avez des remarques, suggestions, ou corrections. :)</p>
-
-<p>Vous pouvez me suivre sur <a href="www.dinduks.com/twitter"><strong>Twitter</strong></a>, des tutoriels comme celui ci y en aura encore tant que j&#8217;utilise <em>Symfony</em>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/page/10/">&larr; Older</a>
@@ -490,15 +388,15 @@ foreach($aUsers as $user) {
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/a-fix-for-select2-not-displaying-results/">A fix for Select2 not displaying results on IE</a>
+      </li>
+    
+      <li class="post">
         <a href="/use-java-7-for-intellij-sbt-plugin/">Use Java 7 for IntelliJ&#8217;s SBT plugin</a>
       </li>
     
       <li class="post">
         <a href="/websockets-invalid-state-err-dom-exception-11/">WebSockets: INVALID_STATE_ERR: DOM Exception 11</a>
-      </li>
-    
-      <li class="post">
-        <a href="/java-no-main-manifest-attribute/">Java: no main manifest attribute</a>
       </li>
     
   </ul>
@@ -540,7 +438,7 @@ foreach($aUsers as $user) {
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Samy Dindane -
+  Copyright &copy; 2014 - Samy Dindane -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
