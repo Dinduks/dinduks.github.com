@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Tutorials | Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/category/tutorials/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2014-04-16T17:56:26+02:00</updated>
+  <updated>2014-04-16T18:49:48+02:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -109,12 +109,39 @@ This one was occurring when trying to launch a WEBrick server:</p>
 I have written <a href="https://github.com/Dinduks/Lastfm-Top-Albums">that script</a> a few months ago to generate a patchwork of my top albums in <a href="http://www.lastfm.com/user/Dinduks">Last.fm</a>, due to the lack of working similar scripts.</p>
 
 <p><a href="http://lastfmtopalbums.dinduks.com/">
-{% img center http://lastfmtopalbums.dinduks.com/patchwork.php?user=Dinduks&amp;period=3month&amp;rows=2&amp;cols=2&amp;imageSize=200 '' 'Dinduks\'s top albums' %}
+<img class="center" src="http://lastfmtopalbums.dinduks.com/patchwork.php?user=Dinduks&amp;period=3month&amp;rows=2&amp;cols=2&amp;imageSize=200"  alt="Dinduks\">
 </a></p>
 
 <p>First, let's see how the script works, without the cache <em>system</em>:</p>
 
-<p>{% gist 1707693 %}</p>
+<p><div><script src='https://gist.github.com/1707693.js?file='></script>
+<noscript><pre><code>&lt;?php
+
+$apiUrl = 'http://ws.audioscrobbler.com/2.0/';
+$apiKey = '61d580c50e6e5e3f14b6bd9527e5395f';
+$method = 'user.gettopalbums';
+
+$user   = $_GET['user'];
+$period = $_GET['period'];
+$rows   = $_GET['rows'];
+$cols   = $_GET['cols'];
+
+$limit  = $cols * $rows;
+
+$query = &quot;$apiUrl?method=$method&amp;user=$user&amp;period=$period&amp;limit=$limit&amp;api_key=$apiKey&quot;;
+
+// create a DOMDocument which will contain the xml document returned by Last.fm's Web service
+$topAlbums = new DOMDocument();
+$topAlbums-&gt;load($query);
+
+/*
+The code for generating the image...
+*/
+
+// display the image
+header(&quot;Content-type: image/jpg&quot;);
+imagejpeg($patchwork);</code></pre></noscript></div>
+</p>
 
 <p>As you can see, the image is generated whenever the script is called. This isn't only greedy on the server's resources, but does also take a little time ; between 4 and 6 seconds for a common patchwork.</p>
 
