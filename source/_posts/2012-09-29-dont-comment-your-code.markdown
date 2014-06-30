@@ -6,7 +6,8 @@ comments: true
 categories: 
 ---
 
-*Dislaimer: I'm not a pro and I'm open to your feedback and critics.*
+*Dislaimer: I don't claim to have the absolute truth and I'm open to your
+feedback and critics.*
 
 Whether you've learned programming alone or had classes about the subject, you've
 probably been taught to *use comments*.  
