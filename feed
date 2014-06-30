@@ -4,7 +4,7 @@
   <title><![CDATA[Live geek or die tryin']]></title>
   <link href="http://www.dinduks.com/atom.xml" rel="self"/>
   <link href="http://www.dinduks.com/"/>
-  <updated>2014-04-16T18:49:48+02:00</updated>
+  <updated>2014-06-30T10:18:27+02:00</updated>
   <id>http://www.dinduks.com/</id>
   <author>
     <name><![CDATA[Samy Dindane]]></name>
@@ -356,7 +356,8 @@ Thanks to the Git diff tool, you can clearly see trailing whitespaces highlighte
     <link href="http://www.dinduks.com/dont-comment-your-code/"/>
     <updated>2012-09-29T17:42:00+02:00</updated>
     <id>http://www.dinduks.com/dont-comment-your-code</id>
-    <content type="html"><![CDATA[<p><em>Dislaimer: I&#8217;m not a pro and I&#8217;m open to your feedback and critics.</em></p>
+    <content type="html"><![CDATA[<p><em>Dislaimer: I don&#8217;t claim to have the absolute truth and I&#8217;m open to your
+feedback and critics.</em></p>
 
 <p>Whether you&#8217;ve learned programming alone or had classes about the subject, you&#8217;ve
 probably been taught to <em>use comments</em>.<br/>
