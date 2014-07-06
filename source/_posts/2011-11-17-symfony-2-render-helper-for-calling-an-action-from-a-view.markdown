@@ -28,7 +28,7 @@ That function fetches, processes the result and returns the counter of the onlin
 #### Create a Twig template that displays the response returned by the action
 The syntax is the following:
 
-      {% render "LiveGeekBundle:Default:onlineUsers" %}
+    {% render controller('LiveGeekBundle:Default:onlineUsers') %}
 
 Knowing that `onlineUsersAction()` is an action of `DefaultController` which is a controller from the *Live\GeekBundle* bundle.
 
