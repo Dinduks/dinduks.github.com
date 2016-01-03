@@ -29,7 +29,7 @@ Voici son code source :
       while(1)
       {
 
-      printf("  ==== Calculette par sqmy_- ====\n\n");
+      printf("  ==== Calculette ====\n\n");
       printf(" Choisissez le type d'operation a executer:\n");
       printf("  1. Addition\n");
       printf("  2. Soustraction\n");
